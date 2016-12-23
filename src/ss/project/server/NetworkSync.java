@@ -21,7 +21,6 @@ public class NetworkSync implements IStartStop {
 
     public NetworkSync() {
         isRunning = true;
-        clientsThreadPool = new ThreadPool();
     }
 
     private synchronized void addSocket(Socket socket) {
@@ -52,7 +51,6 @@ public class NetworkSync implements IStartStop {
             try {
                 while (isRunning) {
                     Socket clientSocket = serverSocket.accept();
-                    clientSocket
                 }
             } catch (IOException e) {
                 e.printStackTrace();

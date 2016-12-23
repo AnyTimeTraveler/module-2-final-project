@@ -44,15 +44,15 @@
 
 package ss.project.foreign.ui;
 
-import javax.media.j3d.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Group;
 
 /**
  * Class: Poles
- *
+ * <p>
  * Description: Creates the "poles" in the 3D window.
- *
+ * <p>
  * Version: 1.0
- *
  */
 public class Poles extends Object {
 

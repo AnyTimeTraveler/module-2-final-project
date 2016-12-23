@@ -19,17 +19,17 @@ public class Engine {
 	 * @param playerAmount
 	 * @param aiAmount
 	 */
-	public Engine(Vector3 worldSize, Player[] players) {
-		instance = this;
-		this.world = new World(worldSize);
+    public Engine(Vector3 worldSize, Player[] players) {
+        instance = this;
+        this.world = new World(worldSize);
 
 		//TODO make it easier to select AI types.
-		//AiList = new IArtificialIntelligence[] { new AiRandom(), new AiRandom() };
+        //AiList = new IArtificialIntelligence[] { new AiRandom(), new AiRandom() };
 
-		//createPlayers(playerAmount, aiAmount);
-		this.players = players;
-		startGame();
-	}
+        //createPlayers(playerAmount, aiAmount);
+        this.players = players;
+        startGame();
+    }
 
 	/**
 	 * TODO: recheck this.
@@ -84,7 +84,7 @@ public class Engine {
 		}
 
 		while (gameRunning) {
-			getPlayer(currentPlayer).doTurn(this.getWorld());
+            getPlayer(currentPlayer).doTurn(this.getWorld());
 
 			currentPlayer++;
 			if (currentPlayer >= getPlayerCount()) {

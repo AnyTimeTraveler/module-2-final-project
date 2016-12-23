@@ -10,15 +10,15 @@ public abstract class Player {
 	 * @param name
 	 *            name of the new player.
 	 */
-	public Player(String name) {
-		this.name = name;
-	}
+    public Player(String name) {
+        this.name = name;
+    }
 
 	/**
 	 * Called everytime a new turn should be done. TODO: add the possibility for
      * the user to do a turn, now it's just ai.
      */
-	public abstract void doTurn(World world);
+    public abstract void doTurn(World world);
 
 	/**
 	 * get the name of this player. Set when initializing.
@@ -31,6 +31,6 @@ public abstract class Player {
 
 	@Override
 	public String toString() {
-		return "Player [name=" + name + "]";
-	}
+        return "Player [name=" + name + "]";
+    }
 }

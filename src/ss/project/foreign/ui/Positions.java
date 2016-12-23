@@ -44,47 +44,48 @@
 
 package ss.project.foreign.ui;
 
-import javax.media.j3d.*;
-import javax.vecmath.*;
-import java.util.BitSet;
 import com.sun.j3d.utils.geometry.Sphere;
+
+import javax.media.j3d.*;
+import javax.vecmath.Color3f;
+import javax.vecmath.Vector3f;
+import java.util.BitSet;
 
 /**
  * Class: Positions
- *
+ * <p>
  * Description: Creates the position markers.
- *
+ * <p>
  * Version: 1.0
- *
  */
 public class Positions extends Object {
 
-	final static int		UNOCCUPIED	= 0;
-	final static int		HUMAN		= 1;
-	final static int		MACHINE		= 2;
-	final static int		END			= 3;
+	final static int UNOCCUPIED = 0;
+	final static int HUMAN = 1;
+	final static int MACHINE = 2;
+	final static int END = 3;
 
-	private Vector3f		point[];
-	private Switch			posSwitch;
-	private Switch			humanSwitch;
-	private Switch			machineSwitch;
-	private BitSet			posMask;
-	private BitSet			humanMask;
-	private BitSet			machineMask;
-	private Group			group;
-	private Material		redMat;
-	private Material		blueMat;
-	private Material		yellowMat;
-	private Material		whiteMat;
-	private Appearance		redApp;
-	private Appearance		blueApp;
-	private Appearance		yellowApp;
-	private Appearance		whiteApp;
-	private Board			board;
-	private Sphere			posSphere[];
-	private BigCube			cube[];
-	private TransformGroup	tgroup;
-	private boolean			winnerFlag	= false;
+	private Vector3f point[];
+	private Switch posSwitch;
+	private Switch humanSwitch;
+	private Switch machineSwitch;
+	private BitSet posMask;
+	private BitSet humanMask;
+	private BitSet machineMask;
+	private Group group;
+	private Material redMat;
+	private Material blueMat;
+	private Material yellowMat;
+	private Material whiteMat;
+	private Appearance redApp;
+	private Appearance blueApp;
+	private Appearance yellowApp;
+	private Appearance whiteApp;
+	private Board board;
+	private Sphere posSphere[];
+	private BigCube cube[];
+	private TransformGroup tgroup;
+	private boolean winnerFlag = false;
 
 	public Positions() {
 
@@ -124,7 +125,7 @@ public class Positions extends Object {
 		whiteApp = new Appearance();
 		whiteApp.setMaterial(whiteMat);
 
-		// Load the point array with the offset (coordinates) for each of 
+		// Load the point array with the offset (coordinates) for each of
 		// the 64 positions.
 		point = new Vector3f[64];
 		int count = 0;
@@ -299,7 +300,7 @@ public class Positions extends Object {
 		machineMask.clear(pos);
 		machineSwitch.setChildMask(machineMask);
 
-		// The following three lines are a workaround for a bug 
+		// The following three lines are a workaround for a bug
 		// in dev09 in which the transform3D of certain items are
 		// not updated properly. Scheduled to be fixed in dev10
 		Transform3D t = new Transform3D();

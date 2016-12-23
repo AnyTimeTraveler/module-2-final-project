@@ -42,10 +42,11 @@
  * $State: Exp $
  */
 
-package foreign.ui;
+package ss.project.foreign.ui;
 
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.QuadArray;
+import javax.media.j3d.Shape3D;
 
 public class Cylinder {
 

@@ -1,8 +1,6 @@
-package foreign.ui;
+package ss.project.foreign.ui;
 
 import ss.project.server.Controller;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by simon on 23.12.16.

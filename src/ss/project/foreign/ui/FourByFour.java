@@ -42,17 +42,23 @@
  * $State: Exp $
  */
 
-package foreign.ui;
+package ss.project.foreign.ui;
 
+import com.sun.j3d.utils.applet.MainFrame;
+import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import javax.media.j3d.*;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3f;
 import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
-import java.net.*;
-import javax.media.j3d.*;
-import javax.vecmath.*;
-import com.sun.j3d.utils.universe.SimpleUniverse;
-import com.sun.j3d.utils.applet.MainFrame;
+import java.net.URL;
 
 /**
  * Class FourByFour
@@ -66,13 +72,13 @@ public class FourByFour extends Applet implements ActionListener {
 
 	// To write scores to scores file
 	private static final boolean	writeScoresFile	= false;
-
+	static boolean appletFlag = true;        // Applet flag
 	String							host;						// Host from which this applet came from
 	int								port;						// Port number for writing high scores
 	Image							backbuffer2D;				// Backbuffer image used for 2D double buffering
 	int								width, height;				// Size of the graphics window in pixels
 	int								score;						// Final game score
-	int								level_weight;				// Weighting factor for skill level 
+	int level_weight;                // Weighting factor for skill level
 	int								move_weight;				// Weighting factor for number of moves to win
 	int								time_weight;				// Weighting factor for amount of time it took to win
 	int								skill_level;				// Skill level, 0 - 4
@@ -99,17 +105,16 @@ public class FourByFour extends Applet implements ActionListener {
 	Label							high_label;					// High score label
 	Label							high_places[];				// Labels to hold places
 	Label							high_names[];				// Labels to hold names
-	Label							high_scores[];				// Labels to hold scores 
+	Label high_scores[];                // Labels to hold scores
 	TextArea						instruct_text;				// TextArea object that holds instructions
-	TextArea						high_text;					// TextArea object that holds top 20 scores 
+	TextArea high_text;                    // TextArea object that holds top 20 scores
 	TextField						winner_name;				// TextField object that holds winner's name
 	Button							instruct_return_button;		// Return button for instruction panel
 	Button							skill_return_button;		// Return button for skill level panel
 	Button							winner_return_button;		// Return button for winner panel
-	Button							high_return_button;			// Return button for high scores panel 
+	Button high_return_button;            // Return button for high scores panel
 	CheckboxGroup					group;						// CheckboxGroup object for skill level panel
-	InputStream						inStream;					// Input stream for reading instructions and high scores 
-	static boolean					appletFlag		= true;		// Applet flag
+	InputStream inStream;                    // Input stream for reading instructions and high scores
 	boolean							winner_flag		= false;	// Winner flag
 	byte							text[];						// Temporary storage area for reading instructions file
 	byte							outText[];					// Temporary storage area for writing high scores file
@@ -121,6 +126,14 @@ public class FourByFour extends Applet implements ActionListener {
 	Positions						positions;					// Positions object, used to render player positions
 
 	private SimpleUniverse			universe		= null;
+
+	/**
+	 * Main method, only used when running as an application.
+	 */
+	public static void main(String[] args) {
+		FourByFour.appletFlag = false;
+		new MainFrame(new FourByFour(), 730, 450);
+	}
 
 	/**
 	 * Initialization
@@ -305,7 +318,7 @@ public class FourByFour extends Applet implements ActionListener {
 		c_container.add(canvas2D);
 		c_container.add(canvas3D);
 
-		// Turn off the layout manager, widgets will be sized 
+		// Turn off the layout manager, widgets will be sized
 		// and positioned explicitly.
 		setLayout(null);
 
@@ -816,14 +829,6 @@ public class FourByFour extends Applet implements ActionListener {
 		public void windowClosing(WindowEvent event) {
 			System.exit(0);
 		}
-	}
-
-	/**
-	 * Main method, only used when running as an application.
-	 */
-	public static void main(String[] args) {
-		FourByFour.appletFlag = false;
-		new MainFrame(new FourByFour(), 730, 450);
 	}
 
 }

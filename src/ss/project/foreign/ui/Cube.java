@@ -42,16 +42,13 @@
  * $State: Exp $
  */
 
-package foreign.ui;
+package ss.project.foreign.ui;
 
-import java.applet.Applet;
-import java.awt.event.*;
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.QuadArray;
+import javax.media.j3d.Shape3D;
 
 public class Cube extends Object {
-
-	private Shape3D					shape3D;
 
 	private static final float[]	verts	= {
 			// Front Face
@@ -66,7 +63,6 @@ public class Cube extends Object {
 			1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
 			// Bottom Face
 			-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, };
-
 	private static final float[]	normals	= {
 			// Front Face
 			0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
@@ -80,6 +76,7 @@ public class Cube extends Object {
 			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 			// Bottom Face
 			0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, };
+	private Shape3D shape3D;
 
 	public Cube(Appearance appearance) {
 

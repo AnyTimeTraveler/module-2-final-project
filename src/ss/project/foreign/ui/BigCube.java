@@ -42,12 +42,11 @@
  * $State: Exp $
  */
 
-package foreign.ui;
+package ss.project.foreign.ui;
 
-import java.applet.Applet;
-import java.awt.event.*;
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.QuadArray;
+import javax.media.j3d.Shape3D;
 
 /**
  * Class BigCube
@@ -57,8 +56,6 @@ import javax.vecmath.*;
  * Version: 1.0
  */
 public class BigCube extends Object {
-
-	private Shape3D					shape3D;
 
 	private static final float[]	verts	= {
 			// Front Face
@@ -73,7 +70,6 @@ public class BigCube extends Object {
 			5.0f, 5.0f, 5.0f, 5.0f, 5.0f, -5.0f, -5.0f, 5.0f, -5.0f, -5.0f, 5.0f, 5.0f,
 			// Bottom Face
 			-5.0f, -5.0f, 5.0f, -5.0f, -5.0f, -5.0f, 5.0f, -5.0f, -5.0f, 5.0f, -5.0f, 5.0f, };
-
 	private static final float[]	normals	= {
 			// Front Face
 			0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
@@ -87,6 +83,7 @@ public class BigCube extends Object {
 			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 			// Bottom Face
 			0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, };
+    private Shape3D shape3D;
 
 	public BigCube(Appearance appearance) {
 

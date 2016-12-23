@@ -7,3 +7,5 @@
 .idea
 diagrams
 res
+out/
+test/

@@ -1,8 +1,5 @@
 package ss.project.shared.game;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class World {
 
 	int counter = 0;

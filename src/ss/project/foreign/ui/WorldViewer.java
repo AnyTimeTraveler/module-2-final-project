@@ -1,22 +1,26 @@
 package ss.project.foreign.ui;
 
+import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import javax.media.j3d.*;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3f;
 import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.*;
-import javax.media.j3d.*;
-import javax.vecmath.*;
-import com.sun.j3d.utils.universe.SimpleUniverse;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class WorldViewer extends Applet implements ActionListener {
 
-	private final int		width		= 200;
-	private final int		height		= 200;
+	private final int width = 200;
+	private final int height = 200;
 
-	Canvas3D				canvas3D;
-	Positions				positions;
-	Panel					c_container;
+	Canvas3D canvas3D;
+	Positions positions;
+	Panel c_container;
 
-	private SimpleUniverse	universe	= null;
+	private SimpleUniverse universe = null;
 
 	public WorldViewer() {
 		//TODO: reference the World to get the data.
@@ -59,7 +63,7 @@ public class WorldViewer extends Applet implements ActionListener {
 	public void destroy() {
 		universe.cleanup();
 	}
-	
+
 	/**
 	 * Create the scenegraph for the 3D view.
 	 */
@@ -128,7 +132,7 @@ public class WorldViewer extends Applet implements ActionListener {
 
 		return branchGroup;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		Object target = event.getSource();

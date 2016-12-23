@@ -44,46 +44,47 @@
 
 package ss.project.foreign.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
 import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.Enumeration;
 
 /**
  * Class: PickDragBehavior
- * 
+ * <p>
  * Description: Used to respond to mouse pick and drag events in the 3D window.
- *
+ * <p>
  * Version: 1.0
- *
  */
 public class PickDragBehavior extends Behavior {
 
-	WakeupCriterion[]	mouseEvents;
-	WakeupOr			mouseCriterion;
-	int					x, y;
-	int					x_last, y_last;
-	double				x_angle, y_angle;
-	double				x_factor, y_factor;
-	Transform3D			modelTrans;
-	Transform3D			transformX;
-	Transform3D			transformY;
-	TransformGroup		transformGroup;
-	BranchGroup			branchGroup;
-	Canvas2D			canvas2D;
-	Canvas3D			canvas3D;
-	Positions			positions;
-	PickRay				pickRay	= new PickRay();
-	SceneGraphPath		sceneGraphPath[];
-	Appearance			highlight;
-	boolean				parallel;
+	WakeupCriterion[] mouseEvents;
+	WakeupOr mouseCriterion;
+	int x, y;
+	int x_last, y_last;
+	double x_angle, y_angle;
+	double x_factor, y_factor;
+	Transform3D modelTrans;
+	Transform3D transformX;
+	Transform3D transformY;
+	TransformGroup transformGroup;
+	BranchGroup branchGroup;
+	Canvas2D canvas2D;
+	Canvas3D canvas3D;
+	Positions positions;
+	PickRay pickRay = new PickRay();
+	SceneGraphPath sceneGraphPath[];
+	Appearance highlight;
+	boolean parallel;
 
-	PickDragBehavior(	Canvas2D canvas2D,
-						Canvas3D canvas3D,
-						Positions positions,
-						BranchGroup branchGroup,
-						TransformGroup transformGroup) {
+	PickDragBehavior(Canvas2D canvas2D,
+					 Canvas3D canvas3D,
+					 Positions positions,
+					 BranchGroup branchGroup,
+					 TransformGroup transformGroup) {
 
 		this.canvas2D = canvas2D;
 		this.canvas3D = canvas3D;

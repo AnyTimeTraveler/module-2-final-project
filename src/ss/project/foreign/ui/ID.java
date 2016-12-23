@@ -42,7 +42,7 @@
  * $State: Exp $
  */
 
-package foreign.ui;
+package ss.project.foreign.ui;
 
 class ID {
 

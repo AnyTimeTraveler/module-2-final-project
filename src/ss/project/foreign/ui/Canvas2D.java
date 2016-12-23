@@ -45,21 +45,21 @@
 package ss.project.foreign.ui;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Class: Canvas2D
- *
+ * <p>
  * Description: Used to respond to mouse events in the 2D window.
- *
+ * <p>
  * Version: 1.0
- *
  */
 class Canvas2D extends Canvas implements MouseListener {
 
-	Image		backbuffer;	// Backbuffer image
-	Graphics	gc;			// Graphics context of backbuffer
-	Board		board;		// Game board
+	Image backbuffer;    // Backbuffer image
+	Graphics gc;            // Graphics context of backbuffer
+	Board board;        // Game board
 
 	Canvas2D(Board board) {
 		this.board = board;
