@@ -1,5 +1,5 @@
 /*
- * $RCSfile: Canvas2D.java,v $
+ * $RCSfile: ID.java,v $
  *
  * Copyright (c) 2007 Sun Microsystems, Inc. All rights reserved.
  *
@@ -42,60 +42,21 @@
  * $State: Exp $
  */
 
-package ss.project.client.ui;
+package foreign.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
+class ID {
 
-/**
- * Class: Canvas2D
- *
- * Description: Used to respond to mouse events in the 2D window.
- *
- * Version: 1.0
- *
- */
-class Canvas2D extends Canvas implements MouseListener {
+	int id;
 
-	Image		backbuffer;	// Backbuffer image
-	Graphics	gc;			// Graphics context of backbuffer
-	Board		board;		// Game board
-
-	Canvas2D(Board board) {
-		this.board = board;
+	public ID(int id) {
+		this.id = id;
 	}
 
-	public void setBuffer(Image backbuffer) {
-		this.backbuffer = backbuffer;
-		gc = backbuffer.getGraphics();
+	public int get() {
+		return id;
 	}
 
-	public void update(Graphics g) {
-		paint(g);
-	}
-
-	public void paint(Graphics g) {
-		if (board != null) {
-			board.render2D(gc);
-			g.drawImage(backbuffer, 0, 0, this);
-		}
-	}
-
-	public void mousePressed(MouseEvent e) {
-		board.checkSelection2D(e.getX(), e.getY(), 1);
-		repaint();
-	}
-
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	public void mouseExited(MouseEvent e) {
+	public void set(int id) {
+		this.id = id;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * $RCSfile: Resources.java,v $
+ * $RCSfile: Poles.java,v $
  *
  * Copyright (c) 2007 Sun Microsystems, Inc. All rights reserved.
  *
@@ -38,32 +38,45 @@
  * maintenance of any nuclear facility.
  *
  * $Revision: 1.2 $
- * $Date: 2007/02/09 17:21:30 $
+ * $Date: 2007/02/09 17:21:37 $
  * $State: Exp $
  */
 
-package ss.project.client.ui;
+package foreign.ui;
 
-import java.net.URL;
+import java.applet.Applet;
+import java.awt.event.*;
+import javax.media.j3d.*;
+import javax.vecmath.*;
 
 /**
- * 
+ * Class: Poles
+ *
+ * Description: Creates the "poles" in the 3D window.
+ *
+ * Version: 1.0
+ *
  */
-public class Resources {
+public class Poles extends Object {
 
-	/**
-	 * Do not construct an instance of this class.
-	 */
-	private Resources() {
+	private Group group;
 
+	public Poles(Appearance appearance) {
+		float x = -30.0f;
+		float z = -30.0f;
+		group = new Group();
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				Cylinder c = new Cylinder(x, z, 1.0f, 60.0f, 10, appearance);
+				group.addChild(c.getShape());
+				x += 20.0f;
+			}
+			x = -30.0f;
+			z += 20.0f;
+		}
 	}
 
-	/**
-	 * Return the URL of the filename under the resources directory
-	 */
-	public static URL getResource(String filename) {
-		URL url = Resources.class.getResource(filename);
-		return url;
+	public Group getChild() {
+		return group;
 	}
-
 }

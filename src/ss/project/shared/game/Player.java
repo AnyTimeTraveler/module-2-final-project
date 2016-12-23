@@ -8,7 +8,7 @@ public class Player {
 	private String					name;
 	private int id;
 	private boolean					hasAI;
-	private IArtificialIntelligence	ai;
+	private AI ai;
 
 	/**
 	 * Create a new player object with specified name.
@@ -37,7 +37,7 @@ public class Player {
 	 * @param isAi
 	 * @param ai
 	 */
-	public Player(int id, Engine engine, String name, boolean isAi, IArtificialIntelligence ai) {
+	public Player(int id, Engine engine, String name, boolean isAi, AI ai) {
 		this.id = id;
 		this.engine = engine;
 		this.name = name;

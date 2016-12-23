@@ -4,7 +4,7 @@ import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.World;
 
-public class AiLinear implements IArtificialIntelligence {
+public class AiLinear implements AI {
 
 	private Player player;
 

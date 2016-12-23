@@ -10,7 +10,7 @@ import ss.project.shared.game.World;
  * @author fw
  *
  */
-public interface IArtificialIntelligence {
+public interface AI {
 	/**
 	 * Called when the game starts.
 	 */

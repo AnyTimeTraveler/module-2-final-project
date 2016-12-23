@@ -6,7 +6,7 @@ import ss.project.shared.game.World;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AiRandom implements IArtificialIntelligence {
+public class AiRandom implements AI {
 
 	private Player player;
 

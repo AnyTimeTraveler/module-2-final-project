@@ -42,7 +42,7 @@
  * $State: Exp $
  */
 
-package ss.project.client.ui;
+package foreign.ui;
 
 import javax.media.j3d.*;
 import javax.vecmath.*;

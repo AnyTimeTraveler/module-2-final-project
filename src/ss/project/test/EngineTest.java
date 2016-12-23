@@ -18,7 +18,7 @@ public class EngineTest {
 
 	@Test
 	public void test4x4x4() {
-		//Create a new game with size 4, 0 players of which 0 IArtificialIntelligence.
+		//Create a new game with size 4, 0 players of which 0 AI.
 		game = new Engine(new Vector3(4, 4, 4), 0, 0);
 
 		assertNotNull("World should not be created.", game.getWorld());
@@ -74,7 +74,7 @@ public class EngineTest {
 
 	@Test
 	public void testPlayersAI() {
-		//Create 2 players of which 2 IArtificialIntelligence.
+		//Create 2 players of which 2 AI.
 		game = new Engine(new Vector3(4, 4, 4), 2, 2);
 
 		assertNotNull("Player 0 should be created. ", game.getPlayer(0));

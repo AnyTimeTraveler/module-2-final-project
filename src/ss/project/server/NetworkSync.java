@@ -2,6 +2,7 @@ package ss.project.server;
 
 
 import ss.project.shared.IStartStop;
+import sun.nio.ch.ThreadPool;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,9 +17,11 @@ public class NetworkSync implements IStartStop {
     private boolean isRunning;
     private ServerSocket serverSocket;
     private List<Socket> sockets;
+    private ThreadPool clientsThreadPool;
 
     public NetworkSync() {
         isRunning = true;
+        clientsThreadPool = new ThreadPool();
     }
 
     private synchronized void addSocket(Socket socket) {
@@ -46,10 +49,14 @@ public class NetworkSync implements IStartStop {
 
         @Override
         public void run() {
-            while (isRunning) {
-
+            try {
+                while (isRunning) {
+                    Socket clientSocket = serverSocket.accept();
+                    clientSocket
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
         }
     }
 

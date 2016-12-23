@@ -1,17 +1,14 @@
 package ss.project.shared.game;
 
-import java.util.HashSet;
-
-import ss.project.shared.ai.AiLinear;
+import ss.project.shared.ai.AI;
 import ss.project.shared.ai.AiRandom;
-import ss.project.shared.ai.IArtificialIntelligence;
 
 public class Engine {
 
 	private static Engine				instance;
 	private World						world;
 	private Player[]					players;
-	private IArtificialIntelligence[]	AiList;
+	private AI[]	AiList;
 
 	/**
 	 * True while the game is running.
@@ -31,7 +28,7 @@ public class Engine {
 		this.world = new World(worldSize);
 
 		//TODO make it easier to select AI types.
-		AiList = new IArtificialIntelligence[] { new AiRandom(), new AiRandom() };
+		AiList = new AI[] { new AiRandom(), new AiRandom() };
 
 		createPlayers(playerAmount, aiAmount);
 		startGame();
