@@ -4,7 +4,6 @@ import ss.project.shared.IStartStop;
 import ss.project.shared.network.events.Event;
 import ss.project.shared.network.events.EventHandler;
 import ss.project.shared.network.io.Network;
-import ss.project.shared.ui.ServerTUI;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -23,7 +22,6 @@ public class Controller implements IStartStop, Runnable, EventHandler {
     private ExecutorService tEngines;
 
     private boolean isRunning = true;
-    private ServerTUI ui;
 
     public static void main(String[] args) throws InterruptedException {
         Controller controller = new Controller();
@@ -47,7 +45,6 @@ public class Controller implements IStartStop, Runnable, EventHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ui = new ServerTUI();
         tController = new Thread(this);
         tEngines = Executors.newCachedThreadPool();
         tController.start();
