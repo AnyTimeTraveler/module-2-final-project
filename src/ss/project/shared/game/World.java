@@ -1,5 +1,8 @@
 package ss.project.shared.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class World {
 
 	int counter = 0;
@@ -236,6 +239,7 @@ public class World {
 		return count;
 	}
 
+	@Deprecated
 	@Override
 	public String toString() {
 		String result = "";
@@ -253,7 +257,7 @@ public class World {
 				result += "X: ";
 				Player owner = worldPosition[x][0][z].getOwner();
 				if (owner != null) {
-					result += owner.getID();
+					//result += owner.getID();
 				} else {
 					result += "x";
 				}
@@ -261,7 +265,7 @@ public class World {
 				for (int y = 1; y < size.getY(); y++) {
 					owner = worldPosition[x][y][z].getOwner();
 					if (owner != null) {
-						result += " " + owner.getID();
+						//result += " " + owner.getID();
 					} else {
 						result += " x";
 					}
@@ -269,6 +273,6 @@ public class World {
 			}
 		}
 
-		return result;//buf.toString();
+		return result;
 	}
 }
