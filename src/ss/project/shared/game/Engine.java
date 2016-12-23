@@ -1,14 +1,10 @@
 package ss.project.shared.game;
 
-import ss.project.shared.ai.AI;
-import ss.project.shared.ai.AiRandom;
-
 public class Engine {
 
 	private static Engine				instance;
 	private World						world;
 	private Player[]					players;
-	private AI[]	AiList;
 
 	/**
 	 * True while the game is running.
@@ -23,14 +19,15 @@ public class Engine {
 	 * @param playerAmount
 	 * @param aiAmount
 	 */
-	public Engine(Vector3 worldSize, int playerAmount, int aiAmount) {
+	public Engine(Vector3 worldSize, Player[] players) {
 		instance = this;
 		this.world = new World(worldSize);
 
 		//TODO make it easier to select AI types.
-		AiList = new AI[] { new AiRandom(), new AiRandom() };
+		//AiList = new IArtificialIntelligence[] { new AiRandom(), new AiRandom() };
 
-		createPlayers(playerAmount, aiAmount);
+		//createPlayers(playerAmount, aiAmount);
+		this.players = players;
 		startGame();
 	}
 
@@ -41,36 +38,6 @@ public class Engine {
 	 */
 	public static Engine getEngine() {
 		return instance;
-	}
-
-	/**
-	 * Create x new players and name them.
-	 *
-	 * @param amount
-	 *            the amount of new players to generate.
-	 * @param aiAmount
-	 *            the amount of players that should be controlled by a computer.
-	 */
-	private void createPlayers(int amount, int aiAmount) {
-		int remainingAI = aiAmount;
-		players = new Player[amount];
-		for (int i = 0; i < amount; i++) {
-			boolean isAI = false;
-			if (remainingAI > 0) {
-				remainingAI--;
-				isAI = true;
-			}
-
-			//Create new players with name: Player1
-			if (isAI) {
-				int index = aiAmount - remainingAI - 1;
-				if (index < AiList.length) {
-					players[i] = new Player(i, this, "Player " + i, isAI, AiList[index]);
-					continue;
-				}
-			}
-			players[i] = new Player(i, this, "Player " + i, isAI);
-		}
 	}
 
 	/**
@@ -117,7 +84,7 @@ public class Engine {
 		}
 
 		while (gameRunning) {
-			getPlayer(currentPlayer).doTurn();
+			getPlayer(currentPlayer).doTurn(this.getWorld());
 
 			currentPlayer++;
 			if (currentPlayer >= getPlayerCount()) {
@@ -129,6 +96,5 @@ public class Engine {
 	public void finishGame() {
 		gameRunning = false;
 		System.out.println("Finished game");
-		System.out.println(world.toString());
 	}
 }
