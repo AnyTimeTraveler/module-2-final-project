@@ -8,6 +8,5 @@ import ss.project.server.Controller;
 public abstract class UserInterface implements Runnable {
     private Controller controller;
     public void showWorld(){
-        controller.getWorld();
     }
 }
