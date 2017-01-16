@@ -93,7 +93,6 @@ public class World {
 			return worldPos.isOwner(player);
 		}
 		return false;
-
 	}
 
 	/**

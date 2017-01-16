@@ -16,17 +16,11 @@ public class Engine {
 	 * aiAmount out of this constructor. The Engine should run multiple games.
 	 *
 	 * @param worldSize
-	 * @param playerAmount
-	 * @param aiAmount
 	 */
     public Engine(Vector3 worldSize, Player[] players) {
         instance = this;
         this.world = new World(worldSize);
 
-		//TODO make it easier to select AI types.
-        //AiList = new IArtificialIntelligence[] { new AiRandom(), new AiRandom() };
-
-        //createPlayers(playerAmount, aiAmount);
         this.players = players;
         startGame();
     }

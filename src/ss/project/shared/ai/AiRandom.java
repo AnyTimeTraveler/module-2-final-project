@@ -11,7 +11,6 @@ public class AiRandom implements AI {
 	private Player player;
 
 	@Override
-	//TODO: call initialize before the game starts.
 	public void initialize(Player player) {
 		System.out.println("Initialize");
 		this.player = player;
