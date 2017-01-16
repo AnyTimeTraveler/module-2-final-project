@@ -58,6 +58,7 @@ public class Vector3Test {
         assertFalse(staticVector.equals(new Vector3(0, 1, 0)));
         assertFalse(staticVector.equals(new Vector3(0, 0, 1)));
         assertFalse(staticVector.equals(new Vector3(1, 1, 1)));
+        assertFalse(staticVector.equals(null));
 
         assertNotEquals(staticVector, new WorldPosition(new Vector3(0, 0, 0)));
         assertNotNull(staticVector);
