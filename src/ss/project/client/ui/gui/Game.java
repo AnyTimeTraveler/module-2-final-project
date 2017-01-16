@@ -6,4 +6,7 @@ import javax.swing.*;
  * Created by simon on 16.01.17.
  */
 public class Game extends JPanel {
+    public Game(MainFrame mainFrame) {
+
+    }
 }
