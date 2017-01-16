@@ -18,8 +18,8 @@ public class ComputerPlayer extends Player {
     }
 
 	@Override
-	public void doTurn(World world) {
-		ai.doTurn(world);
+	public void doTurn(Engine engine) {
+		ai.doTurn(engine);
 	}
 
 }

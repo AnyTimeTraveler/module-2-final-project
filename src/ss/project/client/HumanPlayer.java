@@ -1,8 +1,8 @@
 package ss.project.client;
 
 
+import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
-import ss.project.shared.game.World;
 
 public class HumanPlayer extends Player {
 
@@ -12,7 +12,7 @@ public class HumanPlayer extends Player {
     }
 
     @Override
-    public void doTurn(World world) {
+    public void doTurn(Engine engine) {
         // TODO Auto-generated method stub
 
     }

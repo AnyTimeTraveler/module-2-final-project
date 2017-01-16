@@ -2,8 +2,20 @@ package ss.project.shared.game;
 
 public class Vector2 {
 
-	private final int	x;
-	private final int	y;
+    /**
+     * Easy way of writing Vector2(1,1).
+     * but instead refer to an existing Vector.
+     */
+    public static final Vector2 ONE = new Vector2(1, 1);
+
+    /**
+     * Easy way of writing Vector2(0,0).
+     * but instead refer to an existing Vector.
+     */
+    public static final Vector2 ZERO = new Vector2(0, 0);
+
+    private final int x;
+    private final int y;
 
     /**
      * Create a Vector2 with x, y.
@@ -11,10 +23,10 @@ public class Vector2 {
      * @param x the x coordinate.
      * @param y the y coordinate.
      */
-	public Vector2(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+    public Vector2(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     /**
      * @return the x coordinate.
@@ -29,7 +41,7 @@ public class Vector2 {
     public int getY() {
         return y;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -52,8 +64,8 @@ public class Vector2 {
         return true;
     }
 
-	@Override
-	public String toString() {
-		return "Vector2 [x=" + x + ", y=" + y + "]";
-	}
+    @Override
+    public String toString() {
+        return "Vector2 [x=" + x + ", y=" + y + "]";
+    }
 }

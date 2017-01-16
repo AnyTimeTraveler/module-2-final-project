@@ -3,8 +3,8 @@
  */
 package ss.project.shared.ai;
 
+import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
-import ss.project.shared.game.World;
 
 /**
  * @author fw
@@ -19,7 +19,7 @@ public interface AI {
 	/**
 	 * Called everytime the player has to place an item.
 	 */
-	public void doTurn(World world);
+	public void doTurn(Engine engine);
 	
 	/**
 	 * Called when the game ends.

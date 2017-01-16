@@ -10,8 +10,7 @@ public class Engine {
     private boolean gameRunning;
 
     /**
-     * Create a new world and create players. TODO: remove the playerAmount and
-     * aiAmount out of this constructor. The Engine should run multiple games.
+     * Create a new world and create players.
      *
      * @param worldSize
      */
@@ -27,6 +26,21 @@ public class Engine {
      */
     public World getWorld() {
         return world;
+    }
+
+    /**
+     * @param coordinates
+     * @param owner
+     * @return True if it's a legit move. False if not.
+     */
+    public boolean addGameItem(Vector2 coordinates, Player owner) {
+        boolean result = this.getWorld().addGameItem(coordinates, owner);
+        if (result && this.getWorld().hasWon(coordinates, owner)) {
+            //Someone won!
+            finishGame(FinishReason.WON);
+            System.out.println(owner.getName() + " won!");
+        }
+        return result;
     }
 
     /**
@@ -64,7 +78,7 @@ public class Engine {
         }
 
         while (gameRunning) {
-            getPlayer(currentPlayer).doTurn(this.getWorld());
+            getPlayer(currentPlayer).doTurn(this);
 
             currentPlayer++;
             if (currentPlayer >= getPlayerCount()) {

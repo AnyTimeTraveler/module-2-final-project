@@ -2,6 +2,7 @@ package ss.project.server;
 
 
 import ss.project.shared.Protocol;
+import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.World;
 
@@ -25,8 +26,8 @@ public class NetworkPlayer extends Player {
     }
 
     @Override
-    public void doTurn(World world) {
-        this.world = world;
+    public void doTurn(Engine engine) {
+        this.world = engine.getWorld();
         try {
             outputStream.write(Protocol.get().doTurn().getBytes());
         } catch (IOException e) {

@@ -2,7 +2,6 @@ package ss.project.shared.game;
 
 public class World {
 
-    int counter = 0;
     private int remainingSpots;
     private Vector3 size;
     private WorldPosition[][][] worldPosition;
@@ -92,6 +91,20 @@ public class World {
     }
 
     /**
+     * Returns the owner of a coordinate. Null if no owner.
+     *
+     * @param coordinates
+     * @return
+     */
+    public Player getOwner(Vector3 coordinates) {
+        WorldPosition worldPos = getWorldPosition(coordinates);
+        if (worldPos != null) {
+            return worldPos.getOwner();
+        }
+        return null;
+    }
+
+    /**
      * @param coordinates
      * @return True if the coordinates are inside the world range.
      */
@@ -100,35 +113,6 @@ public class World {
                 coordinates.getX() < getSize().getX() && coordinates.getY() < getSize().getY() &&
                 coordinates.getZ() < getSize().getZ()) {
             return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Create and set a new GameItem in this world with specified owner.
-     *
-     * @param coordinates Coordinates where the GameItem should be placed.
-     * @param owner       The owner of the GameItem.
-     * @return False if this move is not possible, true if possible. TODO: Sync
-     * this with the addGameItem Vector2 version.
-     */
-    public boolean addGameItem(Vector3 coordinates, Player owner) {
-        WorldPosition wp = getWorldPosition(coordinates);
-        if (wp != null) {
-            if (wp.hasGameItem()) {
-                return false;
-            } else {
-                wp.setGameItem(owner);
-                remainingSpots--;
-
-                //There's no space left!
-                if (remainingSpots <= 0) {
-                    this.engine.finishGame(Engine.FinishReason.FULL);
-                    //Engine.getEngine().finishGame();
-                }
-                return true;
-            }
         } else {
             return false;
         }
@@ -151,8 +135,8 @@ public class World {
                 wp.setGameItem(owner);
                 remainingSpots--;
 
-                //Check whether we have 4 on a row.
-                checkWin(wp.getCoordinates(), owner);
+                //Check whether we have 4 on a row. SHOULD BE DONE BY THE ENGINE.
+                //hasWon(wp.getCoordinates(), owner);
 
                 //There's no space left!
                 if (remainingSpots <= 0) {
@@ -167,12 +151,30 @@ public class World {
     }
 
     /**
+     * Checks if someone has won.
+     *
+     * @param newCoordinates
+     * @param player
+     * @return
+     */
+    public boolean hasWon(Vector2 newCoordinates, Player player) {
+        WorldPosition wp = getWorldPosition(newCoordinates);
+        if (wp != null) {
+            Vector3 newCoords = wp.getCoordinates().subtract(0, 1, 0);
+            if (insideWorld(newCoords)) {
+                return hasWon(newCoords, player);
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check whether the newCoordinates make the player win the game.
      *
      * @param newCoordinates The coordinates where the player has put a new object.
      * @param player         The player has placed a new object.
      */
-    private void checkWin(Vector3 newCoordinates, Player player) {
+    public boolean hasWon(Vector3 newCoordinates, Player player) {
         for (int x = newCoordinates.getX() - 1; x < newCoordinates.getX() + 1; x++) {
             for (int y = newCoordinates.getY() - 1; y < newCoordinates.getY() + 1; y++) {
                 for (int z = newCoordinates.getZ() - 1; z < newCoordinates.getZ() + 1; z++) {
@@ -181,18 +183,15 @@ public class World {
                     if (!vector.equals(newCoordinates)) {
                         //We found a neighbor that is owner by us as well! Continue this path.
                         Vector3 direction = newCoordinates.subtract(x, y, z);
-                        if (checkWin(newCoordinates, player, direction, 1) + checkWin(newCoordinates, player, direction.inverse(), 0) >= 4) {
+                        if (hasWon(newCoordinates, player, direction, 1) + hasWon(newCoordinates, player, direction.inverse(), 0) >= 4) {
                             //we won!
-                            System.out.println(player.getName() + " won!");
-                            //TODO: show something on the screen, clean stuff up, stop the game.
-                            //Engine.getEngine().finishGame();
-                            this.engine.finishGame(Engine.FinishReason.WON);
-                            return;
+                            return true;
                         }
                     }
                 }
             }
         }
+        return false;
     }
 
     /**
@@ -205,8 +204,7 @@ public class World {
      *                    has won!
      * @return The amount on a row.
      */
-    private int checkWin(Vector3 coordinates, Player player, Vector3 direction, int count) {
-        counter++;
+    private int hasWon(Vector3 coordinates, Player player, Vector3 direction, int count) {
         Vector3 newCoordinates = coordinates.add(direction);
         if (isOwner(newCoordinates, player)) {
             //again we're the owner!
@@ -218,10 +216,23 @@ public class World {
             }
 
             //check the next coordinates!
-            return checkWin(newCoordinates, player, direction, count + 1);
+            return hasWon(newCoordinates, player, direction, count + 1);
         }
         return count;
     }
+
+    public World deepCopy() {
+        World result = new World(this.getSize(), this.engine);
+        for (int x = 0; x < this.getSize().getX(); x++) {
+            for (int y = 0; y < this.getSize().getY(); y++) {
+                for (int z = 0; z < this.getSize().getZ(); z++) {
+                    result.addGameItem(new Vector2(x, y), this.getOwner(new Vector3(x, y, z)));
+                }
+            }
+        }
+        return result;
+    }
+
 
     @Deprecated
     @Override
@@ -240,17 +251,13 @@ public class World {
 
                 result += "X: ";
                 Player owner = worldPosition[x][0][z].getOwner();
-                if (owner != null) {
-                    //result += owner.getID();
-                } else {
+                if (owner == null) {
                     result += "x";
                 }
 
                 for (int y = 1; y < size.getY(); y++) {
                     owner = worldPosition[x][y][z].getOwner();
-                    if (owner != null) {
-                        //result += " " + owner.getID();
-                    } else {
+                    if (owner == null) {
                         result += " x";
                     }
                 }
