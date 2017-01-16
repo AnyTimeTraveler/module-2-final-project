@@ -135,14 +135,10 @@ public class World {
                 wp.setGameItem(owner);
                 remainingSpots--;
 
-                //Check whether we have 4 on a row. SHOULD BE DONE BY THE ENGINE.
-                //hasWon(wp.getCoordinates(), owner);
-
                 //There's no space left!
-                if (remainingSpots <= 0) {
-                    this.engine.finishGame(Engine.FinishReason.FULL);
-                    //Engine.getEngine().finishGame();
-                }
+//                if (remainingSpots <= 0) {
+//                    this.engine.finishGame(Engine.FinishReason.FULL);
+//                }
                 return true;
             }
         } else {
@@ -233,6 +229,14 @@ public class World {
         return result;
     }
 
+    /**
+     * Check if the board is full.
+     *
+     * @return True if it's full, false if not.
+     */
+    public boolean isFull() {
+        return remainingSpots > 0;
+    }
 
     @Deprecated
     @Override

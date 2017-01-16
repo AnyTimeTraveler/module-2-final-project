@@ -35,10 +35,14 @@ public class Engine {
      */
     public boolean addGameItem(Vector2 coordinates, Player owner) {
         boolean result = this.getWorld().addGameItem(coordinates, owner);
-        if (result && this.getWorld().hasWon(coordinates, owner)) {
-            //Someone won!
-            finishGame(FinishReason.WON);
-            System.out.println(owner.getName() + " won!");
+        if (result) {
+            if (this.getWorld().hasWon(coordinates, owner)) {
+                //Someone won!
+                finishGame(FinishReason.WON);
+                System.out.println(owner.getName() + " won!");
+            } else if (getWorld().isFull()) {
+                finishGame(FinishReason.FULL);
+            }
         }
         return result;
     }
