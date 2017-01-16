@@ -14,7 +14,8 @@ public class ComputerPlayer extends Player {
 	public ComputerPlayer(String name, AI ai) {
 		super(name);
 		this.ai = ai;
-	}
+        this.ai.initialize(this);
+    }
 
 	@Override
 	public void doTurn(World world) {
