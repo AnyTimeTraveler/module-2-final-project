@@ -1,5 +1,6 @@
 package ss.project.client.ui.gui;
 
+import ss.project.client.Config;
 import ss.project.client.ui.UI;
 
 import javax.swing.*;
@@ -20,8 +21,6 @@ public class MainFrame extends JFrame implements UI {
     private Options options;
     private Game game;
 
-    private JPanel[] panels;
-
     public MainFrame() {
         // Run the parent constructor
         super();
@@ -35,9 +34,6 @@ public class MainFrame extends JFrame implements UI {
         singlePlayerSettings = new SinglePlayerSettings(this);
         options = new Options(this);
         game = new Game(this);
-
-        // Group them into an array, so they can be quickly accessed by batch operations
-        panels = new JPanel[]{mainMenu, multiPlayerLobby, multiPlayerRoom, multiPlayerRoomCreation, serverBrowser, singlePlayerSettings, options, game};
     }
 
     public static void main(String[] args) {
@@ -64,65 +60,47 @@ public class MainFrame extends JFrame implements UI {
             this.setSize(new Dimension(300, 400));
         }
         this.requestFocus();
-        this.setTitle("Connect Four 3D");
+        this.setTitle(Config.getInstance().WindowTitle);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        this.setContentPane(new MainMenu(this));
         this.setVisible(true);
         switchToMainMenu();
     }
 
     public void switchToMainMenu() {
-        getContentPane().removeAll();
-        getContentPane().add(mainMenu);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        switchTo(mainMenu);
     }
 
     public void switchToMultiPlayerLobby() {
-        getContentPane().removeAll();
-        getContentPane().add(multiPlayerLobby);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        switchTo(multiPlayerLobby);
     }
 
     public void switchToMultiPlayerRoom() {
-        getContentPane().removeAll();
-        getContentPane().add(multiPlayerRoom);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        switchTo(multiPlayerRoom);
     }
 
     public void switchToMultiPlayerRoomCreation() {
-        getContentPane().removeAll();
-        getContentPane().add(multiPlayerRoomCreation);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        switchTo(multiPlayerRoomCreation);
     }
 
     public void switchToServerBrowser() {
-        getContentPane().removeAll();
-        getContentPane().add(serverBrowser);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        switchTo(serverBrowser);
     }
 
     public void switchToSinglePlayerSettings() {
-        getContentPane().removeAll();
-        getContentPane().add(singlePlayerSettings);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        switchTo(singlePlayerSettings);
     }
 
     public void switchToOptions() {
-        getContentPane().removeAll();
-        getContentPane().add(options);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        switchTo(options);
     }
 
     public void switchToGame() {
+        switchTo(game);
+    }
+
+    private void switchTo(JPanel panel) {
         getContentPane().removeAll();
-        getContentPane().add(game);
+        getContentPane().add(panel);
         getContentPane().revalidate();
         getContentPane().repaint();
     }
