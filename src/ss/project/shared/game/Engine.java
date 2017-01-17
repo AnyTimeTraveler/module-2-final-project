@@ -91,6 +91,9 @@ public class Engine {
         }
     }
 
+    /**
+     * @param reason
+     */
     public void finishGame(FinishReason reason) {
         switch (reason) {
             case CRASHED: {

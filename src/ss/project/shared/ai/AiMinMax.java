@@ -10,6 +10,7 @@ import ss.project.shared.game.World;
  */
 public class AiMinMax implements AI {
     private Player player;
+    private World worldCopy;
 
     @Override
     public void initialize(Player player) {
@@ -27,7 +28,7 @@ public class AiMinMax implements AI {
     }
 
     private Vector2 getBestPosition(World world) {
-        World copy = world.deepCopy();
+        worldCopy = world.deepCopy();
         return Vector2.ZERO;
     }
 

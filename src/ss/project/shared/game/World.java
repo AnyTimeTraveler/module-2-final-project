@@ -135,10 +135,6 @@ public class World {
                 wp.setGameItem(owner);
                 remainingSpots--;
 
-                //There's no space left!
-//                if (remainingSpots <= 0) {
-//                    this.engine.finishGame(Engine.FinishReason.FULL);
-//                }
                 return true;
             }
         } else {
@@ -217,6 +213,12 @@ public class World {
         return count;
     }
 
+    /**
+     * Create a deepcopy of this world.
+     * Creates new GameItems and adds them to the world.
+     *
+     * @return A deepcopy of this world.
+     */
     public World deepCopy() {
         World result = new World(this.getSize(), this.engine);
         for (int x = 0; x < this.getSize().getX(); x++) {
