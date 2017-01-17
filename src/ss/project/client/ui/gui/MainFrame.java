@@ -17,6 +17,11 @@ public class MainFrame extends JFrame implements UI {
     public MainFrame() {
         // Run the parent constructor
         super();
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -31,7 +36,7 @@ public class MainFrame extends JFrame implements UI {
     /**
      * Fill the frame with content.
      */
-    public void init() {
+    private void init() {
         this.setName("Main Frame");
         if (FULLSCREEN) {
             this.setLocation(0, 0);
@@ -49,7 +54,7 @@ public class MainFrame extends JFrame implements UI {
         this.setVisible(true);
     }
 
-    public void switchTo(Panel p) {
+    void switchTo(Panel p) {
         switchTo(p.getPanel());
     }
 
@@ -58,6 +63,11 @@ public class MainFrame extends JFrame implements UI {
         getContentPane().add(panel);
         getContentPane().revalidate();
         getContentPane().repaint();
+    }
+
+    @Override
+    public void shutdown() {
+        System.exit(0);
     }
 
     public enum Panel {
@@ -75,7 +85,7 @@ public class MainFrame extends JFrame implements UI {
             this.panel = panel;
         }
 
-        public JPanel getPanel() {
+        private JPanel getPanel() {
             return panel;
         }
     }

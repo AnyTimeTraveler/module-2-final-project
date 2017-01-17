@@ -8,3 +8,5 @@
 diagrams
 res
 out/
+client-config.json
+server-config.json

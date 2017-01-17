@@ -16,7 +16,7 @@ public class MainMenu extends JPanel {
         addComponent(new JButton("Single Player"), e -> mainFrame.switchTo(MainFrame.Panel.SINGLE_PLAYER_SETTINGS));
         addComponent(new JButton("Multi Player"), e -> mainFrame.switchTo(MainFrame.Panel.SERVER_BRWOSER));
         addComponent(new JButton("Options"), e -> mainFrame.switchTo(MainFrame.Panel.OPTIONS));
-        addComponent(new JButton("Exit"), e -> System.exit(0));
+        addComponent(new JButton("Exit"), e -> mainFrame.shutdown());
     }
 
     private void addComponent(JComponent comp) {
