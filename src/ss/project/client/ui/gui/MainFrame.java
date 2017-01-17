@@ -1,6 +1,6 @@
 package ss.project.client.ui.gui;
 
-import ss.project.client.Config;
+import ss.project.client.ClientConfig;
 import ss.project.client.ui.UI;
 
 import javax.swing.*;
@@ -12,34 +12,17 @@ import java.awt.*;
 public class MainFrame extends JFrame implements UI {
 
     private static final boolean FULLSCREEN = false;
-    private MainMenu mainMenu;
-    private MultiPlayerLobby multiPlayerLobby;
-    private MultiPlayerRoom multiPlayerRoom;
-    private MultiPlayerRoomCreation multiPlayerRoomCreation;
-    private ServerBrowser serverBrowser;
-    private SinglePlayerSettings singlePlayerSettings;
-    private Options options;
-    private Game game;
+    private static MainFrame frame;
 
     public MainFrame() {
         // Run the parent constructor
         super();
-
-        // Create and load all the panels that are needed later
-        mainMenu = new MainMenu(this);
-        multiPlayerLobby = new MultiPlayerLobby(this);
-        multiPlayerRoom = new MultiPlayerRoom(this);
-        multiPlayerRoomCreation = new MultiPlayerRoomCreation(this);
-        serverBrowser = new ServerBrowser(this);
-        singlePlayerSettings = new SinglePlayerSettings(this);
-        options = new Options(this);
-        game = new Game(this);
     }
 
     public static void main(String[] args) {
         // Create a standalone thread for the GUI
         EventQueue.invokeLater(() -> {
-            MainFrame frame = new MainFrame();
+            frame = new MainFrame();
             Thread.currentThread().setName("GUI");
             frame.init();
         });
@@ -60,42 +43,14 @@ public class MainFrame extends JFrame implements UI {
             this.setSize(new Dimension(300, 400));
         }
         this.requestFocus();
-        this.setTitle(Config.getInstance().WindowTitle);
+        this.setTitle(ClientConfig.getInstance().WindowTitle);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.switchTo(Panel.MAIN_MENU);
         this.setVisible(true);
-        switchToMainMenu();
     }
 
-    public void switchToMainMenu() {
-        switchTo(mainMenu);
-    }
-
-    public void switchToMultiPlayerLobby() {
-        switchTo(multiPlayerLobby);
-    }
-
-    public void switchToMultiPlayerRoom() {
-        switchTo(multiPlayerRoom);
-    }
-
-    public void switchToMultiPlayerRoomCreation() {
-        switchTo(multiPlayerRoomCreation);
-    }
-
-    public void switchToServerBrowser() {
-        switchTo(serverBrowser);
-    }
-
-    public void switchToSinglePlayerSettings() {
-        switchTo(singlePlayerSettings);
-    }
-
-    public void switchToOptions() {
-        switchTo(options);
-    }
-
-    public void switchToGame() {
-        switchTo(game);
+    public void switchTo(Panel p) {
+        switchTo(p.getPanel());
     }
 
     private void switchTo(JPanel panel) {
@@ -104,4 +59,25 @@ public class MainFrame extends JFrame implements UI {
         getContentPane().revalidate();
         getContentPane().repaint();
     }
+
+    public enum Panel {
+        MAIN_MENU(new MainMenu(frame)),
+        SINGLE_PLAYER_SETTINGS(new SinglePlayerSettings(frame)),
+        SERVER_BRWOSER(new ServerBrowser(frame)),
+        OPTIONS(new Options(frame)),
+        MULTI_PLAYER_LOBBY(new MultiPlayerLobby(frame)),
+        MULTI_PLAYER_ROOM(new MultiPlayerRoom(frame)),
+        MULTI_PLAYER_ROOM_CREATION(new MultiPlayerRoomCreation(frame));
+
+        private final JPanel panel;
+
+        Panel(JPanel panel) {
+            this.panel = panel;
+        }
+
+        public JPanel getPanel() {
+            return panel;
+        }
+    }
+
 }

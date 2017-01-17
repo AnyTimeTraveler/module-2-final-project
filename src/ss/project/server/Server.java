@@ -29,7 +29,7 @@ public class Server {
      */
     public static void main(String[] args) {
 
-        Server server = new Server(Config.getInstance().Host, Config.getInstance().Port);
+        Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
         server.run();
     }
 

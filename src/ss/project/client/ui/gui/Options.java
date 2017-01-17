@@ -16,7 +16,7 @@ public class Options extends JPanel {
 //        addComponent(new JButton("Single Player"), e -> mainFrame.switchToSinglePlayerSettings());
 //        addComponent(new JButton("Multi Player"), e -> mainFrame.switchToServerBrowser());
 //        addComponent(new JButton("Options"), e -> mainFrame.switchToOptions());
-        addComponent(new JButton("Back"), e -> mainFrame.switchToMainMenu());
+        addComponent(new JButton("Back"), e -> mainFrame.switchTo(MainFrame.Panel.MAIN_MENU));
     }
 
     private void addComponent(JComponent comp) {

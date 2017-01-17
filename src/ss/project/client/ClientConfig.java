@@ -1,4 +1,4 @@
-package ss.project.server;
+package ss.project.client;
 
 
 /**
@@ -10,22 +10,20 @@ import com.google.gson.GsonBuilder;
 
 import java.io.*;
 
-public class Config {
+public class ClientConfig {
 
     // Configfile name
-    private static final String CONFIGFILE = "server-config.json";
-    private static Config instance;
+    private static final String CONFIGFILE = "client-config.json";
+    private static ClientConfig instance;
 
     //Variables
-    public String Host;
-    public int Port;
+    public String WindowTitle;
 
-    private Config() {
-        Host = "127.0.0.1";
-        Port = 1234;
+    private ClientConfig() {
+        WindowTitle = "Connect Four 3D";
     }
 
-    public static Config getInstance() {
+    public static ClientConfig getInstance() {
         if (instance == null) {
             load();
         }
@@ -37,7 +35,7 @@ public class Config {
         // no config file found
         if (instance == null) {
             instance = fromDefaults();
-            instance.toFile(CONFIGFILE);
+            instance.toFile();
         }
     }
 
@@ -45,16 +43,15 @@ public class Config {
         load(new File(CONFIGFILE));
     }
 
-    private static Config fromDefaults() {
-        Config config = new Config();
-        return config;
+    private static ClientConfig fromDefaults() {
+        return new ClientConfig();
     }
 
-    private static Config fromFile(File configFile) {
+    private static ClientConfig fromFile(File configFile) {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
-            return gson.fromJson(reader, Config.class);
+            return gson.fromJson(reader, ClientConfig.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
