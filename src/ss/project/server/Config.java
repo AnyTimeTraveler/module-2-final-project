@@ -1,4 +1,4 @@
-package ss.project.shared;
+package ss.project.server;
 
 
 /**
@@ -13,14 +13,16 @@ import java.io.*;
 public class Config {
 
     // Configfile name
-    private static final String CONFIGFILE = "config.json";
+    private static final String CONFIGFILE = "server-config.json";
     private static Config instance;
 
     //Variables
-    public String WindowTitle;
+    public String Host;
+    public int Port;
 
     private Config() {
-        WindowTitle = "Our Game";
+        Host = "127.0.0.1";
+        Port = 1234;
     }
 
     public static Config getInstance() {

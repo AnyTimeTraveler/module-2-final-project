@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler extends Thread {
+    private Socket socket;
     private Server server;
     private BufferedReader in;
     private BufferedWriter out;
@@ -16,11 +17,11 @@ public class ClientHandler extends Thread {
      */
     //@ requires server != null && socket != null;
     public ClientHandler(Server server, Socket socket) throws IOException {
-        closed = false;
+        this.socket = socket;
         this.server = server;
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-//        server.print("Connected Streams to client!");
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        closed = false;
         this.setName("ClientHandler: null");
     }
 
@@ -100,6 +101,11 @@ public class ClientHandler extends Thread {
      * is no longer participating in the chat.
      */
     private void shutdown() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         server.removeHandler(this);
         server.broadcast("[" + clientName + " has left]");
         closed = true;

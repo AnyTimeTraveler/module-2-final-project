@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-    private static final String USAGE
-            = "usage: " + Server.class.getName() + " <ip> <port>";
     private String ip;
     private int port;
     private List<ClientHandler> threads;
@@ -30,12 +28,8 @@ public class Server {
      * Start een Server-applicatie op.
      */
     public static void main(String[] args) {
-        if (args.length != 2) {
-            System.out.println(USAGE);
-            System.exit(0);
-        }
 
-        Server server = new Server(args[0], Integer.parseInt(args[1]));
+        Server server = new Server(Config.getInstance().Host, Config.getInstance().Port);
         server.run();
     }
 
@@ -48,8 +42,8 @@ public class Server {
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(port, 255, InetAddress.getByName(ip));
-            print("Now listening on: " + port);
-            while (true) {
+            print("Now listening on: " + ip + ":" + port);
+            while (!closed) {
 //                print("Waiting for incoming connections...");
                 Socket client = serverSocket.accept();
 //                print("Connection accepted!");
@@ -106,5 +100,10 @@ public class Server {
             sb.append(clientHandler.getName());
         }
         return sb.toString();
+    }
+
+    public void shutdown() {
+        closed = true;
+
     }
 }
