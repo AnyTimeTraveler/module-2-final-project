@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ss.project.shared.game.Vector3;
@@ -27,6 +28,29 @@ public class Vector3Test {
         assertEquals("x should be equal to 1.", newVector.getX(), 1);
         assertEquals("y should be equal to 2.", newVector.getY(), 2);
         assertEquals("z should be equal to 3.", newVector.getZ(), 3);
+    }
+
+    @Test
+    public void add() {
+        Vector3 vector = new Vector3(1, 1, 1);
+        Vector3 anotherVector = new Vector3(2, 2, 2);
+        Assert.assertEquals(new Vector3(3, 3, 3), vector.add(anotherVector));
+    }
+
+    @Test
+    public void add2() {
+        Vector3 vector = new Vector3(1, 1, 1);
+        Assert.assertEquals(new Vector3(3, 3, 3), vector.add(2, 2, 2));
+    }
+
+    @Test
+    public void checkToString() {
+        Vector3 vector = new Vector3(1, 2, 3);
+        String result = vector.toString();
+        Assert.assertTrue(result.contains(1 + ""));
+        Assert.assertTrue(result.contains(2 + ""));
+        Assert.assertTrue(result.contains(3 + ""));
+        Assert.assertFalse(result.contains(4 + ""));
     }
 
     @Test

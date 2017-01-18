@@ -9,11 +9,18 @@ import ss.project.shared.game.*;
 public class WorldTest {
     World world;
     Player dummy;
+    Player dummy2;
 
     @Before
     public void setUp() throws Exception {
         world = new World(new Vector3(4, 4, 4));
         dummy = new Player("dummy") {
+            @Override
+            public void doTurn(Engine engine) {
+
+            }
+        };
+        dummy2 = new Player("dummy opponent") {
             @Override
             public void doTurn(Engine engine) {
 
@@ -82,32 +89,95 @@ public class WorldTest {
 
     @Test
     public void addGameItem() throws Exception {
-
+        for (int x = 0; x < world.getSize().getX(); x++) {
+            for (int y = 0; y < world.getSize().getY(); y++) {
+                for (int z = 0; z < world.getSize().getZ(); z++) {
+                    Assert.assertTrue(world.addGameItem(new Vector2(x, y), dummy));
+                    Assert.assertNotNull(world.getWorldPosition(new Vector3(x, y, z)).getGameItem());
+                    Assert.assertTrue(world.getWorldPosition(new Vector3(x, y, z)).hasGameItem());
+                }
+            }
+        }
+        Assert.assertFalse(world.addGameItem(new Vector2(0, 0), dummy));
     }
 
     @Test
     public void removeGameItem() throws Exception {
+        for (int x = 0; x < world.getSize().getX(); x++) {
+            for (int y = 0; y < world.getSize().getY(); y++) {
+                for (int z = 0; z < world.getSize().getZ(); z++) {
+                    Assert.assertTrue(world.addGameItem(new Vector2(x, y), dummy));
+                    Assert.assertTrue(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                    world.removeGameItem(new Vector3(x, y, 0));
+                    Assert.assertFalse(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                }
+            }
+        }
+        world.removeGameItem(new Vector3(-1, -1, -1));
+        world.removeGameItem(new Vector3(4, 4, 4));
 
+        Assert.assertFalse(world.isFull());
     }
 
     @Test
     public void removeGameItem1() throws Exception {
+        for (int x = 0; x < world.getSize().getX(); x++) {
+            for (int y = 0; y < world.getSize().getY(); y++) {
+                for (int z = 0; z < world.getSize().getZ(); z++) {
+                    Assert.assertTrue(world.addGameItem(new Vector2(x, y), dummy));
+                    Assert.assertTrue(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                    world.removeGameItem(new Vector2(x, y));
+                    Assert.assertFalse(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                }
+            }
+        }
+        world.removeGameItem(new Vector2(-1, -1));
+        world.removeGameItem(new Vector2(4, 4));
 
+        Assert.assertFalse(world.isFull());
+
+        for (int z = 0; z < world.getSize().getZ(); z++) {
+            Assert.assertTrue(world.addGameItem(new Vector2(0, 0), dummy));
+            Assert.assertTrue(world.getWorldPosition(new Vector3(0, 0, z)).hasGameItem());
+        }
+        world.removeGameItem(new Vector2(0, 0));
+        Assert.assertFalse(world.getWorldPosition(new Vector3(0, 0, world.getSize().getZ() - 1)).hasGameItem());
     }
 
     @Test
     public void hasWon() throws Exception {
-
-    }
-
-    @Test
-    public void hasWon1() throws Exception {
-
+        world.addGameItem(new Vector2(0, 0), dummy);
+        Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
+        world.addGameItem(new Vector2(1, 1), dummy2);
+        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
+        world.addGameItem(new Vector2(1, 0), dummy);
+        Assert.assertFalse(world.hasWon(new Vector2(1, 0), dummy));
+        world.addGameItem(new Vector2(1, 1), dummy2);
+        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
+        world.addGameItem(new Vector2(2, 0), dummy);
+        Assert.assertFalse(world.hasWon(new Vector2(2, 0), dummy));
+        world.addGameItem(new Vector2(1, 1), dummy2);
+        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
+        world.addGameItem(new Vector2(3, 0), dummy);
+        Assert.assertTrue(world.hasWon(new Vector2(3, 0), dummy));
+        world.addGameItem(new Vector2(1, 3), dummy2);
+        Assert.assertFalse(world.hasWon(new Vector2(1, 2), dummy2));
     }
 
     @Test
     public void writeTo() throws Exception {
+        World copy = new World(world.getSize());
+        world.addGameItem(new Vector2(1, 1), dummy);
+        world.addGameItem(new Vector2(3, 3), dummy2);
 
+        world.writeTo(copy);
+        Assert.assertTrue(world.isOwner(new Vector3(1, 1, 0), dummy));
+        Assert.assertTrue(world.isOwner(new Vector3(3, 3, 0), dummy2));
+
+        world.removeGameItem(new Vector2(1, 1));
+
+        world.writeTo(copy);
+        Assert.assertFalse(world.getWorldPosition(new Vector3(1, 1, 0)).hasGameItem());
     }
 
     @Test
@@ -122,6 +192,10 @@ public class WorldTest {
 
     @Test
     public void deepCopy() throws Exception {
-
+        world.addGameItem(new Vector2(1, 1), dummy);
+        world.addGameItem(new Vector2(3, 3), dummy2);
+        World newWorld = world.deepCopy();
+        Assert.assertTrue(world.isOwner(new Vector3(1, 1, 0), dummy));
+        Assert.assertTrue(world.isOwner(new Vector3(3, 3, 0), dummy2));
     }
 }

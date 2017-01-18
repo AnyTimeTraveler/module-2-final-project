@@ -49,9 +49,6 @@ public class WorldPosition {
 
     public boolean isOwner(Player player) {
         if (hasGameItem()) {
-            if (getGameItem().getOwner() == null) {
-                System.out.println(this.coordinates);
-            }
             return getGameItem().getOwner().equals(player);
         }
         return false;

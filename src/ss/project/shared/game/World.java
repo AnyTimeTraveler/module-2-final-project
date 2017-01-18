@@ -126,15 +126,11 @@ public class World {
     public boolean addGameItem(Vector2 coordinates, Player owner) {
         WorldPosition wp = getWorldPosition(coordinates);
         if (wp != null) {
-            if (wp.hasGameItem()) {
-                return false;
-            } else {
-                //Set the item to this owner.
-                wp.setGameItem(owner);
-                remainingSpots--;
-                System.out.println(remainingSpots);
-                return true;
-            }
+            //Set the item to this owner.
+            wp.setGameItem(owner);
+            remainingSpots--;
+            System.out.println(remainingSpots);
+            return true;
         } else {
             return false;
         }
@@ -164,14 +160,11 @@ public class World {
         WorldPosition wp = getWorldPosition(coordinates);
         if (wp != null) {
             Vector3 highest = wp.getCoordinates();
-            if (wp.hasGameItem()) {
-                System.out.println("strange");
-            }
             if (highest.getZ() > 0) {
                 removeGameItem(highest.subtract(Vector3.UP));
             }
         } else {
-            Vector3 coords = new Vector3(coordinates.getX(), coordinates.getY(), this.getSize().getZ());
+            Vector3 coords = new Vector3(coordinates.getX(), coordinates.getY(), this.getSize().getZ() - 1);
             if (getOwner(coords) != null) {
                 removeGameItem(coords);
             }
@@ -188,7 +181,7 @@ public class World {
     public boolean hasWon(Vector2 newCoordinates, Player player) {
         WorldPosition wp = getWorldPosition(newCoordinates);
         if (wp != null) {
-            Vector3 newCoords = wp.getCoordinates().subtract(0, 1, 0);
+            Vector3 newCoords = wp.getCoordinates().subtract(0, 0, 1);
             if (insideWorld(newCoords)) {
                 return hasWon(newCoords, player);
             }
@@ -237,12 +230,6 @@ public class World {
         if (isOwner(newCoordinates, player)) {
             //again we're the owner!
 
-            //we have four on a row!
-            if (count >= 4) {
-                System.out.println("four on a row");
-                return count;
-            }
-
             //check the next coordinates!
             return hasWon(newCoordinates, player, direction, count + 1);
         }
@@ -276,15 +263,9 @@ public class World {
      * @return A deepcopy of this world.
      */
     public World deepCopy() {
-        World result = new World(this.getSize());
-        for (int x = 0; x < this.getSize().getX(); x++) {
-            for (int y = 0; y < this.getSize().getY(); y++) {
-                for (int z = 0; z < this.getSize().getZ(); z++) {
-                    result.addGameItem(new Vector2(x, y), this.getOwner(new Vector3(x, y, z)));
-                }
-            }
-        }
-        return result;
+        World newWorld = new World(this.getSize());
+        writeTo(newWorld);
+        return newWorld;
     }
 
     /**

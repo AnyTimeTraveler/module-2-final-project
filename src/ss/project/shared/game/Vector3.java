@@ -95,7 +95,7 @@ public class Vector3 {
      * @return
      */
     public Vector3 subtract(Vector3 vector3) {
-        return new Vector3(getX() - vector3.getX(), getY() - vector3.getZ(), getZ() - vector3.getZ());
+        return new Vector3(getX() - vector3.getX(), getY() - vector3.getY(), getZ() - vector3.getZ());
     }
 
     /**
@@ -113,7 +113,6 @@ public class Vector3 {
     /**
      * Add a vector2 to a vector3 (vector3 = vector2 = vector2)
      *
-     * @param vector2
      * @return
      */
     public Vector3 add(Vector3 vector3) {

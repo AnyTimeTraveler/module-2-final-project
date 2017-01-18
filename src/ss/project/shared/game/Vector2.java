@@ -64,6 +64,26 @@ public class Vector2 {
         return true;
     }
 
+    /**
+     * Add x,y,z to this vector3.
+     *
+     * @param x the x axis.
+     * @param y the y axis.
+     * @return
+     */
+    public Vector2 add(int x, int y) {
+        return new Vector2(getX() + x, getY() + y);
+    }
+
+    /**
+     * Add a vector2 to a vector3 (vector3 = vector2 = vector2)
+     *
+     * @return
+     */
+    public Vector2 add(Vector2 vector2) {
+        return new Vector2(getX() + vector2.getX(), getY() + vector2.getY());
+    }
+
     @Override
     public String toString() {
         return "Vector2 [x=" + x + ", y=" + y + "]";
