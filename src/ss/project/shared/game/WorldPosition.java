@@ -36,6 +36,10 @@ public class WorldPosition {
         this.gameItem = new GameItem(owner);
     }
 
+    public void removeGameItem() {
+        this.gameItem = null;
+    }
+
     /**
      * @return True if this position has a gameitem, false if not.
      */

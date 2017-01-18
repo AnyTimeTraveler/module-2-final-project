@@ -14,6 +14,11 @@ public class Vector3 {
      */
     public static final Vector3 ZERO = new Vector3(0, 0, 0);
 
+    /**
+     * Easy way of writing Vector3(0,0,1).
+     */
+    public static final Vector3 UP = new Vector3(0, 0, 1);
+
     private final int x;
     private final int y;
     private final int z;
@@ -30,7 +35,7 @@ public class Vector3 {
         this.y = y;
         this.z = z;
     }
-    
+
     public Vector3(Vector2 vector2) {
         this.x = vector2.getX();
         this.y = vector2.getY();
@@ -82,34 +87,37 @@ public class Vector3 {
         }
         return true;
     }
-    
+
     /**
      * Subtract the argument from this vector3.
+     *
      * @param vector3
      * @return
      */
     public Vector3 subtract(Vector3 vector3) {
-    	return new Vector3(getX() - vector3.getX(), getY() - vector3.getZ(), getZ() - vector3.getZ());
+        return new Vector3(getX() - vector3.getX(), getY() - vector3.getZ(), getZ() - vector3.getZ());
     }
-    
+
     /**
      * Substract x,y,z from this vector3.
+     *
      * @param x the x axis.
      * @param y the y axis.
      * @param z the z axis.
      * @return
      */
     public Vector3 subtract(int x, int y, int z) {
-    	return new Vector3(getX() - x, getY() - y, getZ() - z);
+        return new Vector3(getX() - x, getY() - y, getZ() - z);
     }
-    
+
     /**
      * Add a vector2 to a vector3 (vector3 = vector2 = vector2)
+     *
      * @param vector2
      * @return
      */
     public Vector3 add(Vector3 vector3) {
-    	return new Vector3(getX() + vector3.getX(), getY() + vector3.getY(), getZ() + vector3.getZ());
+        return new Vector3(getX() + vector3.getX(), getY() + vector3.getY(), getZ() + vector3.getZ());
     }
 
     /**
@@ -120,20 +128,21 @@ public class Vector3 {
     public Vector3 inverse() {
         return new Vector3(-getX(), -getY(), -getZ());
     }
-    
+
     /**
      * Add x,y,z to this vector3.
+     *
      * @param x the x axis.
      * @param y the y axis.
      * @param z the z axis.
      * @return
      */
     public Vector3 add(int x, int y, int z) {
-    	return new Vector3(getX() + x, getY() + y, getZ() + z);
+        return new Vector3(getX() + x, getY() + y, getZ() + z);
     }
 
-	@Override
-	public String toString() {
-		return "Vector3 [x=" + x + ", y=" + y + ", z=" + z + "]";
-	}
+    @Override
+    public String toString() {
+        return "Vector3 [x=" + x + ", y=" + y + ", z=" + z + "]";
+    }
 }

@@ -5,16 +5,14 @@ public class World {
     private int remainingSpots;
     private Vector3 size;
     private WorldPosition[][][] worldPosition;
-    private Engine engine;
 
     /**
      * Create a new world object, set the size and initialize it.
      *
      * @param size A vector3 containing width,height and length.
      */
-    public World(Vector3 size, Engine engine) {
+    public World(Vector3 size) {
         this.size = size;
-        this.engine = engine;
         initializeWorld(this.size);
     }
 
@@ -134,11 +132,49 @@ public class World {
                 //Set the item to this owner.
                 wp.setGameItem(owner);
                 remainingSpots--;
-
+                System.out.println(remainingSpots);
                 return true;
             }
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Remove a gameItem from this board.
+     *
+     * @param coordinates Coordinates of the gameitem.
+     */
+    public void removeGameItem(Vector3 coordinates) {
+        WorldPosition wp = getWorldPosition(coordinates);
+        if (wp != null && wp.hasGameItem()) {
+            wp.removeGameItem();
+            remainingSpots++;
+            System.out.println(remainingSpots);
+        }
+    }
+
+    /**
+     * Remove the highest gameitem from this board.
+     *
+     * @param coordinates Coordinates of which it should check the highest gameitem.
+     */
+    public void removeGameItem(Vector2 coordinates) {
+        System.out.println("remove gameitem");
+        WorldPosition wp = getWorldPosition(coordinates);
+        if (wp != null) {
+            Vector3 highest = wp.getCoordinates();
+            if (wp.hasGameItem()) {
+                System.out.println("strange");
+            }
+            if (highest.getZ() > 0) {
+                removeGameItem(highest.subtract(Vector3.UP));
+            }
+        } else {
+            Vector3 coords = new Vector3(coordinates.getX(), coordinates.getY(), this.getSize().getZ());
+            if (getOwner(coords) != null) {
+                removeGameItem(coords);
+            }
         }
     }
 
@@ -214,13 +250,33 @@ public class World {
     }
 
     /**
+     * returns the highest coordinates of a stack of gameitems that is still used.
+     *
+     * @param coordinates
+     * @return
+     */
+    public Vector3 getHighestPosition(Vector2 coordinates) {
+        //get the highest possible worldposition.
+        int highestZ = 0;
+        for (int z = 0; z < size.getZ(); z++) {
+            WorldPosition wp = worldPosition[coordinates.getX()][coordinates.getY()][z];
+            if (wp != null && wp.hasGameItem()) {
+                highestZ = z;
+            } else {
+                break;
+            }
+        }
+        return new Vector3(coordinates.getX(), coordinates.getY(), highestZ);
+    }
+
+    /**
      * Create a deepcopy of this world.
      * Creates new GameItems and adds them to the world.
      *
      * @return A deepcopy of this world.
      */
     public World deepCopy() {
-        World result = new World(this.getSize(), this.engine);
+        World result = new World(this.getSize());
         for (int x = 0; x < this.getSize().getX(); x++) {
             for (int y = 0; y < this.getSize().getY(); y++) {
                 for (int z = 0; z < this.getSize().getZ(); z++) {
@@ -232,12 +288,36 @@ public class World {
     }
 
     /**
+     * Write all changes of this world to a destination world.
+     *
+     * @param destination The world that should be edited and be synchronized with this world.
+     */
+    public void writeTo(World destination) {
+        for (int x = 0; x < this.getSize().getX(); x++) {
+            for (int y = 0; y < this.getSize().getY(); y++) {
+                for (int z = 0; z < this.getSize().getZ(); z++) {
+                    Vector3 coordinates = new Vector3(x, y, z);
+                    Player owner = this.getOwner(coordinates);
+                    Player owner2 = destination.getOwner(coordinates);
+                    if (owner == null && owner2 != null) {
+                        destination.removeGameItem(coordinates);
+                        continue;
+                    }
+                    if (owner != null && !owner.equals(owner2)) {
+                        destination.addGameItem(new Vector2(x, y), owner);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Check if the board is full.
      *
      * @return True if it's full, false if not.
      */
     public boolean isFull() {
-        return remainingSpots > 0;
+        return remainingSpots <= 0;
     }
 
     @Deprecated
