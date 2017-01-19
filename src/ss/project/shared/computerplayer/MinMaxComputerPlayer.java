@@ -37,10 +37,17 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
 
         engine.getWorld().writeTo(worldCopy);
         Vector2 bestPos = getBestPosition(worldCopy);
+        System.out.println(bestPos.toString());
         if (!engine.addGameItem(bestPos, this)) {
-            System.out.println(bestPos.toString());
-            if (!engine.addGameItem(bestPos, this)) {
-                System.out.println("Tried to place somewhere that was not possible ABORT ERROR ABORT!  " + bestPos);
+            System.out.println("Tried to place somewhere that was not possible ABORT ERROR ABORT!  " + bestPos);
+            System.out.println("Try to fix it by finding the first possible place...");
+            for (int x = 0; x < worldCopy.getSize().getX(); x++) {
+                for (int y = 0; y < worldCopy.getSize().getY(); y++) {
+                    if (engine.addGameItem(new Vector2(x, y), this)) {
+                        System.out.println("Fixed it by placing it at: " + new Vector2(x, y).toString());
+                        return;
+                    }
+                }
             }
         }
     }
@@ -57,9 +64,6 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
                 }
             }
         }
-        //if (result.equals(Vector2.ZERO)) {
-        //    System.out.println("error?");
-        //}
         return result;
     }
 
@@ -92,23 +96,10 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             return -10;
         }
 
-        //int bestValue = Integer.MIN_VALUE;
-        //if (!maximize) {
-        //    bestValue = Integer.MAX_VALUE;
-        //}
         int sum = 0;
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 int value = getBestPosition(world, new Vector2(x, y), depth - 1, !maximize);
-//                if (maximize) {
-//                    if (value > bestValue) {
-//                        bestValue = value;
-//                    }
-//                } else {
-//                    if (value < bestValue) {
-//                        bestValue = value;
-//                    }
-//                }
                 sum += value;
             }
         }

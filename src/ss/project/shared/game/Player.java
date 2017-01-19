@@ -1,12 +1,8 @@
 package ss.project.shared.game;
 
-import lombok.Getter;
-import lombok.Setter;
 
 public abstract class Player {
 
-    @Getter
-    @Setter
     private String name;
 
     public Player() {
@@ -20,6 +16,14 @@ public abstract class Player {
      */
     public Player(String name) {
         setName(name);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
