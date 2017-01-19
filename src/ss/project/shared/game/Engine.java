@@ -10,7 +10,7 @@ public class Engine {
     private boolean gameRunning;
 
     /**
-     * Create a new world and create players.
+     * Create a new world and assign players.
      *
      * @param worldSize
      */
