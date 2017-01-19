@@ -1,9 +1,7 @@
 package ss.project.shared.computerplayer;
 
-import ss.project.shared.game.Engine;
-import ss.project.shared.game.Player;
-import ss.project.shared.game.Vector2;
-import ss.project.shared.game.World;
+import lombok.Getter;
+import ss.project.shared.game.*;
 
 /**
  * Created by fw on 16/01/2017.
@@ -91,7 +89,6 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             world.removeGameItem(coordinates);
             return -10;
         }
-
         //int bestValue = Integer.MIN_VALUE;
         //if (!maximize) {
         //    bestValue = Integer.MAX_VALUE;
@@ -114,5 +111,20 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         }
         world.removeGameItem(coordinates);
         return sum;
+    }
+
+    private class Worker extends Thread {
+        private MinMaxComputerPlayer caller;
+        @Getter
+        private Vector2 result;
+
+        public Worker(MinMaxComputerPlayer caller) {
+            this.caller = caller;
+        }
+
+        @Override
+        public void run() {
+            result = caller.getBestPosition(new World(new Vector3(1, 2, 3)));
+        }
     }
 }
