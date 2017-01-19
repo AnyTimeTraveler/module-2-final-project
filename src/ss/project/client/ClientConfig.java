@@ -1,14 +1,17 @@
 package ss.project.client;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import ss.project.shared.computerplayer.LinearComputerPlayer;
+import ss.project.shared.computerplayer.MinMaxComputerPlayer;
+import ss.project.shared.computerplayer.RandomComputerPlayer;
+
+import java.io.*;
+import java.util.HashMap;
 
 /**
  * Created by simon on 01.12.16.
  */
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.*;
 
 public class ClientConfig {
 
@@ -18,9 +21,15 @@ public class ClientConfig {
 
     //Variables
     public String WindowTitle;
+    public HashMap<String, Class> playerTypes;
 
     private ClientConfig() {
         WindowTitle = "Connect Four 3D";
+        playerTypes = new HashMap<>();
+        playerTypes.put("Human", HumanPlayer.class);
+        playerTypes.put("Linear AI", LinearComputerPlayer.class);
+        playerTypes.put("Minmax AI", MinMaxComputerPlayer.class);
+        playerTypes.put("Random AI", RandomComputerPlayer.class);
     }
 
     public static ClientConfig getInstance() {

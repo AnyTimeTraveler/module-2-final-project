@@ -1,4 +1,4 @@
-package ss.project.shared.ai;
+package ss.project.shared.computerplayer;
 
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
@@ -8,15 +8,21 @@ import ss.project.shared.game.World;
 /**
  * Created by fw on 16/01/2017.
  */
-public class AiMinMax implements AI {
-    private Player player;
+public class MinMaxComputerPlayer extends ComputerPlayer {
     private Player opponent;
     private World worldCopy;
     private int depth = 6;
 
-    @Override
-    public void initialize(Player player) {
-        this.player = player;
+    /**
+     * create a computer player with the specified AI.
+     */
+    public MinMaxComputerPlayer() {
+        super();
+        System.out.println("Initialized");
+    }
+
+    public MinMaxComputerPlayer(String name) {
+        super(name);
         System.out.println("Initialized");
     }
 
@@ -26,15 +32,16 @@ public class AiMinMax implements AI {
             worldCopy = new World(engine.getWorld().getSize());
         }
         if (opponent == null) {
-            opponent = engine.getOtherPlayer(player);
+            opponent = engine.getOtherPlayer(this);
         }
 
         engine.getWorld().writeTo(worldCopy);
         Vector2 bestPos = getBestPosition(worldCopy);
-        System.out.println(bestPos.toString());
-        if (!engine.addGameItem(bestPos, player)) {
-            System.out.println("Tried to place somewhere that was not possible ABORT ERROR ABORT!  " + bestPos);
-            return;
+        if (!engine.addGameItem(bestPos, this)) {
+            System.out.println(bestPos.toString());
+            if (!engine.addGameItem(bestPos, this)) {
+                System.out.println("Tried to place somewhere that was not possible ABORT ERROR ABORT!  " + bestPos);
+            }
         }
     }
 
@@ -69,7 +76,7 @@ public class AiMinMax implements AI {
             return 0;
         }
 
-        if ((maximize && !world.addGameItem(coordinates, player)) || (!maximize && !world.addGameItem(coordinates, opponent))) {
+        if ((maximize && !world.addGameItem(coordinates, this)) || (!maximize && !world.addGameItem(coordinates, opponent))) {
             if (maximize) {
                 return 0;
             } else {
@@ -77,7 +84,7 @@ public class AiMinMax implements AI {
             }
         }
 
-        if (maximize && world.hasWon(coordinates, player)) {
+        if (maximize && world.hasWon(coordinates, this)) {
             world.removeGameItem(coordinates);
             return 10;
         } else if (!maximize && world.hasWon(coordinates, opponent)) {
@@ -107,10 +114,5 @@ public class AiMinMax implements AI {
         }
         world.removeGameItem(coordinates);
         return sum;
-    }
-
-    @Override
-    public void end() {
-        worldCopy = null;
     }
 }

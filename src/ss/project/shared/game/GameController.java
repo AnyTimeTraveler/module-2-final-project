@@ -10,6 +10,7 @@ public class GameController {
 
     public void createSinglePlayer(Vector3 size, Player... players) {
         singlePlayerEngine = new Engine(size, players);
+        singlePlayerEngine.startGame();
     }
 
     public void createMultiplayer() {

@@ -1,25 +1,31 @@
-package ss.project.shared.ai;
+package ss.project.shared.computerplayer;
 
 import ss.project.shared.game.Engine;
-import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.World;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AiRandom implements AI {
+public class RandomComputerPlayer extends ComputerPlayer {
 
-    private Player player;
-
-    @Override
-    public void initialize(Player player) {
+    /**
+     * create a computer player with the specified AI.
+     *
+     * @param name
+     */
+    public RandomComputerPlayer(String name) {
+        super(name);
         System.out.println("Initialize");
-        this.player = player;
     }
 
     @Override
     public void doTurn(Engine engine) {
         setNewGameItem(engine);
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
     private void setNewGameItem(Engine engine) {
@@ -28,15 +34,9 @@ public class AiRandom implements AI {
             int x = ThreadLocalRandom.current().nextInt(0, world.getSize().getX());
             int y = ThreadLocalRandom.current().nextInt(0, world.getSize().getY());
 
-            if (engine.addGameItem(new Vector2(x, y), player)) {
+            if (engine.addGameItem(new Vector2(x, y), this)) {
                 return;
             }
         }
     }
-
-    @Override
-    public void end() {
-        System.out.println("End");
-    }
-
 }

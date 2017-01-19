@@ -1,18 +1,17 @@
-package ss.project.shared.ai;
+package ss.project.shared.computerplayer;
 
 import ss.project.shared.game.Engine;
-import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.World;
 
-public class AiLinear implements AI {
+public class LinearComputerPlayer extends ComputerPlayer {
 
-    private Player player;
-
-    @Override
-    public void initialize(Player player) {
+    /**
+     * create a computer player with the specified AI.
+     */
+    public LinearComputerPlayer() {
+        super();
         System.out.println("Initialize");
-        this.player = player;
     }
 
     @Override
@@ -21,22 +20,21 @@ public class AiLinear implements AI {
         setNewGameItem(engine);
     }
 
+    @Override
+    public String getName() {
+        return "";
+    }
+
     private void setNewGameItem(Engine engine) {
         World world = engine.getWorld();
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 //if (world.addGameItem(new Vector2(x, y), player)) {
-                if (engine.addGameItem(new Vector2(x, y), player)) {
+                if (engine.addGameItem(new Vector2(x, y), this)) {
                     return;
                 }
             }
         }
 
     }
-
-    @Override
-    public void end() {
-        System.out.println("End");
-    }
-
 }

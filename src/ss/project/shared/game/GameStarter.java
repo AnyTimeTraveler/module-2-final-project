@@ -1,7 +1,8 @@
 package ss.project.shared.game;
 
-import ss.project.shared.ai.AiMinMax;
-import ss.project.shared.ai.AiRandom;
+import ss.project.shared.computerplayer.MinMaxComputerPlayer;
+import ss.project.shared.computerplayer.RandomComputerPlayer;
+
 
 /**
  * Creates a game and has the main function.
@@ -17,8 +18,8 @@ public class GameStarter {
         GameController gameController = new GameController();
 
         gameController.createSinglePlayer(new Vector3(4, 4, 4),
-                new ComputerPlayer("computer random", new AiRandom()),
-                new ComputerPlayer("computer minmax", new AiMinMax())
+                new RandomComputerPlayer("computer random"),
+                new MinMaxComputerPlayer("computer minmax")
         );
     }
 }

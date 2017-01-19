@@ -16,9 +16,7 @@ public class Engine {
      */
     public Engine(Vector3 worldSize, Player[] players) {
         this.world = new World(worldSize);
-
         this.players = players;
-        startGame();
     }
 
     /**
@@ -61,7 +59,7 @@ public class Engine {
     }
 
     /**
-     * @return the amount of current players, both ai and real.
+     * @return the amount of current players, both computerplayer and real.
      */
     public int getPlayerCount() {
         return players.length;
@@ -86,7 +84,7 @@ public class Engine {
     /**
      * Start the game and make every player do turns.
      */
-    private void startGame() {
+    public void startGame() {
         gameRunning = true;
 
         //By default start with player 0.
@@ -99,7 +97,6 @@ public class Engine {
 
         while (gameRunning) {
             getPlayer(currentPlayer).doTurn(this);
-
             currentPlayer++;
             if (currentPlayer >= getPlayerCount()) {
                 currentPlayer = 0;
