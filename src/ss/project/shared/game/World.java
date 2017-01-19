@@ -129,7 +129,6 @@ public class World {
             //Set the item to this owner.
             wp.setGameItem(owner);
             remainingSpots--;
-            System.out.println(remainingSpots);
             return true;
         } else {
             return false;
@@ -146,7 +145,6 @@ public class World {
         if (wp != null && wp.hasGameItem()) {
             wp.removeGameItem();
             remainingSpots++;
-            System.out.println(remainingSpots);
         }
     }
 
@@ -156,7 +154,6 @@ public class World {
      * @param coordinates Coordinates of which it should check the highest gameitem.
      */
     public void removeGameItem(Vector2 coordinates) {
-        System.out.println("remove gameitem");
         WorldPosition wp = getWorldPosition(coordinates);
         if (wp != null) {
             Vector3 highest = wp.getCoordinates();

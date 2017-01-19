@@ -12,16 +12,11 @@ public class AiMinMax implements AI {
     private Player player;
     private Player opponent;
     private World worldCopy;
+    private int depth = 6;
 
     @Override
     public void initialize(Player player) {
         this.player = player;
-        opponent = new Player("Dummy") {
-            @Override
-            public void doTurn(Engine engine) {
-                //Don't do anything.
-            }
-        };
         System.out.println("Initialized");
     }
 
@@ -30,9 +25,13 @@ public class AiMinMax implements AI {
         if (worldCopy == null) {
             worldCopy = new World(engine.getWorld().getSize());
         }
+        if (opponent == null) {
+            opponent = engine.getOtherPlayer(player);
+        }
 
         engine.getWorld().writeTo(worldCopy);
         Vector2 bestPos = getBestPosition(worldCopy);
+        System.out.println(bestPos.toString());
         if (!engine.addGameItem(bestPos, player)) {
             System.out.println("Tried to place somewhere that was not possible ABORT ERROR ABORT!  " + bestPos);
             return;
@@ -40,20 +39,20 @@ public class AiMinMax implements AI {
     }
 
     private Vector2 getBestPosition(World world) {
-        int highestValue = Integer.MIN_VALUE;
+        int bestValue = Integer.MIN_VALUE;
         Vector2 result = Vector2.ZERO;
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
-                int value = getBestPosition(world, new Vector2(x, y), 3, true);
-                if (value > highestValue) {
+                int value = getBestPosition(world, new Vector2(x, y), depth, true);
+                if (value > bestValue) {
                     result = new Vector2(x, y);
-                    highestValue = value;
+                    bestValue = value;
                 }
             }
         }
-        if (result.equals(Vector2.ZERO)) {
-            System.out.println("error?");
-        }
+        //if (result.equals(Vector2.ZERO)) {
+        //    System.out.println("error?");
+        //}
         return result;
     }
 
@@ -71,36 +70,43 @@ public class AiMinMax implements AI {
         }
 
         if ((maximize && !world.addGameItem(coordinates, player)) || (!maximize && !world.addGameItem(coordinates, opponent))) {
-            world.removeGameItem(coordinates);
-            return 0;
-        }
-
-        if (world.hasWon(coordinates, player)) {
-            world.removeGameItem(coordinates);
             if (maximize) {
-                return Integer.MAX_VALUE;
+                return 0;
             } else {
-                return Integer.MIN_VALUE;
+                return 0;
             }
         }
-        int highestValue = Integer.MIN_VALUE;
-        if (!maximize) {
-            highestValue = Integer.MAX_VALUE;
+
+        if (maximize && world.hasWon(coordinates, player)) {
+            world.removeGameItem(coordinates);
+            return 10;
+        } else if (!maximize && world.hasWon(coordinates, opponent)) {
+            world.removeGameItem(coordinates);
+            return -10;
         }
+
+        //int bestValue = Integer.MIN_VALUE;
+        //if (!maximize) {
+        //    bestValue = Integer.MAX_VALUE;
+        //}
+        int sum = 0;
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 int value = getBestPosition(world, new Vector2(x, y), depth - 1, !maximize);
-                if (maximize) {
-                    if (value > highestValue) {
-                        highestValue = value;
-                    }
-                } else if (value < highestValue) {
-                    highestValue = value;
-                }
+//                if (maximize) {
+//                    if (value > bestValue) {
+//                        bestValue = value;
+//                    }
+//                } else {
+//                    if (value < bestValue) {
+//                        bestValue = value;
+//                    }
+//                }
+                sum += value;
             }
         }
         world.removeGameItem(coordinates);
-        return highestValue;
+        return sum;
     }
 
     @Override

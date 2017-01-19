@@ -68,6 +68,22 @@ public class Engine {
     }
 
     /**
+     * Get a player that is not equal to the given player.
+     * Used in the AI.
+     *
+     * @param player
+     * @return null if no other player has been found.
+     */
+    public Player getOtherPlayer(Player player) {
+        for (int i = 0; i < getPlayerCount(); i++) {
+            if (!getPlayer(i).equals(player)) {
+                return getPlayer(i);
+            }
+        }
+        return null;
+    }
+
+    /**
      * Start the game and make every player do turns.
      */
     private void startGame() {
