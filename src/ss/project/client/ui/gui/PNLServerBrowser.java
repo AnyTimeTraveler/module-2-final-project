@@ -6,7 +6,7 @@ import javax.swing.*;
  * Created by simon on 16.01.17.
  */
 public class PNLServerBrowser extends JPanel {
-    public PNLServerBrowser(FRMMain FRMMain) {
+    public PNLServerBrowser(FRMMain mainFrame) {
 
     }
 }

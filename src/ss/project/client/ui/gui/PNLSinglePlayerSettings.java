@@ -24,15 +24,15 @@ public class PNLSinglePlayerSettings extends JPanel {
     private JSpinner playerAmount;
     private JSpinner winLength;
     private PlayerPanel[] playerPanels;
-    private FRMMain FRMMain;
+    private FRMMain mainFrame;
 
     // Worls Size
     // Player count
     // Win length
 
-    public PNLSinglePlayerSettings(FRMMain FRMMain) {
+    public PNLSinglePlayerSettings(FRMMain mainFrame) {
         super();
-        this.FRMMain = FRMMain;
+        this.mainFrame = mainFrame;
         GridBagLayout mgr = new GridBagLayout();
         this.setLayout(mgr);
         GridBagConstraints c = new GridBagConstraints();

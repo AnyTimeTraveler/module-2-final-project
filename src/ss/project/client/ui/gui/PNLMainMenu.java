@@ -9,14 +9,14 @@ import java.awt.event.ActionListener;
  */
 public class PNLMainMenu extends JPanel {
 
-    public PNLMainMenu(FRMMain FRMMain) {
-        super(true);
+    public PNLMainMenu(FRMMain mainFrame) {
+        super();
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addComponent(new JLabel("Main Menu"));
-        addComponent(new JButton("Single Player"), e -> FRMMain.switchTo(FRMMain.Panel.SINGLE_PLAYER_SETTINGS));
-        addComponent(new JButton("Multi Player"), e -> FRMMain.switchTo(FRMMain.Panel.SERVER_BRWOSER));
-        addComponent(new JButton("PNLOptions"), e -> FRMMain.switchTo(FRMMain.Panel.OPTIONS));
-        addComponent(new JButton("Exit"), e -> FRMMain.shutdown());
+        addComponent(new JButton("Single Player"), e -> mainFrame.switchTo(FRMMain.Panel.SINGLE_PLAYER_SETTINGS));
+        addComponent(new JButton("Multi Player"), e -> mainFrame.switchTo(FRMMain.Panel.SERVER_BRWOSER));
+        addComponent(new JButton("PNLOptions"), e -> mainFrame.switchTo(FRMMain.Panel.OPTIONS));
+        addComponent(new JButton("Exit"), e -> mainFrame.shutdown());
     }
 
     private void addComponent(JComponent comp) {
