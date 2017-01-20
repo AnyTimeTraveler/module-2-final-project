@@ -7,4 +7,6 @@ import ss.project.client.HumanPlayer;
  */
 public interface GameDisplay {
     void startTurn(Object waiter, HumanPlayer humanPlayer);
+
+    void refresh();
 }
