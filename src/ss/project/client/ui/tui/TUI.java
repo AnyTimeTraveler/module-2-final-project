@@ -51,12 +51,12 @@ public class TUI implements UI {
 
     public enum Panel {
         MAIN_MENU(new MainMenu(tui)),
-        SINGLE_PLAYER_SETTINGS(new SinglePlayerSettings(tui)),
-        SERVER_BRWOSER(new ServerBrowser(tui)),
+        SINGLE_PLAYER_SETTINGS(new SinglePlayerSettings()),
+        SERVER_BRWOSER(new ServerBrowser()),
         OPTIONS(new Options(tui)),
-        MULTI_PLAYER_LOBBY(new MultiPlayerLobby(tui)),
-        MULTI_PLAYER_ROOM(new MultiPlayerRoom(tui)),
-        MULTI_PLAYER_ROOM_CREATION(new MultiPlayerRoomCreation(tui));
+        MULTI_PLAYER_LOBBY(new MultiPlayerLobby()),
+        MULTI_PLAYER_ROOM(new MultiPlayerRoom()),
+        MULTI_PLAYER_ROOM_CREATION(new MultiPlayerRoomCreation());
 
         private final Screen screen;
 
