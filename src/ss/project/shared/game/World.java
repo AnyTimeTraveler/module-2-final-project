@@ -193,9 +193,9 @@ public class World {
      * @param player         The player has placed a new object.
      */
     public boolean hasWon(Vector3 newCoordinates, Player player) {
-        for (int x = newCoordinates.getX() - 1; x < newCoordinates.getX() + 1; x++) {
-            for (int y = newCoordinates.getY() - 1; y < newCoordinates.getY() + 1; y++) {
-                for (int z = newCoordinates.getZ() - 1; z < newCoordinates.getZ() + 1; z++) {
+        for (int x = newCoordinates.getX() - 1; x < newCoordinates.getX() + 2; x++) {
+            for (int y = newCoordinates.getY() - 1; y < newCoordinates.getY() + 2; y++) {
+                for (int z = newCoordinates.getZ() - 1; z < newCoordinates.getZ() + 2; z++) {
                     Vector3 vector = new Vector3(x, y, z);
                     //Don't check zero, because that's ourself.
                     if (!vector.equals(newCoordinates)) {
@@ -203,7 +203,6 @@ public class World {
                         Vector3 direction = newCoordinates.subtract(x, y, z);
                         int count1 = hasWon(newCoordinates, player, direction, 1);
                         int count2 = hasWon(newCoordinates, player, direction.inverse(), 0);
-                        System.out.println(count1 + count2);
                         if (count1 + count2 >= 4) {
                             //we won!
                             return true;
@@ -212,6 +211,7 @@ public class World {
                 }
             }
         }
+
         return false;
     }
 
