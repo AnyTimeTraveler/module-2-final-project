@@ -5,8 +5,8 @@ import ss.project.client.ui.gui.FRMMain;
 /**
  * Created by simon on 16.01.17.
  */
-public class Game implements Screen {
-    public Game(FRMMain FRMMain) {
+public class Game implements TUIPanel {
+    public Game(FRMMain mainFrame) {
 
     }
 

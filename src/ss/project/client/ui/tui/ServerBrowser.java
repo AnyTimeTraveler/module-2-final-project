@@ -3,13 +3,18 @@ package ss.project.client.ui.tui;
 /**
  * Created by simon on 16.01.17.
  */
-public class ServerBrowser implements Screen {
+public class ServerBrowser implements TUIPanel {
     public ServerBrowser() {
 
     }
 
     @Override
-    public void printScreen() {
+    public void show() {
+
+    }
+
+    @Override
+    public void hide() {
 
     }
 

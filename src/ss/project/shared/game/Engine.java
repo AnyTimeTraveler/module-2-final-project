@@ -30,7 +30,7 @@ public class Engine {
     }
 
     /**
-     * Get the UI of this engine.
+     * Get the MainWindow of this engine.
      *
      * @return
      */
@@ -39,7 +39,7 @@ public class Engine {
     }
 
     /**
-     * Set the UI of this engine.
+     * Set the MainWindow of this engine.
      *
      * @param game
      */

@@ -8,14 +8,13 @@ import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
  * Created by simon on 16.01.17.
  */
-public class PNLGame extends JPanel implements GameDisplay {
+public class PNLGame extends GUIPanel implements GameDisplay {
     /**
      * 2D rendering canvas.
      */
@@ -29,20 +28,25 @@ public class PNLGame extends JPanel implements GameDisplay {
      */
     private Image backbuffer2D;
     private Engine engine;
+    private FRMMain mainFrame;
 
-    public PNLGame(FRMMain FRMMain) {
+    public PNLGame(FRMMain mainFrame) {
         super();
+        this.mainFrame = mainFrame;
+    }
 
+    @Override
+    public void onEnter() {
         width = 350;
         height = 350;
 
         RandomComputerPlayer test = new RandomComputerPlayer("computer random");
 
         //Create a new engine.
-        FRMMain.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{new HumanPlayer("0"),
+        mainFrame.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{new HumanPlayer("0"),
                 new MinMaxComputerPlayer("min max")}));
 
-        engine = FRMMain.getEngine();
+        engine = mainFrame.getEngine();
         engine.setUI(this);
 
         setBackground(Color.white);
@@ -70,5 +74,16 @@ public class PNLGame extends JPanel implements GameDisplay {
         System.out.println("Start the turn... Show whose turn it is: " + humanPlayer.getName());
         canvas2D.setWaiter(waiter);
         canvas2D.setCurrentPlayer(humanPlayer);
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+
+    @Override
+    public void onLeave() {
+
     }
 }

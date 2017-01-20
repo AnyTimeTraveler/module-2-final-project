@@ -1,7 +1,7 @@
 package ss.project.client.ui.gui;
 
 import ss.project.client.ClientConfig;
-import ss.project.client.ui.UI;
+import ss.project.client.ui.MainWindow;
 import ss.project.shared.game.Engine;
 
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * Created by simon on 16.01.17.
  */
-public class FRMMain extends JFrame implements UI {
+public class FRMMain extends JFrame implements MainWindow {
 
     private static final boolean FULLSCREEN = false;
     private static FRMMain frame;
@@ -60,11 +60,16 @@ public class FRMMain extends JFrame implements UI {
         switchTo(p.getPanel());
     }
 
-    private void switchTo(JPanel panel) {
-        getContentPane().removeAll();
-        getContentPane().add(panel);
-        getContentPane().revalidate();
-        getContentPane().repaint();
+    private void switchTo(GUIPanel panel) {
+        Container cp = getContentPane();
+        if (cp.getComponentCount() > 0) {
+            ((GUIPanel) cp.getComponent(0)).onLeave();
+            cp.remove(0);
+        }
+        cp.add(panel);
+        panel.onEnter();
+        cp.revalidate();
+        cp.repaint();
     }
 
     @Override
@@ -90,13 +95,13 @@ public class FRMMain extends JFrame implements UI {
         MULTI_PLAYER_ROOM_CREATION(new PNLMultiPlayerRoomCreation(frame)),
         GAME(new PNLGame(frame));
 
-        private final JPanel panel;
+        private final GUIPanel panel;
 
-        Panel(JPanel panel) {
+        Panel(GUIPanel panel) {
             this.panel = panel;
         }
 
-        private JPanel getPanel() {
+        private GUIPanel getPanel() {
             return panel;
         }
     }

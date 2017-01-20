@@ -3,7 +3,7 @@ package ss.project.client.ui.tui;
 /**
  * Created by simon on 16.01.17.
  */
-public class MainMenu implements Screen {
+public class MainMenu implements TUIPanel {
 
     private final TUI tui;
 

@@ -1,12 +1,20 @@
 package ss.project.client.ui.gui;
 
-import javax.swing.*;
-
 /**
  * Created by simon on 16.01.17.
  */
-public class PNLServerBrowser extends JPanel {
+public class PNLServerBrowser extends GUIPanel {
     public PNLServerBrowser(FRMMain mainFrame) {
+
+    }
+
+    @Override
+    public void onEnter() {
+
+    }
+
+    @Override
+    public void onLeave() {
 
     }
 }

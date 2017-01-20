@@ -1,12 +1,20 @@
 package ss.project.client.ui.gui;
 
-import javax.swing.*;
-
 /**
  * Created by simon on 16.01.17.
  */
-public class PNLMultiPlayerRoomCreation extends JPanel {
+public class PNLMultiPlayerRoomCreation extends GUIPanel {
     public PNLMultiPlayerRoomCreation(FRMMain mainFrame) {
+
+    }
+
+    @Override
+    public void onEnter() {
+
+    }
+
+    @Override
+    public void onLeave() {
 
     }
 }

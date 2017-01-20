@@ -12,7 +12,7 @@ import ss.project.shared.computerplayer.RandomComputerPlayer;
 public class GameStarter {
 
     public static void main(String[] args) {
-        //Create a controller for the UI.
+        //Create a controller for the MainWindow.
         //Create a new game with world size 4,4,4 and 2 players
         GameController gameController = new GameController();
 

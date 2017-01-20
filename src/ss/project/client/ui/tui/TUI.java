@@ -1,7 +1,7 @@
 package ss.project.client.ui.tui;
 
 
-import ss.project.client.ui.UI;
+import ss.project.client.ui.MainWindow;
 
 import java.awt.*;
 import java.io.IOException;
@@ -10,14 +10,14 @@ import java.util.Scanner;
 /**
  * Created by simon on 23.12.16.
  */
-public class TUI implements UI {
+public class TUI implements MainWindow {
     private static TUI tui;
-    private Screen current;
+    private TUIPanel current;
     private boolean isRunning;
 
     public TUI() {
         isRunning = true;
-        switchTo(Panel.MAIN_MENU);
+        switchTo(TUI.Panel.MAIN_MENU);
     }
 
     public static void main(String[] args) throws IOException {
@@ -32,14 +32,14 @@ public class TUI implements UI {
         switchTo(p.getScreen());
     }
 
-    private void switchTo(Screen screen) {
+    private void switchTo(TUIPanel screen) {
         current = screen;
     }
 
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (isRunning) {
-            current.printScreen();
+            current.show();
             current.handleInput(scanner.nextLine());
         }
     }
@@ -58,13 +58,13 @@ public class TUI implements UI {
         MULTI_PLAYER_ROOM(new MultiPlayerRoom()),
         MULTI_PLAYER_ROOM_CREATION(new MultiPlayerRoomCreation());
 
-        private final Screen screen;
+        private final TUIPanel screen;
 
-        Panel(Screen screen) {
+        Panel(TUIPanel screen) {
             this.screen = screen;
         }
 
-        private Screen getScreen() {
+        private TUIPanel getScreen() {
             return screen;
         }
     }

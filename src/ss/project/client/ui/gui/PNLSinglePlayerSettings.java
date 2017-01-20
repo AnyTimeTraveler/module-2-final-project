@@ -16,7 +16,7 @@ import java.util.logging.Level;
  * Created by simon on 16.01.17.
  */
 @Log
-public class PNLSinglePlayerSettings extends JPanel {
+public class PNLSinglePlayerSettings extends GUIPanel {
     private JLabel headline;
     private JSpinner worldX;
     private JSpinner worldY;
@@ -33,40 +33,16 @@ public class PNLSinglePlayerSettings extends JPanel {
     public PNLSinglePlayerSettings(FRMMain mainFrame) {
         super();
         this.mainFrame = mainFrame;
-        GridBagLayout mgr = new GridBagLayout();
-        this.setLayout(mgr);
-        GridBagConstraints c = new GridBagConstraints();
-
-        drawHeadline(c);
-        addSpinner(worldX, c, 4, 0, 100, 0, 1, 1, 1);
-        addSpinner(worldY, c, 4, 0, 100, 1, 1, 1, 1);
-        addSpinner(worldZ, c, 4, 0, 100, 2, 1, 1, 1);
-        addSpinner(playerAmount, c, 4, 0, 100, 3, 1, 1, 1);
-        addSpinner(winLength, c, 4, 0, 100, 4, 1, 1, 1);
-
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridheight = 3;
-        c.gridwidth = 4;
-        this.add(addPlayerPanes(3), c);
-
-        JButton startButton = new JButton("Start");
-        startButton.addActionListener(new MyActionListener());
-        c.gridx = 4;
-        c.gridy = 3;
-        c.gridwidth = 1;
-        c.gridheight = 1;
-        this.add(startButton);
-        playerPanels = new PlayerPanel[0];
     }
 
-    private void addSpinner(JSpinner spinner, GridBagConstraints c, int value, int min, int max, int gridX, int gridY, int width, int height) {
-        spinner = new JSpinner(new SpinnerNumberModel(value, min, max, 1));
+    private JSpinner addSpinner(GridBagConstraints c, int value, int min, int max, int gridX, int gridY, int width, int height) {
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, min, max, 1));
         c.gridx = gridX;
         c.gridy = gridY;
         c.gridwidth = width;
         c.gridheight = height;
         this.add(spinner, c);
+        return spinner;
     }
 
     private void drawHeadline(GridBagConstraints c) {
@@ -87,6 +63,41 @@ public class PNLSinglePlayerSettings extends JPanel {
             playerPanel.add(pp);
         }
         return playerPanel;
+    }
+
+    @Override
+    public void onEnter() {
+        GridBagLayout mgr = new GridBagLayout();
+        this.setLayout(mgr);
+        GridBagConstraints c = new GridBagConstraints();
+
+        drawHeadline(c);
+        worldX = addSpinner(c, 4, 0, 100, 0, 1, 1, 1);
+        worldY = addSpinner(c, 4, 0, 100, 1, 1, 1, 1);
+        worldZ = addSpinner(c, 4, 0, 100, 2, 1, 1, 1);
+        playerAmount = addSpinner(c, 4, 0, 100, 3, 1, 1, 1);
+        winLength = addSpinner(c, 4, 0, 100, 4, 1, 1, 1);
+
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridheight = 3;
+        c.gridwidth = 4;
+        this.add(addPlayerPanes(3), c);
+
+        JButton startButton = new JButton("Start");
+        startButton.addActionListener(e -> mainFrame.switchTo(FRMMain.Panel.GAME));
+//        startButton.addActionListener(new MyActionListener());
+        c.gridx = 4;
+        c.gridy = 3;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        this.add(startButton);
+        playerPanels = new PlayerPanel[0];
+    }
+
+    @Override
+    public void onLeave() {
+
     }
 
     private class PlayerPanel extends JPanel {

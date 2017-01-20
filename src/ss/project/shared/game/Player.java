@@ -1,8 +1,14 @@
 package ss.project.shared.game;
 
 
-public abstract class Player {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+@ToString
+public abstract class Player {
+    @Getter
+    @Setter
     private String name;
 
     public Player() {
@@ -18,21 +24,9 @@ public abstract class Player {
         setName(name);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     /**
      * Called everytime a new turn should be done.
      */
     public abstract void doTurn(Engine engine);
-
-    @Override
-    public String toString() {
-        return "Player [name=" + name + "]";
-    }
 }
