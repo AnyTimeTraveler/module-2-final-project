@@ -39,7 +39,7 @@ public class TUI implements MainWindow {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (isRunning) {
-            current.show();
+            current.printScreen();
             current.handleInput(scanner.nextLine());
         }
     }

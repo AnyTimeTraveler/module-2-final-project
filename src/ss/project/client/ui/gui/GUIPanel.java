@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  * Created by simon on 20.01.17.
  */
-public abstract class GUIPanel extends JPanel implements Panel {
+public abstract class GUIPanel extends JPanel {
     public GUIPanel(boolean isDoubleBuffered) {
         super(isDoubleBuffered);
     }

@@ -9,12 +9,7 @@ public class MultiPlayerLobby implements TUIPanel {
     }
 
     @Override
-    public void show() {
-
-    }
-
-    @Override
-    public void hide() {
+    public void printScreen() {
 
     }
 

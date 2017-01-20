@@ -62,7 +62,7 @@ public class Engine {
             } else if (getWorld().isFull()) {
                 finishGame(FinishReason.FULL);
             }
-            getUI().refresh();
+            getUI().update();
         }
         return result;
     }

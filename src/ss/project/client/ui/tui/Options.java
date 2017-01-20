@@ -12,14 +12,9 @@ public class Options implements TUIPanel {
     }
 
     @Override
-    public void show() {
+    public void printScreen() {
         System.out.println(ASCIIArt.getHeadline("PNLOptions", 120));
         System.out.println(ASCIIArt.getChoiceItem(1, "Back", 120));
-    }
-
-    @Override
-    public void hide() {
-
     }
 
     @Override
