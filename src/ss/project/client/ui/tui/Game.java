@@ -1,12 +1,12 @@
 package ss.project.client.ui.tui;
 
-import ss.project.client.ui.gui.MainFrame;
+import ss.project.client.ui.gui.FRMMain;
 
 /**
  * Created by simon on 16.01.17.
  */
 public class Game implements Screen {
-    public Game(MainFrame mainFrame) {
+    public Game(FRMMain FRMMain) {
 
     }
 

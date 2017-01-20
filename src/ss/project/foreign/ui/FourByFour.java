@@ -84,7 +84,7 @@ public class FourByFour extends Applet implements ActionListener {
 	int								skill_level;				// Skill level, 0 - 4
 	Canvas2D						canvas2D;					// 2D rendering canvas
 	Canvas3D						canvas3D;					// 3D rendering canvas
-	Board							board;						// Game board object
+	Board board;                        // PNLGame board object
 	Panel							b_container;				// Container to hold the buttons
 	Panel							c_container;				// Container to hold the canvas
 	Panel							l_container;				// Container to hold the labels
@@ -93,7 +93,7 @@ public class FourByFour extends Applet implements ActionListener {
 	Panel							winner_panel;				// Panel to hold winner announcement
 	Panel							high_panel;					// Panel to hold high scores
 	Button							instruct_button;			// Instructions button
-	Button							new_button;					// New Game button
+	Button new_button;                    // New PNLGame button
 	Button							skill_button;				// Skill Level button
 	Button							high_button;				// High Scores button
 	Button							undo_button;				// Undo Move button
@@ -336,7 +336,7 @@ public class FourByFour extends Applet implements ActionListener {
 		instruct_button.setVisible(true);
 		instruct_button.addActionListener(this);
 
-		new_button = new Button("New Game");
+		new_button = new Button("New PNLGame");
 		new_button.setSize(135, 25);
 		new_button.setLocation(150, 10);
 		new_button.setVisible(true);
@@ -798,7 +798,7 @@ public class FourByFour extends Applet implements ActionListener {
 
 		if (player == 1) {
 			score = level * level_weight + (66 - nmoves) * move_weight - (int) Math.min(time * time_weight, 5000);
-			winner_label.setText("Game over, you win!");
+			winner_label.setText("PNLGame over, you win!");
 			winner_label.setLocation(290, 90);
 			winner_score_label.setText("Score = " + score);
 			winner_score_label.setVisible(true);
@@ -810,7 +810,7 @@ public class FourByFour extends Applet implements ActionListener {
 				winner_flag = true;
 			}
 		} else {
-			winner_label.setText("Game over, the computer wins!");
+			winner_label.setText("PNLGame over, the computer wins!");
 			winner_label.setLocation(250, 150);
 		}
 		c_container.setVisible(false);

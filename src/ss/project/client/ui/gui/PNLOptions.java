@@ -7,16 +7,16 @@ import java.awt.event.ActionListener;
 /**
  * Created by simon on 16.01.17.
  */
-public class MainMenu extends JPanel {
+public class PNLOptions extends JPanel {
 
-    public MainMenu(MainFrame mainFrame) {
+    public PNLOptions(FRMMain FRMMain) {
         super(true);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        addComponent(new JLabel("Main Menu"));
-        addComponent(new JButton("Single Player"), e -> mainFrame.switchTo(MainFrame.Panel.SINGLE_PLAYER_SETTINGS));
-        addComponent(new JButton("Multi Player"), e -> mainFrame.switchTo(MainFrame.Panel.SERVER_BRWOSER));
-        addComponent(new JButton("Options"), e -> mainFrame.switchTo(MainFrame.Panel.OPTIONS));
-        addComponent(new JButton("Exit"), e -> mainFrame.shutdown());
+        addComponent(new JLabel("PNLOptions"));
+//        addComponent(new JButton("Single Player"), e -> FRMMain.switchToSinglePlayerSettings());
+//        addComponent(new JButton("Multi Player"), e -> FRMMain.switchToServerBrowser());
+//        addComponent(new JButton("PNLOptions"), e -> FRMMain.switchToOptions());
+        addComponent(new JButton("Back"), e -> FRMMain.switchTo(FRMMain.Panel.MAIN_MENU));
     }
 
     private void addComponent(JComponent comp) {

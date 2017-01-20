@@ -15,11 +15,11 @@ import java.awt.image.BufferedImage;
 /**
  * Created by simon on 16.01.17.
  */
-public class Game extends JPanel implements GameDisplay {
+public class PNLGame extends JPanel implements GameDisplay {
     /**
      * 2D rendering canvas.
      */
-    private Canvas2D canvas2D;
+    private GameCanvas2D canvas2D;
     /**
      * Size of the graphics window in pixels.
      */
@@ -30,7 +30,7 @@ public class Game extends JPanel implements GameDisplay {
     private Image backbuffer2D;
     private Engine engine;
 
-    public Game(MainFrame mainFrame) {
+    public PNLGame(FRMMain FRMMain) {
         super();
 
         width = 350;
@@ -39,16 +39,16 @@ public class Game extends JPanel implements GameDisplay {
         RandomComputerPlayer test = new RandomComputerPlayer("computer random");
 
         //Create a new engine.
-        mainFrame.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{new HumanPlayer("0"),
+        FRMMain.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{new HumanPlayer("0"),
                 new MinMaxComputerPlayer("min max")}));
 
-        engine = mainFrame.getEngine();
+        engine = FRMMain.getEngine();
         engine.setUI(this);
 
         setBackground(Color.white);
 
         // Create a 2D graphics canvas.
-        canvas2D = new Canvas2D(engine);
+        canvas2D = new GameCanvas2D(engine);
         canvas2D.setSize(width, height);
         canvas2D.setLocation(width + 10, 5);
 

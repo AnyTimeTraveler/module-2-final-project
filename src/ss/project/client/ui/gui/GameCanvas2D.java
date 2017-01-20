@@ -55,17 +55,17 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Class: Canvas2D
+ * Class: GameCanvas2D
  * <p>
  * Description: Used to respond to mouse events in the 2D window.
  * <p>
  * Version: 1.0
  */
-public class Canvas2D extends Canvas {
+public class GameCanvas2D extends Canvas {
 
     Image backbuffer;    // Backbuffer image
     Graphics gc;            // Graphics context of backbuffer
-    Engine engine;        // Game board
+    Engine engine;        // PNLGame board
     Random random = new Random();
     Map<Player, Color> playerColorMap = new HashMap<>();
     private int width = 350;
@@ -75,7 +75,7 @@ public class Canvas2D extends Canvas {
     private Object waiter;
     private HumanPlayer currentPlayer;
 
-    Canvas2D(Engine engine) {
+    GameCanvas2D(Engine engine) {
         this.engine = engine;
         this.addMouseListener(new MouseListen());
     }

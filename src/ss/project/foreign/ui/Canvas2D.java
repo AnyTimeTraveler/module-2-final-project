@@ -49,7 +49,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * Class: Canvas2D
+ * Class: GameCanvas2D
  * <p>
  * Description: Used to respond to mouse events in the 2D window.
  * <p>
@@ -59,7 +59,7 @@ class Canvas2D extends Canvas implements MouseListener {
 
 	Image backbuffer;    // Backbuffer image
 	Graphics gc;            // Graphics context of backbuffer
-	Board board;        // Game board
+	Board board;        // PNLGame board
 
 	Canvas2D(Board board) {
 		this.board = board;

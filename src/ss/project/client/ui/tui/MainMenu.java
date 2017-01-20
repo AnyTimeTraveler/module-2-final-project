@@ -16,7 +16,7 @@ public class MainMenu implements Screen {
         System.out.println(ASCIIArt.getHeadline("Main Menu", 120));
         System.out.println(ASCIIArt.getChoiceItem(1, "Single Player", 120));
         System.out.println(ASCIIArt.getChoiceItem(2, "Multi Player", 120));
-        System.out.println(ASCIIArt.getChoiceItem(3, "Options", 120));
+        System.out.println(ASCIIArt.getChoiceItem(3, "PNLOptions", 120));
         System.out.println(ASCIIArt.getChoiceItem(4, "Exit", 120));
     }
 

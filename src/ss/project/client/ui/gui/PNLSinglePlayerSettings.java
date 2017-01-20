@@ -16,7 +16,7 @@ import java.util.logging.Level;
  * Created by simon on 16.01.17.
  */
 @Log
-public class SinglePlayerSettings extends JPanel {
+public class PNLSinglePlayerSettings extends JPanel {
     private JLabel headline;
     private JSpinner worldX;
     private JSpinner worldY;
@@ -24,15 +24,15 @@ public class SinglePlayerSettings extends JPanel {
     private JSpinner playerAmount;
     private JSpinner winLength;
     private PlayerPanel[] playerPanels;
-    private MainFrame mainFrame;
+    private FRMMain FRMMain;
 
     // Worls Size
     // Player count
     // Win length
 
-    public SinglePlayerSettings(MainFrame mainFrame) {
+    public PNLSinglePlayerSettings(FRMMain FRMMain) {
         super();
-        this.mainFrame = mainFrame;
+        this.FRMMain = FRMMain;
         GridBagLayout mgr = new GridBagLayout();
         this.setLayout(mgr);
         GridBagConstraints c = new GridBagConstraints();

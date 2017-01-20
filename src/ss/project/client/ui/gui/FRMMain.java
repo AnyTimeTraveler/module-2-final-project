@@ -10,13 +10,13 @@ import java.awt.*;
 /**
  * Created by simon on 16.01.17.
  */
-public class MainFrame extends JFrame implements UI {
+public class FRMMain extends JFrame implements UI {
 
     private static final boolean FULLSCREEN = false;
-    private static MainFrame frame;
+    private static FRMMain frame;
     private Engine engine;
 
-    public MainFrame() {
+    public FRMMain() {
         // Run the parent constructor
         super();
         try {
@@ -29,7 +29,7 @@ public class MainFrame extends JFrame implements UI {
     public static void main(String[] args) {
         // Create a standalone thread for the GUI
         EventQueue.invokeLater(() -> {
-            frame = new MainFrame();
+            frame = new FRMMain();
             Thread.currentThread().setName("GUI");
             frame.init();
         });
@@ -81,14 +81,14 @@ public class MainFrame extends JFrame implements UI {
     }
 
     public enum Panel {
-        MAIN_MENU(new MainMenu(frame)),
-        SINGLE_PLAYER_SETTINGS(new SinglePlayerSettings(frame)),
-        SERVER_BRWOSER(new ServerBrowser(frame)),
-        OPTIONS(new Options(frame)),
-        MULTI_PLAYER_LOBBY(new MultiPlayerLobby(frame)),
-        MULTI_PLAYER_ROOM(new MultiPlayerRoom(frame)),
-        MULTI_PLAYER_ROOM_CREATION(new MultiPlayerRoomCreation(frame)),
-        GAME(new Game(frame));
+        MAIN_MENU(new PNLMainMenu(frame)),
+        SINGLE_PLAYER_SETTINGS(new PNLSinglePlayerSettings(frame)),
+        SERVER_BRWOSER(new PNLServerBrowser(frame)),
+        OPTIONS(new PNLOptions(frame)),
+        MULTI_PLAYER_LOBBY(new PNLMultiPlayerLobby(frame)),
+        MULTI_PLAYER_ROOM(new PNLMultiPlayerRoom(frame)),
+        MULTI_PLAYER_ROOM_CREATION(new PNLMultiPlayerRoomCreation(frame)),
+        GAME(new PNLGame(frame));
 
         private final JPanel panel;
 

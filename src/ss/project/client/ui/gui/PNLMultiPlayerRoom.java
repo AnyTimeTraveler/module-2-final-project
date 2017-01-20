@@ -5,8 +5,8 @@ import javax.swing.*;
 /**
  * Created by simon on 16.01.17.
  */
-public class MultiPlayerLobby extends JPanel {
-    public MultiPlayerLobby(MainFrame mainFrame) {
+public class PNLMultiPlayerRoom extends JPanel {
+    public PNLMultiPlayerRoom(FRMMain FRMMain) {
 
     }
 }
