@@ -1,10 +1,14 @@
 package ss.project.shared.computerplayer;
 
-import lombok.Getter;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.World;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by fw on 16/01/2017.
@@ -12,7 +16,9 @@ import ss.project.shared.game.World;
 public class MinMaxComputerPlayer extends ComputerPlayer {
     private Player opponent;
     private World worldCopy;
-    private int depth = 7;
+    private int depth = 6;
+    private Future<Integer>[][] workers;
+    private ExecutorService executor;
 
     /**
      * create a computer player with the specified AI.
@@ -29,11 +35,14 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
 
     @Override
     public void doTurn(Engine engine) {
-        if (worldCopy == null) {
+        if (worldCopy == null)
             worldCopy = new World(engine.getWorld().getSize());
-        }
-        if (opponent == null) {
+        if (opponent == null)
             opponent = engine.getOtherPlayer(this);
+        if (workers == null)
+            workers = new Future[engine.getWorld().getSize().getX()][engine.getWorld().getSize().getY()];
+        if (executor == null) {
+            executor = Executors.newWorkStealingPool();
         }
 
         engine.getWorld().writeTo(worldCopy);
@@ -54,31 +63,38 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     }
 
     private Vector2 getBestPosition(World world) {
+        System.out.println("Starting heavy part!");
         int bestValue = Integer.MIN_VALUE;
         Vector2 result = Vector2.ZERO;
-        Worker[][] workers = new Worker[world.getSize().getX()][world.getSize().getY()];
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 World copy = new World(world.getSize());
                 world.writeTo(copy);
-                workers[x][y] = new Worker(this, copy, new Vector2(x, y), depth, true);
-                workers[x][y].start();
+                int finalX = x;
+                int finalY = y;
+                workers[x][y] = executor.submit(() -> getBestPosition(copy, new Vector2(finalX, finalY), depth, true));
             }
         }
-        for (int x = 0; x < workers.length; x++) {
-            for (int y = 0; y < workers[x].length; y++) {
-                try {
-                    workers[x][y].join();
-                    int value = workers[x][y].getResult();
+        try {
+            System.out.println("Waiting for threads to finish");
+//            executor.shutdown();
+//            executor.awaitTermination(30, TimeUnit.SECONDS);
+//            System.out.println(executor.isShutdown() + " " + executor.isTerminated());
+            for (int x = 0; x < workers.length; x++) {
+                for (int y = 0; y < workers[x].length; y++) {
+                    int value = workers[x][y].get();
+
                     if (value > bestValue) {
                         result = new Vector2(x, y);
                         bestValue = value;
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
+            System.out.println("Threads finished");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
+        System.out.println("Stopping heavy part!");
         return result;
     }
 
@@ -120,28 +136,5 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         }
         world.removeGameItem(coordinates);
         return sum;
-    }
-
-    private class Worker extends Thread {
-        private MinMaxComputerPlayer caller;
-        @Getter
-        private int result;
-        private World world;
-        private Vector2 coords;
-        private int depth;
-        private boolean maximize;
-
-        public Worker(MinMaxComputerPlayer caller, World world, Vector2 coordinates, int depth, boolean maximize) {
-            this.caller = caller;
-            this.world = world;
-            this.coords = coordinates;
-            this.depth = depth;
-            this.maximize = maximize;
-        }
-
-        @Override
-        public void run() {
-            result = caller.getBestPosition(world, coords, depth, maximize);
-        }
     }
 }
