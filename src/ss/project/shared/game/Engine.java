@@ -1,8 +1,11 @@
 package ss.project.shared.game;
 
+import ss.project.client.ui.GameDisplay;
+
 public class Engine {
     private World world;
     private Player[] players;
+    private GameDisplay game;
 
     /**
      * True while the game is running.
@@ -24,6 +27,24 @@ public class Engine {
      */
     public World getWorld() {
         return world;
+    }
+
+    /**
+     * Get the UI of this engine.
+     *
+     * @return
+     */
+    public GameDisplay getUI() {
+        return game;
+    }
+
+    /**
+     * Set the UI of this engine.
+     *
+     * @param game
+     */
+    public void setUI(GameDisplay game) {
+        this.game = game;
     }
 
     /**

@@ -12,7 +12,7 @@ import ss.project.shared.game.World;
 public class MinMaxComputerPlayer extends ComputerPlayer {
     private Player opponent;
     private World worldCopy;
-    private int depth = 7;
+    private int depth = 6;
 
     /**
      * create a computer player with the specified AI.

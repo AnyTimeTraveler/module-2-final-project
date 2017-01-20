@@ -44,11 +44,12 @@
 
 package ss.project.client.ui.gui;
 
+import ss.project.client.HumanPlayer;
 import ss.project.shared.game.*;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -60,7 +61,7 @@ import java.util.Random;
  * <p>
  * Version: 1.0
  */
-public class Canvas2D extends Canvas implements MouseListener {
+public class Canvas2D extends Canvas {
 
     Image backbuffer;    // Backbuffer image
     Graphics gc;            // Graphics context of backbuffer
@@ -71,9 +72,12 @@ public class Canvas2D extends Canvas implements MouseListener {
     private int height = 350;
     private Color background = new Color(215, 245, 144);
     private int offset = 10;
+    private Object waiter;
+    private HumanPlayer currentPlayer;
 
     Canvas2D(Engine engine) {
         this.engine = engine;
+        this.addMouseListener(new MouseListen());
     }
 
     public void setBuffer(Image backbuffer) {
@@ -92,11 +96,6 @@ public class Canvas2D extends Canvas implements MouseListener {
         }
     }
 
-    public void mousePressed(MouseEvent e) {
-        //board.checkSelection2D(e.getX(), e.getY(), 1);
-        System.out.println(e.getX() + "    " + e.getY());
-        repaint();
-    }
 
     private Color getPlayerColor(Player player) {
         if (!playerColorMap.containsKey(player)) {
@@ -117,10 +116,10 @@ public class Canvas2D extends Canvas implements MouseListener {
         gc.setColor(background);
         gc.fillRect(0, 0, width, height);
 
-        int partX = (width - 2 * offset) / world.getSize().getX();
-        int partY = (height - 2 * offset) / world.getSize().getY();
-        int blockWidth = (int) ((width / world.getSize().getX()) * 0.75f);
-        int blockHeight = (int) ((height / world.getSize().getY()) * 0.75f);
+        float blockWidth = (float) (width - (2 + world.getSize().getX()) * offset) / world.getSize().getX();
+        float blockHeight = (float) (height - (2 + world.getSize().getY()) * offset) / world.getSize().getY();
+        float partX = blockWidth + offset;
+        float partY = blockHeight + offset;
 
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
@@ -130,20 +129,45 @@ public class Canvas2D extends Canvas implements MouseListener {
                 } else {
                     gc.setColor(Color.black);
                 }
-                gc.fillRoundRect((int) (offset + x * partX + 0.5f * partX - 0.5f * blockWidth), (int) (offset + y * partY + 0.5f * partY - 0.5f * blockHeight), blockWidth, blockHeight, 5, 5);
+                gc.fillRoundRect((int) (offset + x * partX + 0.5f * offset), (int) (offset + y * partY + 0.5f * offset), (int) blockWidth, (int) blockHeight, 5, 5);
             }
         }
     }
 
-    public void mouseClicked(MouseEvent e) {
+    private Vector2 getActualCoordinates(int xPixels, int yPixels, Vector3 worldSize) {
+        float blockWidth = (float) (width - (2 + worldSize.getX()) * offset) / worldSize.getX();
+        float blockHeight = (float) (height - (2 + worldSize.getY()) * offset) / worldSize.getY();
+        float partX = blockWidth + offset;
+        float partY = blockHeight + offset;
+
+        int xCoord = (int) ((xPixels - offset) / partX);
+        int yCoord = (int) ((yPixels - offset) / partY);
+        return new Vector2(xCoord, yCoord);
     }
 
-    public void mouseReleased(MouseEvent e) {
+    public Object getWaiter() {
+        return waiter;
     }
 
-    public void mouseEntered(MouseEvent e) {
+    public void setWaiter(Object waiter) {
+        this.waiter = waiter;
     }
 
-    public void mouseExited(MouseEvent e) {
+    public void setCurrentPlayer(HumanPlayer player) {
+        this.currentPlayer = player;
+    }
+
+    private class MouseListen extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+            System.out.println(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
+
+            if (getWaiter() != null) {
+                currentPlayer.setSelectedCoordinates(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
+                synchronized (getWaiter()) {
+                    getWaiter().notify();
+                }
+                repaint();
+            }
+        }
     }
 }
