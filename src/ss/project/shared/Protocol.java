@@ -9,59 +9,25 @@ import java.util.HashMap;
 public class Protocol {
 
     public static final HashMap<String, String> ERRORMAP;
+    public static final HashMap<String, String> WINMAP;
 
     static {
         ERRORMAP = new HashMap<>();
         ERRORMAP.put("1", "Client has not yet sent capabilities message, Server cannot proceed");
         ERRORMAP.put("2", "Room sent in message joinRoom does not exist");
+        ERRORMAP.put("3", "The chosen room is no longer available, either it already filled up or was empty for too long");
+        ERRORMAP.put("4", "The input given by the client isn�t valid at this moment");
+        ERRORMAP.put("5", "The given move is not possible on this board");
+        ERRORMAP.put("6", "Client is not allowed to leave the room after the game has started");
+        ERRORMAP.put("7", "A message with piping in a wrong place was received");
     }
 
-    /**
-     * Function to get Error message by error code defined in protocol.
-     *
-     * @param number String with error code defined in Protocol
-     * @return Error explanation or null if invalid error code.
-     */
-    public static String getError(String number) {
-
-        String result = null;
-        if (number.equals("1")) {
-            result = "Client has not yet sent capabilities message, Server cannot proceed";
-        } else if (number.equals("2")) {
-            result = "Room sent in message joinRoom does not exist";
-        } else if (number.equals("3")) {
-            result = "The chosen room is no longer available, either it already filled up or was empty for too long";
-        } else if (number.equals("4")) {
-            result = "The input given by the client isn�t valid at this moment";
-        } else if (number.equals("5")) {
-            result = "The given move is not possible on this board";
-        } else if (number.equals("6")) {
-            result = "Client is not allowed to leave the room after the game has started";
-        } else if (number.equals("7")) {
-            result = "A message with piping in a wrong place was received";
-        } else {
-            result = "unknown error";
-        }
-
-        return result;
-    }
-
-    public static String getWin(String number) {
-        String result = null;
-        if (number.equals("1")) {
-            result = "The game was won!";
-        } else if (number.equals("2")) {
-            result = "Draw! The board is full.";
-        } else if (number.equals("3")) {
-            result = "Player disconnected. The game cannot continue.";
-        } else if (number.equals("4")) {
-            result = "Player didn't respond. The game cannot continue.";
-        } else {
-            result = "unknown win condition";
-        }
-
-        return result;
-
+    static {
+        WINMAP = new HashMap<>();
+        WINMAP.put("1", "The game was won!");
+        WINMAP.put("2", "Draw! The board is full.");
+        WINMAP.put("3", "Player disconnected. The game cannot continue.");
+        WINMAP.put("4", "Player didn't respond. The game cannot continue.");
     }
 
     /**
@@ -114,6 +80,6 @@ public class Protocol {
 
         public static final String SENDLEADERBOARD = "sendLeaderBoard";
 
-	}
+    }
 
 }
