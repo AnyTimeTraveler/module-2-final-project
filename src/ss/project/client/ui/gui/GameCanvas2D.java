@@ -44,15 +44,11 @@
 
 package ss.project.client.ui.gui;
 
-import ss.project.client.HumanPlayer;
 import ss.project.shared.game.*;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Class: GameCanvas2D
@@ -66,17 +62,21 @@ public class GameCanvas2D extends Canvas {
     Image backbuffer;    // Backbuffer image
     Graphics gc;            // Graphics context of backbuffer
     Engine engine;        // PNLGame board
-    Random random = new Random();
-    Map<Player, Color> playerColorMap = new HashMap<>();
+
     private int width = 350;
     private int height = 350;
     private Color background = new Color(215, 245, 144);
     private int offset = 10;
-    private Object waiter;
-    private HumanPlayer currentPlayer;
+    private int zLayer;
+    private PNLGame owner;
 
-    GameCanvas2D(Engine engine) {
+    GameCanvas2D(PNLGame owner, Engine engine, int zLayer, int width, int height) {
+        this.owner = owner;
         this.engine = engine;
+        this.zLayer = zLayer;
+        this.width = width;
+        this.height = height;
+        this.setSize(width, height);
         this.addMouseListener(new MouseListen());
     }
 
@@ -96,17 +96,6 @@ public class GameCanvas2D extends Canvas {
         }
     }
 
-
-    private Color getPlayerColor(Player player) {
-        if (!playerColorMap.containsKey(player)) {
-            float r = random.nextFloat() / 2 + 0.5f;
-            float g = random.nextFloat() / 2 + 0.5f;
-            float b = random.nextFloat() / 2 + 0.5f;
-            playerColorMap.put(player, new Color(r, g, b));
-        }
-        return playerColorMap.get(player);
-    }
-
     /**
      * render a world in 2D.
      *
@@ -123,9 +112,9 @@ public class GameCanvas2D extends Canvas {
 
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
-                WorldPosition worldPosition = world.getWorldPosition(new Vector3(x, y, 0));
+                WorldPosition worldPosition = world.getWorldPosition(new Vector3(x, y, zLayer));
                 if (worldPosition.hasGameItem()) {
-                    gc.setColor(getPlayerColor(worldPosition.getOwner()));
+                    gc.setColor(owner.getPlayerColor(worldPosition.getOwner()));
                 } else {
                     gc.setColor(Color.black);
                 }
@@ -145,28 +134,16 @@ public class GameCanvas2D extends Canvas {
         return new Vector2(xCoord, yCoord);
     }
 
-    public Object getWaiter() {
-        return waiter;
-    }
-
-    public void setWaiter(Object waiter) {
-        this.waiter = waiter;
-    }
-
-    public void setCurrentPlayer(HumanPlayer player) {
-        this.currentPlayer = player;
-    }
-
     private class MouseListen extends MouseAdapter {
         public void mousePressed(MouseEvent e) {
             System.out.println(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
 
-            if (getWaiter() != null) {
-                currentPlayer.setSelectedCoordinates(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
-                synchronized (getWaiter()) {
-                    getWaiter().notify();
+            if (owner.getWaiter() != null) {
+                owner.getCurrentPlayer().setSelectedCoordinates(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
+                synchronized (owner.getWaiter()) {
+                    owner.getWaiter().notify();
                 }
-                repaint();
+                //owner.refresh();
             }
         }
     }

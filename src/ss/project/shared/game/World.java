@@ -201,7 +201,10 @@ public class World {
                     if (!vector.equals(newCoordinates)) {
                         //We found a neighbor that is owner by us as well! Continue this path.
                         Vector3 direction = newCoordinates.subtract(x, y, z);
-                        if (hasWon(newCoordinates, player, direction, 1) + hasWon(newCoordinates, player, direction.inverse(), 0) >= 4) {
+                        int count1 = hasWon(newCoordinates, player, direction, 1);
+                        int count2 = hasWon(newCoordinates, player, direction.inverse(), 0);
+                        System.out.println(count1 + count2);
+                        if (count1 + count2 >= 4) {
                             //we won!
                             return true;
                         }
