@@ -1,5 +1,7 @@
 package ss.project.shared;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 
 /**
@@ -30,26 +32,45 @@ public class Protocol {
         WINMAP.put("4", "Player didn't respond. The game cannot continue.");
     }
 
+    public static String createMessage(Client message, Object... args) {
+        return message.getMessage();
+    }
+
+    public static String createMessage(Server message, Object... args) {
+        return createMessage(message.getMessage());
+    }
+
+    private static String createMessage(String message, Object... args) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(message);
+        for (Object arg : args) {
+            sb.append(' ');
+            sb.append(arg);
+        }
+        return sb.toString();
+    }
+
     /**
      * Client to server messages.
      *
      * @author Merel Meekes
      */
-    public static class Client {
+    public enum Client {
 
-        public static final String SENDCAPABILITIES = "sendCapabilities";
+        JOINROOM("joinRoom"),
+        GETROOMLIST("getRoomList"),
+        LEAVEROOM("leaveRoom"),
+        MAKEMOVE("makeMove"),
+        SENDMESSAGE("sendMessage"),
+        REQUESTLEADERBOARD("requestLeaderboard"),
+        SENDCAPABILITIES("sendCapabilities");
 
-        public static final String JOINROOM = "joinRoom";
+        @Getter
+        private String message;
 
-        public static final String GETROOMLIST = "getRoomList";
-
-        public static final String LEAVEROOM = "leaveRoom";
-
-        public static final String MAKEMOVE = "makeMove";
-
-        public static final String SENDMESSAGE = "sendMessage";
-
-        public static final String REQUESTLEADERBOARD = "requestLeaderboard";
+        Client(String message) {
+            this.message = message;
+        }
 
     }
 
@@ -58,27 +79,25 @@ public class Protocol {
      *
      * @author Merel Meekes
      */
-    public class Server {
+    public enum Server {
 
-        public static final String SERVERCAPABILITIES = "serverCapabilities";
+        SERVERCAPABILITIES("serverCapabilities"),
+        SENDLISTROOMS("sendListRooms"),
+        ASSIGNID("assignID"),
+        STARTGAME("startGame"),
+        TURNOFPLAYER("playerTurn"),
+        NOTIFYMOVE("notifyMove"),
+        NOTIFYEND("notifyEnd"),
+        ERROR("error"),
+        NOTIFYMESSAGE("notifyMessage"),
+        SENDLEADERBOARD("sendLeaderBoard");
 
-        public static final String SENDLISTROOMS = "sendListRooms";
+        @Getter
+        private String message;
 
-        public static final String ASSIGNID = "assignID";
-
-        public static final String STARTGAME = "startGame";
-
-        public static final String TURNOFPLAYER = "playerTurn";
-
-        public static final String NOTIFYMOVE = "notifyMove";
-
-        public static final String NOTIFYEND = "notifyEnd";
-
-        public static final String ERROR = "error";
-
-        public static final String NOTIFYMESSAGE = "notifyMessage";
-
-        public static final String SENDLEADERBOARD = "sendLeaderBoard";
+        Server(String message) {
+            this.message = message;
+        }
 
     }
 
