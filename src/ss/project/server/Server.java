@@ -1,21 +1,23 @@
 package ss.project.server;
 
+import lombok.extern.java.Log;
+import ss.project.shared.Protocol;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+@Log
 public class Server {
     private String ip;
     private int port;
     private List<ClientHandler> threads;
     private boolean closed;
 
-    /**
-     * Constructs a new Server object.
-     */
     public Server(String ip, int portArg) {
         this.ip = ip;
         port = portArg;
@@ -24,29 +26,22 @@ public class Server {
         Thread.currentThread().setName("Server");
     }
 
-    /**
-     * Start een Server-applicatie op.
-     */
     public static void main(String[] args) {
-
         Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
-        server.run();
+//        server.run();
+//        Room room = new Room(1, Integer.MAX_VALUE);
+        System.out.println(server.getCapabilitiesMessage());
     }
 
-    /**
-     * Listens to a port of this Server if there are any Clients that
-     * would like to connect. For every new socket connection a new
-     * ClientHandler thread is started that takes care of the further
-     * communication with the Client.
-     */
     public void run() {
+        log.setLevel(Level.ALL);
         try {
             ServerSocket serverSocket = new ServerSocket(port, 255, InetAddress.getByName(ip));
-            print("Now listening on: " + ip + ":" + port);
+            log.info("Now listening on: " + ip + ":" + port);
             while (!closed) {
-//                print("Waiting for incoming connections...");
+                log.fine("Waiting for incoming connections...");
                 Socket client = serverSocket.accept();
-//                print("Connection accepted!");
+                log.fine("Connection accepted!");
                 addHandler(new ClientHandler(this, client));
             }
         } catch (IOException e) {
@@ -55,41 +50,22 @@ public class Server {
 
     }
 
-    public void print(String message) {
-        System.out.println(message);
-    }
-
-    /**
-     * Sends a message using the collection of connected ClientHandlers
-     * to all connected Clients.
-     *
-     * @param msg message that is send
-     */
     public void broadcast(String msg) {
-        print(msg);
+        log.info("Message to all clients: " + msg);
         for (ClientHandler clientHandler : threads) {
             clientHandler.sendMessage(msg);
         }
     }
 
-    /**
-     * Add a ClientHandler to the collection of ClientHandlers.
-     *
-     * @param handler ClientHandler that will be added
-     */
     public void addHandler(ClientHandler handler) {
         threads.add(handler);
         handler.start();
-//        print("Started ClientHandler!");
+        log.fine("Started ClientHandler!");
     }
 
-    /**
-     * Remove a ClientHandler from the collection of ClientHanlders.
-     *
-     * @param handler ClientHandler that will be removed
-     */
     public void removeHandler(ClientHandler handler) {
         threads.remove(handler);
+        log.fine("Removed ClientHandler!");
     }
 
     public String getClientList() {
@@ -105,5 +81,17 @@ public class Server {
     public void shutdown() {
         closed = true;
 
+    }
+
+    public String getCapabilitiesMessage() {
+        ServerConfig sc = ServerConfig.getInstance();
+        return Protocol.createMessage(Protocol.Server.SERVERCAPABILITIES,
+                sc.MaxPlayers,
+                sc.RoomSupport,
+                sc.MaxDimensionX,
+                sc.MaxDimensionY,
+                sc.MaxDimensionZ,
+                sc.MaxWinLength,
+                sc.ChatSupport);
     }
 }

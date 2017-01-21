@@ -1,8 +1,8 @@
 package ss.project.server;
 
-import ss.project.server.Exceptions.AlreadyJoinedException;
-import ss.project.server.Exceptions.NotInRoomException;
-import ss.project.server.Exceptions.RoomFullException;
+import ss.project.server.exceptions.AlreadyJoinedException;
+import ss.project.server.exceptions.NotInRoomException;
+import ss.project.server.exceptions.RoomFullException;
 import ss.project.shared.game.Player;
 
 import java.util.ArrayList;

@@ -19,10 +19,24 @@ public class ServerConfig {
     //Variables
     public String Host;
     public int Port;
+    public int MaxPlayers;
+    public boolean RoomSupport;
+    public int MaxDimensionX;
+    public int MaxDimensionY;
+    public int MaxDimensionZ;
+    public int MaxWinLength;
+    public boolean ChatSupport;
 
     private ServerConfig() {
         Host = "127.0.0.1";
         Port = 1234;
+        MaxPlayers = 2;
+        RoomSupport = true;
+        MaxDimensionX = 4;
+        MaxDimensionY = 4;
+        MaxDimensionZ = 4;
+        MaxWinLength = 4;
+        ChatSupport = true;
     }
 
     public static ServerConfig getInstance() {

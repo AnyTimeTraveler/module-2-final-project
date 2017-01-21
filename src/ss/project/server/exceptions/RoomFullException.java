@@ -1,4 +1,4 @@
-package ss.project.server.Exceptions;
+package ss.project.server.exceptions;
 
 import ss.project.server.Room;
 

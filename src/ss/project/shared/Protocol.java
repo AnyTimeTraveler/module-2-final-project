@@ -33,11 +33,11 @@ public class Protocol {
     }
 
     public static String createMessage(Client message, Object... args) {
-        return message.getMessage();
+        return createMessage(message.getMessage(), args);
     }
 
     public static String createMessage(Server message, Object... args) {
-        return createMessage(message.getMessage());
+        return createMessage(message.getMessage(), args);
     }
 
     private static String createMessage(String message, Object... args) {
@@ -45,7 +45,11 @@ public class Protocol {
         sb.append(message);
         for (Object arg : args) {
             sb.append(' ');
-            sb.append(arg);
+            if (arg instanceof Boolean) {
+                sb.append((boolean) arg ? '1' : '0');
+            } else {
+                sb.append(arg);
+            }
         }
         return sb.toString();
     }

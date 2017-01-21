@@ -1,4 +1,4 @@
-package ss.project.server.Exceptions;
+package ss.project.server.exceptions;
 
 /**
  * Created by fw on 21/01/2017.
