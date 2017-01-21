@@ -2,7 +2,6 @@ package ss.project.client.ui.gui;
 
 import ss.project.client.HumanPlayer;
 import ss.project.client.ui.GameDisplay;
-import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.computerplayer.RandomComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
@@ -38,7 +37,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     private HumanPlayer currentPlayer;
 
     public PNLGame(FRMMain mainFrame) {
-        super();
+        super(true);
         this.mainFrame = mainFrame;
     }
 
@@ -47,11 +46,13 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         width = 350;
         height = 350;
 
+        mainFrame.setSize(width * 2 + 20, height * 2 + 40);
+
         RandomComputerPlayer test = new RandomComputerPlayer("computer random");
 
         //Create a new engine.
-        mainFrame.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{new HumanPlayer("0"),
-                new MinMaxComputerPlayer("min max")}));
+        mainFrame.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{test,
+                new HumanPlayer("min max")}));
 
         engine = mainFrame.getEngine();
         engine.setUI(this);

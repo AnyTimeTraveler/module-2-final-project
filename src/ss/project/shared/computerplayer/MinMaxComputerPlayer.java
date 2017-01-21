@@ -77,9 +77,6 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         }
         try {
             System.out.println("Waiting for threads to finish");
-//            executor.shutdown();
-//            executor.awaitTermination(30, TimeUnit.SECONDS);
-//            System.out.println(executor.isShutdown() + " " + executor.isTerminated());
             for (int x = 0; x < workers.length; x++) {
                 for (int y = 0; y < workers[x].length; y++) {
                     int value = workers[x][y].get();
@@ -121,10 +118,10 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
 
         if (maximize && world.hasWon(coordinates, this)) {
             world.removeGameItem(coordinates);
-            return 10;
+            return (int) Math.pow(10, depth);
         } else if (!maximize && world.hasWon(coordinates, opponent)) {
             world.removeGameItem(coordinates);
-            return -10;
+            return (int) Math.pow(-10, depth);
         }
 
         int sum = 0;

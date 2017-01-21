@@ -148,54 +148,69 @@ public class WorldTest {
     public void hasWon() throws Exception {
         world.addGameItem(new Vector2(0, 0), dummy);
         Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
-        world.addGameItem(new Vector2(1, 1), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
         world.addGameItem(new Vector2(1, 0), dummy);
         Assert.assertFalse(world.hasWon(new Vector2(1, 0), dummy));
-        world.addGameItem(new Vector2(1, 1), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
         world.addGameItem(new Vector2(2, 0), dummy);
         Assert.assertFalse(world.hasWon(new Vector2(2, 0), dummy));
-        world.addGameItem(new Vector2(1, 1), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
         world.addGameItem(new Vector2(3, 0), dummy);
         Assert.assertTrue(world.hasWon(new Vector2(3, 0), dummy));
-        world.addGameItem(new Vector2(1, 3), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(1, 2), dummy2));
     }
 
+    //TODO: add direction (1,1,1)
+    //TODO: add direction (1,-1,0) at z = 2
     @Test
     public void hasWon1() throws Exception {
         world.addGameItem(new Vector2(0, 0), dummy);
         Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
-        world.addGameItem(new Vector2(2, 1), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(2, 1), dummy2));
         world.addGameItem(new Vector2(1, 1), dummy);
         Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy));
-        world.addGameItem(new Vector2(1, 1), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
         world.addGameItem(new Vector2(2, 2), dummy);
         Assert.assertFalse(world.hasWon(new Vector2(2, 2), dummy));
-        world.addGameItem(new Vector2(1, 1), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy2));
         world.addGameItem(new Vector2(3, 3), dummy);
         Assert.assertTrue(world.hasWon(new Vector2(3, 3), dummy));
-        world.addGameItem(new Vector2(1, 3), dummy2);
-        Assert.assertFalse(world.hasWon(new Vector2(1, 3), dummy2));
     }
 
     @Test
     public void hasWonDiagonal2() throws Exception {
         world.addGameItem(new Vector2(3, 0), dummy);
-        //Assert.assertFalse(world.hasWon(new Vector2(3, 0), dummy));
+        Assert.assertFalse(world.hasWon(new Vector2(3, 0), dummy));
         world.addGameItem(new Vector2(2, 1), dummy);
-        //Assert.assertFalse(world.hasWon(new Vector2(2, 1), dummy));
+        Assert.assertFalse(world.hasWon(new Vector2(2, 1), dummy));
         world.addGameItem(new Vector2(1, 2), dummy);
-        //Assert.assertFalse(world.hasWon(new Vector2(1, 2), dummy));
+        Assert.assertFalse(world.hasWon(new Vector2(1, 2), dummy));
         world.addGameItem(new Vector2(0, 3), dummy);
         Assert.assertTrue(world.hasWon(new Vector2(0, 3), dummy));
     }
 
+    @Test
+    public void hasWonDiagonal3() throws Exception {
+        world.addGameItem(new Vector2(0, 0), dummy);
+        Assert.assertFalse(world.hasWon(new Vector2(3, 0), dummy));
+        world.addGameItem(new Vector2(1, 1), dummy2);
+        world.addGameItem(new Vector2(2, 2), dummy2);
+        world.addGameItem(new Vector2(2, 2), dummy2);
+        world.addGameItem(new Vector2(3, 3), dummy2);
+        world.addGameItem(new Vector2(3, 3), dummy2);
+        world.addGameItem(new Vector2(3, 3), dummy2);
+        world.addGameItem(new Vector2(1, 1), dummy);
+        Assert.assertFalse(world.hasWon(new Vector2(1, 1), dummy));
+        world.addGameItem(new Vector2(2, 2), dummy);
+        Assert.assertFalse(world.hasWon(new Vector2(2, 2), dummy));
+        world.addGameItem(new Vector2(3, 3), dummy);
+        Assert.assertTrue(world.hasWon(new Vector2(3, 3), dummy));
+    }
+
+    @Test
+    public void hasWonStraight() throws Exception {
+        world.addGameItem(new Vector2(0, 0), dummy);
+        //Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
+        world.addGameItem(new Vector2(0, 0), dummy);
+        //Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
+        world.addGameItem(new Vector2(0, 0), dummy);
+        //Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
+        world.addGameItem(new Vector2(0, 0), dummy);
+        Assert.assertTrue(world.hasWon(new Vector2(0, 0), dummy));
+    }
 
     @Test
     public void writeTo() throws Exception {
