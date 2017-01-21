@@ -23,11 +23,6 @@ public class RandomComputerPlayer extends ComputerPlayer {
         setNewGameItem(engine);
     }
 
-    @Override
-    public String getName() {
-        return null;
-    }
-
     private void setNewGameItem(Engine engine) {
         World world = engine.getWorld();
         while (true) {

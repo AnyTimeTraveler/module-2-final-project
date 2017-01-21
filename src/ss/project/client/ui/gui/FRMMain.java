@@ -52,7 +52,7 @@ public class FRMMain extends JFrame implements MainWindow {
         this.requestFocus();
         this.setTitle(ClientConfig.getInstance().WindowTitle);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.switchTo(Panel.GAME);
+        this.switchTo(Panel.MULTI_PLAYER_LOBBY);
         this.setVisible(true);
     }
 

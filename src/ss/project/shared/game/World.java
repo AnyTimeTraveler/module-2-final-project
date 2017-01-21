@@ -176,11 +176,11 @@ public class World {
      * @return
      */
     public boolean hasWon(Vector2 newCoordinates, Player player) {
-        WorldPosition wp = getWorldPosition(newCoordinates);
+        WorldPosition wp = getWorldPosition(getHighestPosition(newCoordinates));
         if (wp != null) {
-            Vector3 newCoords = wp.getCoordinates().subtract(0, 0, 1);
-            if (insideWorld(newCoords)) {
-                return hasWon(newCoords, player);
+            //Vector3 newCoords = wp.getCoordinates().subtract(0, 0, 1);
+            if (insideWorld(wp.getCoordinates())) {
+                return hasWon(wp.getCoordinates(), player);
             }
         }
         return false;
@@ -211,7 +211,6 @@ public class World {
                 }
             }
         }
-
         return false;
     }
 
