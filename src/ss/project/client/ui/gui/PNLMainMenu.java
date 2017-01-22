@@ -29,6 +29,25 @@ public class PNLMainMenu extends GUIPanel {
         this.add(comp);
     }
 
+    private JButton createButton(String text) {
+        JButton result = new JButton(text);
+
+        result.setPreferredSize(new Dimension(100, 50));
+        result.setMaximumSize(new Dimension(150, 70));
+
+        return result;
+    }
+
+    private JLabel createLabel(String text) {
+        JLabel result = new JLabel(text, SwingConstants.CENTER);
+
+        result.setAlignmentX(Component.CENTER_ALIGNMENT);
+        result.setPreferredSize(new Dimension(100, 50));
+        result.setMaximumSize(new Dimension(150, 70));
+
+        return result;
+    }
+
     @Override
     public void initialize() {
         if (initialized) {
@@ -36,12 +55,12 @@ public class PNLMainMenu extends GUIPanel {
         }
         initialized = true;
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        addComponent(new JLabel("Main Menu"));
-        addComponent(new JButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS));
-        addComponent(new JButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
-        addComponent(new JButton("PNLOptions"), e -> controller.switchTo(Controller.Panel.OPTIONS));
-        addComponent(new JButton("Exit"), e -> controller.shutdown());
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        addComponent(createLabel("Main Menu"));
+        addComponent(createButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS));
+        addComponent(createButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
+        addComponent(createButton("Options"), e -> controller.switchTo(Controller.Panel.OPTIONS));
+        addComponent(createButton("Exit"), e -> controller.shutdown());
     }
 
     @Override
