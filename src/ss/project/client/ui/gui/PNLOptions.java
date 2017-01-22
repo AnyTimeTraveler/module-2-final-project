@@ -1,5 +1,6 @@
 package ss.project.client.ui.gui;
 
+import ss.project.client.Config;
 import ss.project.client.Controller;
 
 import javax.swing.*;
@@ -29,6 +30,12 @@ public class PNLOptions extends GUIPanel {
         this.add(comp);
     }
 
+    private void addComponent(JCheckBox comp, ActionListener actionListener) {
+        comp.setAlignmentX(Component.CENTER_ALIGNMENT);
+        comp.addActionListener(actionListener);
+        this.add(comp);
+    }
+
     @Override
     public void initialize() {
         if (initialized) {
@@ -37,8 +44,15 @@ public class PNLOptions extends GUIPanel {
         initialized = true;
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        addComponent(new JLabel("PNLOptions"));
-        addComponent(new JButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
+        addComponent(GUIUtils.createLabel("Options", GUIUtils.LabelType.TITLE));
+        addComponent(GUIUtils.createCheckBox("Fullscreen"), e -> swichFullscreen());
+        addComponent(GUIUtils.createButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
+    }
+
+    private void swichFullscreen() {
+        boolean fullScreen = !Config.getInstance().Fullscreen;
+        Config.getInstance().Fullscreen = fullScreen;
+        controller.getFrame().init();
     }
 
     @Override

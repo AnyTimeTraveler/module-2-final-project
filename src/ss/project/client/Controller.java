@@ -56,6 +56,10 @@ public class Controller {
         frame.setSize(width, height);
     }
 
+    public FRMMain getFrame() {
+        return frame;
+    }
+
     public enum Panel {
         MAIN_MENU(new PNLMainMenu(controller)),
         SINGLE_PLAYER_SETTINGS(new PNLSinglePlayerSettings(controller)),
