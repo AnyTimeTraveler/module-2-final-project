@@ -9,6 +9,7 @@ public class ClientHandler extends Thread {
     private BufferedReader in;
     private BufferedWriter out;
     private boolean closed;
+    private NetworkPlayer player;
 
     //@ requires server != null && socket != null;
     public ClientHandler(Server server, Socket socket) throws IOException {
@@ -22,12 +23,15 @@ public class ClientHandler extends Thread {
 
     public void run() {
         String line;
-//        try {
-        sendMessage(server.getCapabilitiesMessage());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            closed = true;
-//        }
+        try {
+            sendMessage(server.getCapabilitiesMessage());
+            line = in.readLine();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            closed = true;
+        }
 
         try {
             while (!closed) {
@@ -38,7 +42,6 @@ public class ClientHandler extends Thread {
             e.printStackTrace();
             closed = true;
         }
-
     }
 
     public void sendMessage(String msg) {

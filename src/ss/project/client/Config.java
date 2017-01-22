@@ -2,37 +2,46 @@ package ss.project.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ss.project.client.networking.Connection;
 import ss.project.shared.computerplayer.LinearComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.computerplayer.RandomComputerPlayer;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by simon on 01.12.16.
  */
 
-public class ClientConfig {
+public class Config {
 
     // Configfile name
     private static final String CONFIGFILE = "client-config.json";
-    private static ClientConfig instance;
+    private static Config instance;
 
     //Variables
     public String WindowTitle;
     public HashMap<String, Class> playerTypes;
+    public boolean Fullscreen;
+    public List<Connection> knownServers;
 
-    private ClientConfig() {
+    private Config() {
         WindowTitle = "Connect Four 3D";
+        Fullscreen = false;
         playerTypes = new HashMap<>();
         playerTypes.put("Human", HumanPlayer.class);
         playerTypes.put("Linear AI", LinearComputerPlayer.class);
         playerTypes.put("Minmax AI", MinMaxComputerPlayer.class);
         playerTypes.put("Random AI", RandomComputerPlayer.class);
+        knownServers = new ArrayList<>();
+        knownServers.add(new Connection("Localhost", "127.0.0.1", 1234));
+
     }
 
-    public static ClientConfig getInstance() {
+    public static Config getInstance() {
         if (instance == null) {
             load();
         }
@@ -52,15 +61,15 @@ public class ClientConfig {
         load(new File(CONFIGFILE));
     }
 
-    private static ClientConfig fromDefaults() {
-        return new ClientConfig();
+    private static Config fromDefaults() {
+        return new Config();
     }
 
-    private static ClientConfig fromFile(File configFile) {
+    private static Config fromFile(File configFile) {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
-            return gson.fromJson(reader, ClientConfig.class);
+            return gson.fromJson(reader, Config.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;

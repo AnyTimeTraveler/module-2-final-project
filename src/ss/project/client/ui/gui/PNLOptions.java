@@ -1,5 +1,7 @@
 package ss.project.client.ui.gui;
 
+import ss.project.client.Controller;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -10,11 +12,11 @@ import java.awt.event.ActionListener;
 public class PNLOptions extends GUIPanel {
 
 
-    private final FRMMain mainFrame;
+    private final Controller controller;
 
-    public PNLOptions(FRMMain mainFrame) {
-        super(true);
-        this.mainFrame = mainFrame;
+    public PNLOptions(Controller controller) {
+        super();
+        this.controller = controller;
     }
 
     private void addComponent(JComponent comp) {
@@ -32,10 +34,7 @@ public class PNLOptions extends GUIPanel {
     public void onEnter() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addComponent(new JLabel("PNLOptions"));
-//        addComponent(new JButton("Single Player"), e -> mainFrame.switchToSinglePlayerSettings());
-//        addComponent(new JButton("Multi Player"), e -> mainFrame.switchToServerBrowser());
-//        addComponent(new JButton("PNLOptions"), e -> mainFrame.switchToOptions());
-        addComponent(new JButton("Back"), e -> mainFrame.switchTo(FRMMain.Panel.MAIN_MENU));
+        addComponent(new JButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
     }
 
     @Override

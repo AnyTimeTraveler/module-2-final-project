@@ -1,27 +1,21 @@
-package ss.project.client;
+package ss.project.client.networking;
+
+import lombok.extern.java.Log;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-
-public class Client extends Thread {
-    private static final String USAGE
-            = "usage: java week7.cmdchat.Client <name> <address> <port>";
-    private String clientName;
+@Log
+public class Network extends Thread {
     private Socket socket;
     private BufferedReader in;
     private BufferedWriter out;
     private boolean closed;
 
-    /**
-     * Constructs a Client-object and tries to make a socket connection.
-     */
-    public Client(String name, InetAddress host, int port)
+    public Network(Connection connection)
             throws IOException {
-        clientName = name;
-        socket = new Socket(host, port);
+        socket = new Socket(connection.getAddress(), connection.getPort());
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         closed = false;
@@ -29,53 +23,31 @@ public class Client extends Thread {
         this.setName("ServerInputReader");
     }
 
-    /**
-     * Start een Client-applicatie op.
-     */
     public static void main(String[] args) {
-        if (args.length != 3) {
-            System.out.println(USAGE);
-            return;
-        }
-
         try {
-            InetAddress host = InetAddress.getByName(args[1]);
-            int port = Integer.parseInt(args[2]);
-            Client client = new Client(args[0], host, port);
-            print("Connecting...");
+            String host = "localhost";
+            int port = 1234;
+            Network client = new Network(new Connection("ServerConnection", host, port));
+            log.fine("Connecting...");
             client.sendMessage(args[0]);
             client.start();
-            print("Connection established");
+            log.fine("Connection established");
         } catch (UnknownHostException e) {
-            print("ERROR: no valid hostname!");
+            log.severe("Noo valid hostname!");
         } catch (IOException e) {
             e.printStackTrace();
-            print("ERROR: couldn't construct a client object!");
-        } catch (NumberFormatException e) {
-            print("ERROR: no valid portnummer!");
+            log.severe("Couldn't construct a client object!");
         }
 
     }
 
-    private static void print(String message) {
-        System.out.println(message);
-    }
-
-    /**
-     * Reads the messages in the socket connection. Each message will
-     * be forwarded to the MessageUI
-     */
     public void run() {
-        print("Waiting for Server response...");
+        log.finer("Waiting for Server response...");
         String line;
         while (!closed) {
             try {
                 line = in.readLine();
-                if (line == null) {
-                    shutdown();
-                } else if (!line.startsWith(clientName)) {
-                    print(line);
-                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -87,7 +59,7 @@ public class Client extends Thread {
      */
     public void sendMessage(String msg) {
         try {
-//            print("Sent message: " + msg);
+//            log.fine("Sent message: " + msg);
             out.write(msg);
             out.newLine();
             out.flush();
@@ -100,7 +72,7 @@ public class Client extends Thread {
      * close the socket connection.
      */
     public void shutdown() {
-        print("Closing socket connection...");
+        log.fine("Closing socket connection...");
         try {
             out.write("end");
             out.newLine();
@@ -112,10 +84,10 @@ public class Client extends Thread {
 
     private class ClientInputReader extends Thread {
 
-        private final Client client;
+        private final Network client;
         private BufferedReader in;
 
-        public ClientInputReader(Client client) {
+        public ClientInputReader(Network client) {
             this.client = client;
             in = new BufferedReader(new InputStreamReader(System.in));
             this.setDaemon(true);
@@ -127,7 +99,7 @@ public class Client extends Thread {
             try {
                 String line;
                 while (!client.closed) {
-//                    print("Ready to read Client input:");
+//                    log.fine("Ready to read Network input:");
                     line = in.readLine();
                     if (line.equals("end")) {
                         client.shutdown();

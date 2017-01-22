@@ -1,16 +1,12 @@
 package ss.project.client.ui.tui;
 
 
-import ss.project.client.ui.MainWindow;
-
-import java.awt.*;
-import java.io.IOException;
 import java.util.Scanner;
 
 /**
  * Created by simon on 23.12.16.
  */
-public class TUI implements MainWindow {
+public class TUI {
     private static TUI tui;
     private TUIPanel current;
     private boolean isRunning;
@@ -18,14 +14,6 @@ public class TUI implements MainWindow {
     public TUI() {
         isRunning = true;
         switchTo(TUI.Panel.MAIN_MENU);
-    }
-
-    public static void main(String[] args) throws IOException {
-        EventQueue.invokeLater(() -> {
-            tui = new TUI();
-            Thread.currentThread().setName("TUI");
-            tui.run();
-        });
     }
 
     void switchTo(Panel p) {
@@ -44,11 +32,9 @@ public class TUI implements MainWindow {
         }
     }
 
-    @Override
     public void shutdown() {
-        isRunning = false;
+        System.exit(0);
     }
-
     public enum Panel {
         MAIN_MENU(new MainMenu(tui)),
         SINGLE_PLAYER_SETTINGS(new SinglePlayerSettings()),

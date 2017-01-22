@@ -1,10 +1,12 @@
 package ss.project.client.ui.gui;
 
+import ss.project.client.Controller;
+
 /**
  * Created by simon on 16.01.17.
  */
 public class PNLMultiPlayerRoomCreation extends GUIPanel {
-    public PNLMultiPlayerRoomCreation(FRMMain mainFrame) {
+    public PNLMultiPlayerRoomCreation(Controller controller) {
 
     }
 

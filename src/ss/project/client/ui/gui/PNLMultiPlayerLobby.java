@@ -1,5 +1,7 @@
 package ss.project.client.ui.gui;
 
+import ss.project.client.Controller;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -12,7 +14,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
     private JList list;
     private DefaultListModel listModel;
 
-    public PNLMultiPlayerLobby(FRMMain mainFrame) {
+    public PNLMultiPlayerLobby(Controller controller) {
         super(true);
     }
 

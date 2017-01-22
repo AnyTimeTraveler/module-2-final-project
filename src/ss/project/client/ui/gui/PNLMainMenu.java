@@ -1,5 +1,7 @@
 package ss.project.client.ui.gui;
 
+import ss.project.client.Controller;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -9,11 +11,11 @@ import java.awt.event.ActionListener;
  */
 public class PNLMainMenu extends GUIPanel {
 
-    private FRMMain mainFrame;
+    private Controller controller;
 
-    public PNLMainMenu(FRMMain mainFrame) {
+    public PNLMainMenu(Controller controller) {
         super();
-        this.mainFrame = mainFrame;
+        this.controller = controller;
     }
 
     private void addComponent(JComponent comp) {
@@ -31,10 +33,10 @@ public class PNLMainMenu extends GUIPanel {
     public void onEnter() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addComponent(new JLabel("Main Menu"));
-        addComponent(new JButton("Single Player"), e -> mainFrame.switchTo(FRMMain.Panel.SINGLE_PLAYER_SETTINGS));
-        addComponent(new JButton("Multi Player"), e -> mainFrame.switchTo(FRMMain.Panel.SERVER_BRWOSER));
-        addComponent(new JButton("PNLOptions"), e -> mainFrame.switchTo(FRMMain.Panel.OPTIONS));
-        addComponent(new JButton("Exit"), e -> mainFrame.shutdown());
+        addComponent(new JButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS));
+        addComponent(new JButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
+        addComponent(new JButton("PNLOptions"), e -> controller.switchTo(Controller.Panel.OPTIONS));
+        addComponent(new JButton("Exit"), e -> controller.shutdown());
     }
 
     @Override

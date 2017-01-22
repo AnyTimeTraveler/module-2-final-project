@@ -1,7 +1,8 @@
 package ss.project.client.ui.gui;
 
 import lombok.extern.java.Log;
-import ss.project.client.ClientConfig;
+import ss.project.client.Config;
+import ss.project.client.Controller;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
@@ -24,34 +25,44 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     private JSpinner playerAmount;
     private JSpinner winLength;
     private PlayerPanel[] playerPanels;
-    private FRMMain mainFrame;
+    private Controller controller;
+    private GridBagConstraints c;
+
+    private int x = 0;
+    private int y = 0;
 
     // Worls Size
     // Player count
     // Win length
 
-    public PNLSinglePlayerSettings(FRMMain mainFrame) {
+    public PNLSinglePlayerSettings(Controller controller) {
         super();
-        this.mainFrame = mainFrame;
+        this.controller = controller;
     }
 
-    private JSpinner addSpinner(GridBagConstraints c, int value, int min, int max, int gridX, int gridY, int width, int height) {
+    private void nextRow() {
+        y++;
+    }
+
+    private JSpinner createSpinner(int value, int min, int max, int width, int height) {
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, min, max, 1));
-        c.gridx = gridX;
-        c.gridy = gridY;
+        c.gridx = x++;
+        c.gridy = y;
         c.gridwidth = width;
         c.gridheight = height;
-        this.add(spinner, c);
+        c.weightx = 0.5f;
+        c.fill = GridBagConstraints.HORIZONTAL;
         return spinner;
     }
 
-    private void drawHeadline(GridBagConstraints c) {
-        headline = new JLabel("Single Player");
+    private JLabel createLabel(String text, int width, int height) {
+        JLabel label = new JLabel(text);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 4;
-        this.add(headline, c);
+        c.gridx = x;
+        c.gridy = y;
+        c.gridwidth = width;
+        c.gridheight = height;
+        return label;
     }
 
     private JPanel addPlayerPanes(int players) {
@@ -69,23 +80,33 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     public void onEnter() {
         GridBagLayout mgr = new GridBagLayout();
         this.setLayout(mgr);
-        GridBagConstraints c = new GridBagConstraints();
+        c = new GridBagConstraints();
 
-        drawHeadline(c);
-        worldX = addSpinner(c, 4, 0, 100, 0, 1, 1, 1);
-        worldY = addSpinner(c, 4, 0, 100, 1, 1, 1, 1);
-        worldZ = addSpinner(c, 4, 0, 100, 2, 1, 1, 1);
-        playerAmount = addSpinner(c, 4, 0, 100, 3, 1, 1, 1);
-        winLength = addSpinner(c, 4, 0, 100, 4, 1, 1, 1);
+        add(createLabel("Single Player", 4, 1));
+        nextRow();
+        add(createLabel("World X:", 4, 1));
+        add(worldX = createSpinner(4, 0, 100, 1, 1));
+        add(createLabel("World Y:", 4, 1));
+        add(worldY = createSpinner(4, 0, 100, 1, 1));
+        add(createLabel("World Z:", 4, 1));
+        add(worldZ = createSpinner(4, 0, 100, 1, 1));
+        add(createLabel("Player Amount:", 4, 1));
+        playerAmount = createSpinner(4, 0, 100, 1, 1);
+        playerAmount.addChangeListener(e -> addPlayerPanes(((SpinnerNumberModel) playerAmount.getModel()).getNumber().intValue()));
+        add(playerAmount);
+        add(createLabel("Win Length:", 4, 1));
+        add(winLength = createSpinner(4, 0, 100, 1, 1));
 
+        nextRow();
         c.gridx = 0;
         c.gridy = 2;
         c.gridheight = 3;
         c.gridwidth = 4;
         this.add(addPlayerPanes(3), c);
 
+        nextRow();
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(e -> mainFrame.switchTo(FRMMain.Panel.GAME));
+        startButton.addActionListener(e -> controller.switchTo(Controller.Panel.GAME));
 //        startButton.addActionListener(new MyActionListener());
         c.gridx = 4;
         c.gridy = 3;
@@ -114,7 +135,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
             this.add(playerNameField);
             this.add(new JLabel("Type:"));
             playerType = new JComboBox<>();
-            for (String key : ClientConfig.getInstance().playerTypes.keySet()) {
+            for (String key : Config.getInstance().playerTypes.keySet()) {
                 playerType.addItem(key);
             }
             this.add(playerType);
@@ -140,7 +161,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
                 Player[] players = new Player[playerCount];
                 for (int i = 0; i < playerCount; i++) {
-                    players[i] = (Player) ClientConfig.getInstance().playerTypes.get(playerPanels[i].getPlayerType()).newInstance();
+                    players[i] = (Player) Config.getInstance().playerTypes.get(playerPanels[i].getPlayerType()).newInstance();
                     players[i].setName(playerPanels[i].getName());
                 }
 

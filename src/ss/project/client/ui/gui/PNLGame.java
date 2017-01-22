@@ -1,7 +1,9 @@
 package ss.project.client.ui.gui;
 
+import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
 import ss.project.client.ui.GameDisplay;
+import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.computerplayer.RandomComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
@@ -32,13 +34,13 @@ public class PNLGame extends GUIPanel implements GameDisplay {
      */
     private Image[] backbuffer2D;
     private Engine engine;
-    private FRMMain mainFrame;
+    private Controller controller;
     private Object waiter;
     private HumanPlayer currentPlayer;
 
-    public PNLGame(FRMMain mainFrame) {
+    public PNLGame(Controller controller) {
         super(true);
-        this.mainFrame = mainFrame;
+        this.controller = controller;
     }
 
     @Override
@@ -46,15 +48,17 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         width = 350;
         height = 350;
 
-        mainFrame.setSize(width * 2 + 20, height * 2 + 40);
+        controller.setFrameSize(width * 2 + 20, height * 2 + 40);
 
         RandomComputerPlayer test = new RandomComputerPlayer("computer random");
 
         //Create a new engine.
-        mainFrame.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{test,
-                new HumanPlayer("min max")}));
+        MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max");
+        MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2");
+        controller.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{minMaxComputerPlayer,
+                minMaxComputerPlayer1}));
 
-        engine = mainFrame.getEngine();
+        engine = controller.getEngine();
         engine.setUI(this);
 
         this.setLayout(new GridBagLayout());

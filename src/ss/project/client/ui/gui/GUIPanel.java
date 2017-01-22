@@ -11,6 +11,7 @@ public abstract class GUIPanel extends JPanel {
     }
 
     public GUIPanel() {
+        super();
     }
 
     public abstract void onEnter();
