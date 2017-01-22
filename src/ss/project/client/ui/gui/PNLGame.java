@@ -37,6 +37,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     private Controller controller;
     private Object waiter;
     private HumanPlayer currentPlayer;
+    private GridBagConstraints gridBagConstraints;
 
     public PNLGame(Controller controller) {
         super(true);
@@ -44,29 +45,37 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     }
 
     @Override
-    public void onEnter() {
+    public void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         width = 350;
         height = 350;
 
         controller.setFrameSize(width * 2 + 20, height * 2 + 40);
 
-        RandomComputerPlayer test = new RandomComputerPlayer("computer random");
-
-        //Create a new engine.
-        MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max", 6);
-        MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2", 6);
-        controller.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{minMaxComputerPlayer,
-                minMaxComputerPlayer1}));
-
         engine = controller.getEngine();
         engine.setUI(this);
 
         this.setLayout(new GridBagLayout());
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.weightx = 0.5f;
         gridBagConstraints.weighty = 0.5f;
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         setBackground(Color.white);
+    }
+
+    @Override
+    public void onEnter() {
+        RandomComputerPlayer test = new RandomComputerPlayer("computer random");
+
+        //Create a new engine.
+        MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max");
+        MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2");
+        controller.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{minMaxComputerPlayer,
+                minMaxComputerPlayer1}));
 
         canvas2D = new GameCanvas2D[engine.getWorld().getSize().getZ()];
         backbuffer2D = new Image[canvas2D.length];
@@ -85,7 +94,6 @@ public class PNLGame extends GUIPanel implements GameDisplay {
 
             this.add(canvas2D[z], gridBagConstraints);
         }
-
 
         //EventQueue.invokeLater(engine::startGame);
         Thread thread = new Thread(() -> engine.startGame());
@@ -129,6 +137,11 @@ public class PNLGame extends GUIPanel implements GameDisplay {
 
     @Override
     public void onLeave() {
-
+        /**
+         * Remove all canvasses we've made.
+         */
+        for (int i = 0; i < canvas2D.length; i++) {
+            this.remove(canvas2D[i]);
+        }
     }
 }

@@ -19,7 +19,12 @@ public class PNLMultiPlayerLobby extends GUIPanel {
     }
 
     @Override
-    public void onEnter() {
+    public void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         this.setLayout(new BorderLayout());
 
         listModel = new DefaultListModel();
@@ -32,12 +37,16 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         list.setVisibleRowCount(5);
         JScrollPane listScrollPane = new JScrollPane(list);
 
+        this.add(listScrollPane, BorderLayout.PAGE_END);
+    }
+
+    @Override
+    public void onEnter() {
+        listModel.removeAllElements();
 
         //TODO: Create a connection and retrieve all rooms.
         listModel.addElement("a room");
         listModel.addElement("Another room");
-
-        this.add(listScrollPane, BorderLayout.PAGE_END);
     }
 
     @Override

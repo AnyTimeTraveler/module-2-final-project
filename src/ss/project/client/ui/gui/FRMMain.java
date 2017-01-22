@@ -41,6 +41,7 @@ public class FRMMain extends JFrame {
             cp.remove(0);
         }
         cp.add(panel);
+        panel.initialize();
         panel.onEnter();
         cp.revalidate();
         cp.repaint();
