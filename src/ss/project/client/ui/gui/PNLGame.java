@@ -53,8 +53,8 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         RandomComputerPlayer test = new RandomComputerPlayer("computer random");
 
         //Create a new engine.
-        MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max");
-        MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2");
+        MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max", 6);
+        MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2", 6);
         controller.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{minMaxComputerPlayer,
                 minMaxComputerPlayer1}));
 

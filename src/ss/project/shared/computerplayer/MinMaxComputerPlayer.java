@@ -14,23 +14,25 @@ import java.util.concurrent.Future;
  * Created by fw on 16/01/2017.
  */
 public class MinMaxComputerPlayer extends ComputerPlayer {
+    private final int depth;
     private Player opponent;
     private World worldCopy;
-    private int depth = 6;
     private Future<Integer>[][] workers;
     private ExecutorService executor;
 
     /**
      * create a computer player with the specified AI.
      */
-    public MinMaxComputerPlayer() {
+    public MinMaxComputerPlayer(int depth) {
         super();
         System.out.println("Initialized");
+        this.depth = depth;
     }
 
-    public MinMaxComputerPlayer(String name) {
+    public MinMaxComputerPlayer(String name, int depth) {
         super(name);
         System.out.println("Initialized");
+        this.depth = depth;
     }
 
     @Override
