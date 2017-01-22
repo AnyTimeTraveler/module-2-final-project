@@ -77,7 +77,12 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     }
 
     @Override
-    public void onEnter() {
+    public void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         GridBagLayout mgr = new GridBagLayout();
         this.setLayout(mgr);
         c = new GridBagConstraints();
@@ -114,6 +119,11 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         c.gridheight = 1;
         this.add(startButton);
         playerPanels = new PlayerPanel[0];
+    }
+
+    @Override
+    public void onEnter() {
+
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
  */
 public class PNLOptions extends GUIPanel {
 
-
     private final Controller controller;
 
     public PNLOptions(Controller controller) {
@@ -31,10 +30,20 @@ public class PNLOptions extends GUIPanel {
     }
 
     @Override
-    public void onEnter() {
+    public void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addComponent(new JLabel("PNLOptions"));
         addComponent(new JButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
+    }
+
+    @Override
+    public void onEnter() {
+
     }
 
     @Override

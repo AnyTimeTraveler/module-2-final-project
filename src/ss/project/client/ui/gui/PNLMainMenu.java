@@ -30,13 +30,23 @@ public class PNLMainMenu extends GUIPanel {
     }
 
     @Override
-    public void onEnter() {
+    public void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addComponent(new JLabel("Main Menu"));
         addComponent(new JButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS));
         addComponent(new JButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
         addComponent(new JButton("PNLOptions"), e -> controller.switchTo(Controller.Panel.OPTIONS));
         addComponent(new JButton("Exit"), e -> controller.shutdown());
+    }
+
+    @Override
+    public void onEnter() {
+
     }
 
     @Override
