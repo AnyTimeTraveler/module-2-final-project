@@ -56,6 +56,13 @@ public class PNLGame extends GUIPanel implements GameDisplay {
 
         controller.setFrameSize(width * 2 + 20, height * 2 + 40);
 
+        //Create a new engine.
+        RandomComputerPlayer test = new RandomComputerPlayer("computer random");
+        MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max", 6);
+        MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2", 6);
+        controller.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{minMaxComputerPlayer,
+                minMaxComputerPlayer1}));
+
         engine = controller.getEngine();
         engine.setUI(this);
 
@@ -69,14 +76,6 @@ public class PNLGame extends GUIPanel implements GameDisplay {
 
     @Override
     public void onEnter() {
-        RandomComputerPlayer test = new RandomComputerPlayer("computer random");
-
-        //Create a new engine.
-        MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max");
-        MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2");
-        controller.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{minMaxComputerPlayer,
-                minMaxComputerPlayer1}));
-
         canvas2D = new GameCanvas2D[engine.getWorld().getSize().getZ()];
         backbuffer2D = new Image[canvas2D.length];
         for (int z = 0; z < canvas2D.length; z++) {

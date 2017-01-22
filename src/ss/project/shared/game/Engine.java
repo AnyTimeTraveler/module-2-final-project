@@ -5,10 +5,10 @@ import ss.project.client.ui.GameDisplay;
 public class Engine {
     private World world;
     private Player[] players;
-    private GameDisplay game;
+    private GameDisplay gameDisplay;
 
     /**
-     * True while the game is running.
+     * True while the gameDisplay is running.
      */
     private boolean gameRunning;
 
@@ -23,7 +23,7 @@ public class Engine {
     }
 
     /**
-     * @return world of this game.
+     * @return world of this gameDisplay.
      */
     public World getWorld() {
         return world;
@@ -35,16 +35,16 @@ public class Engine {
      * @return
      */
     public GameDisplay getUI() {
-        return game;
+        return gameDisplay;
     }
 
     /**
      * Set the MainWindow of this engine.
      *
-     * @param game
+     * @param gameDisplay
      */
-    public void setUI(GameDisplay game) {
-        this.game = game;
+    public void setUI(GameDisplay gameDisplay) {
+        this.gameDisplay = gameDisplay;
     }
 
     /**
@@ -104,7 +104,7 @@ public class Engine {
     }
 
     /**
-     * Start the game and make every player do turns.
+     * Start the gameDisplay and make every player do turns.
      */
     public void startGame() {
         gameRunning = true;
@@ -112,7 +112,7 @@ public class Engine {
         //By default start with player 0.
         int currentPlayer = 0;
 
-        //Don't start the game if there are no players.
+        //Don't start the gameDisplay if there are no players.
         if (getPlayerCount() <= 0) {
             return;
         }
@@ -142,11 +142,11 @@ public class Engine {
             }
         }
         gameRunning = false;
-        System.out.println("Finished game (reason " + reason.toString() + ")");
+        System.out.println("Finished gameDisplay (reason " + reason.toString() + ")");
     }
 
     /**
-     * Reasons why the game has finished.
+     * Reasons why the gameDisplay has finished.
      */
     public enum FinishReason {
         /**
@@ -158,7 +158,7 @@ public class Engine {
          */
         FULL,
         /**
-         * The game has crashed.
+         * The gameDisplay has crashed.
          */
         CRASHED
     }

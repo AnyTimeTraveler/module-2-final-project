@@ -44,6 +44,12 @@ public class Controller {
 //        Network client = new Network();
     }
 
+    public void restartFrame() {
+        frame.dispose();
+        start();
+    }
+
+
     public void shutdown() {
         System.exit(0);
     }
