@@ -3,6 +3,7 @@ package ss.project.client.ui.gui;
 import lombok.extern.java.Log;
 import ss.project.client.Config;
 import ss.project.client.Controller;
+import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
@@ -67,7 +68,13 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
         nextRow();
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(e -> controller.switchTo(Controller.Panel.GAME));
+        startButton.addActionListener(e -> {
+            Engine engine = new Engine(new Vector3(4, 4, 4), new Player[]{new MinMaxComputerPlayer("Min max", 5),
+                    new MinMaxComputerPlayer("Min max", 6)});
+            controller.setEngine(engine);
+            controller.switchTo(Controller.Panel.GAME);
+            controller.startGame();
+        });
 //        startButton.addActionListener(new MyActionListener());
         c.gridx = 4;
         c.gridy = 3;

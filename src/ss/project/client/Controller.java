@@ -49,6 +49,12 @@ public class Controller {
         start();
     }
 
+    public void startGame() {
+        Thread thread = new Thread(() -> engine.startGame());
+        thread.setDaemon(true);
+        thread.start();
+    }
+
 
     public void shutdown() {
         System.exit(0);

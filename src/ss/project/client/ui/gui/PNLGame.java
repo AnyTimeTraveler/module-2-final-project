@@ -3,11 +3,7 @@ package ss.project.client.ui.gui;
 import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
 import ss.project.client.ui.GameDisplay;
-import ss.project.shared.computerplayer.MinMaxComputerPlayer;
-import ss.project.shared.computerplayer.RandomComputerPlayer;
-import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
-import ss.project.shared.game.Vector3;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -33,7 +29,6 @@ public class PNLGame extends GUIPanel implements GameDisplay {
      * Backbuffer image used for 2D double buffering.
      */
     private Image[] backbuffer2D;
-    private Engine engine;
     private Controller controller;
     private Object waiter;
     private HumanPlayer currentPlayer;
@@ -58,11 +53,12 @@ public class PNLGame extends GUIPanel implements GameDisplay {
 
     @Override
     public void onEnter() {
-        canvas2D = new GameCanvas2D[engine.getWorld().getSize().getZ()];
+        controller.getEngine().setUI(this);
+        canvas2D = new GameCanvas2D[controller.getEngine().getWorld().getSize().getZ()];
         backbuffer2D = new Image[canvas2D.length];
         for (int z = 0; z < canvas2D.length; z++) {
             // Create a 2D graphics canvas.
-            canvas2D[z] = new GameCanvas2D(this, engine, z, width, height);
+            canvas2D[z] = new GameCanvas2D(this, controller.getEngine(), z, width, height);
             //canvas2D[i].setLocation(width + 10, 5);
 
             // Create the 2D backbuffer
@@ -75,11 +71,6 @@ public class PNLGame extends GUIPanel implements GameDisplay {
 
             this.add(canvas2D[z], gridBagConstraints);
         }
-
-        //EventQueue.invokeLater(engine::startGame);
-        Thread thread = new Thread(() -> engine.startGame());
-        thread.setDaemon(true);
-        thread.start();
     }
 
     public Object getWaiter() {
