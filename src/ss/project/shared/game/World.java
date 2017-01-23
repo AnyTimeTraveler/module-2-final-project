@@ -1,10 +1,14 @@
 package ss.project.shared.game;
 
+import lombok.Setter;
+
 public class World {
 
     private int remainingSpots;
     private Vector3 size;
     private Player[][][] worldPosition;
+    @Setter
+    private int winLength;
 
     /**
      * Create a new world object, set the size and initialize it.
@@ -188,7 +192,7 @@ public class World {
                         Vector3 direction = newCoordinates.subtract(x, y, z);
                         int count1 = hasWon(newCoordinates, player, direction, 1);
                         int count2 = hasWon(newCoordinates, player, direction.inverse(), 0);
-                        if (count1 + count2 >= 4) {
+                        if (count1 + count2 >= winLength) {
                             //we won!
                             return true;
                         }

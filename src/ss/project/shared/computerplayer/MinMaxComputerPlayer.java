@@ -35,6 +35,11 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         this.depth = depth;
     }
 
+    public MinMaxComputerPlayer() {
+        super();
+        this.depth = 6;
+    }
+
     @Override
     public void doTurn(Engine engine) {
         if (worldCopy == null)
@@ -82,10 +87,11 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             for (int x = 0; x < workers.length; x++) {
                 for (int y = 0; y < workers[x].length; y++) {
                     int value = workers[x][y].get();
-
+                    System.out.println(getName() + " (" + x + "," + y + ") " + value);
                     if (value > bestValue) {
                         result = new Vector2(x, y);
                         bestValue = value;
+
                     }
                 }
             }
@@ -94,6 +100,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             e.printStackTrace();
         }
         System.out.println("Stopping heavy part!");
+        System.out.println("Final : " + getName() + " (" + result.getX() + "," + result.getY() + ") " + bestValue);
         return result;
     }
 
@@ -120,10 +127,12 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
 
         if (maximize && world.hasWon(coordinates, this)) {
             world.removeGameItem(coordinates);
-            return (int) Math.pow(10, depth);
+            return depth * depth;
+            //return (int) Math.pow(10, depth);
         } else if (!maximize && world.hasWon(coordinates, opponent)) {
             world.removeGameItem(coordinates);
-            return (int) Math.pow(-10, depth);
+            return -(depth * depth);
+            //return (int) Math.pow(-10, depth);
         }
 
         int sum = 0;

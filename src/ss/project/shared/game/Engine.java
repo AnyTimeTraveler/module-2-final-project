@@ -17,8 +17,9 @@ public class Engine {
      *
      * @param worldSize
      */
-    public Engine(Vector3 worldSize, Player[] players) {
+    public Engine(Vector3 worldSize, int winLength, Player[] players) {
         this.world = new World(worldSize);
+        this.world.setWinLength(winLength);
         this.players = players;
     }
 
@@ -142,7 +143,7 @@ public class Engine {
             }
         }
         gameRunning = false;
-        System.out.println("Finished gameDisplay (reason " + reason.toString() + ")");
+        System.out.println("Finished game (reason " + reason.toString() + ")");
     }
 
     /**

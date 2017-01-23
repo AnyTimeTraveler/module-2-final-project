@@ -19,6 +19,10 @@ public class HumanPlayer extends Player {
         super(name);
     }
 
+    public HumanPlayer() {
+        super();
+    }
+
     @Override
     public void doTurn(Engine engine) {
         log.info("do turn");
