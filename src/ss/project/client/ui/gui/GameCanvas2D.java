@@ -112,9 +112,10 @@ public class GameCanvas2D extends Canvas {
 
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
-                WorldPosition worldPosition = world.getWorldPosition(new Vector3(x, y, zLayer));
-                if (worldPosition.hasGameItem()) {
-                    gc.setColor(owner.getPlayerColor(worldPosition.getOwner()));
+                //WorldPosition worldPosition = world.getWorldPosition(new Vector3(x, y, zLayer));
+                Player actualPlayer = world.getOwner(new Vector3(x, y, zLayer));
+                if (actualPlayer != null) {
+                    gc.setColor(owner.getPlayerColor(actualPlayer));
                 } else {
                     gc.setColor(Color.black);
                 }

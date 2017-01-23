@@ -2,7 +2,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ss.project.shared.game.Vector3;
-import ss.project.shared.game.WorldPosition;
 
 import static org.junit.Assert.*;
 
@@ -84,7 +83,7 @@ public class Vector3Test {
         assertFalse(staticVector.equals(new Vector3(1, 1, 1)));
         assertFalse(staticVector.equals(null));
 
-        assertNotEquals(staticVector, new WorldPosition(new Vector3(0, 0, 0)));
+        assertNotEquals(staticVector, "asdf");
         assertNotNull(staticVector);
     }
 }
