@@ -30,7 +30,9 @@ public class WorldTest {
 
     @Test
     public void getSize() throws Exception {
-        Assert.assertEquals(world.getSize(), (new Vector3(4, 4, 4)));
+        Assert.assertEquals(new Vector3(4, 4, 4), world.getSize());
+        World newWorld = new World(new Vector3(5, 6, 7));
+        Assert.assertEquals(new Vector3(5, 6, 7), newWorld.getSize());
     }
 
     @Test
@@ -203,11 +205,11 @@ public class WorldTest {
     @Test
     public void hasWonStraight() throws Exception {
         world.addGameItem(new Vector2(0, 0), dummy);
-        //Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
+        Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
         world.addGameItem(new Vector2(0, 0), dummy);
-        //Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
+        Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
         world.addGameItem(new Vector2(0, 0), dummy);
-        //Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
+        Assert.assertFalse(world.hasWon(new Vector2(0, 0), dummy));
         world.addGameItem(new Vector2(0, 0), dummy);
         Assert.assertTrue(world.hasWon(new Vector2(0, 0), dummy));
     }
@@ -230,12 +232,31 @@ public class WorldTest {
 
     @Test
     public void isFull() throws Exception {
+        Assert.assertFalse(world.isFull());
+        world.addGameItem(new Vector2(0, 0), dummy);
+        Assert.assertFalse(world.isFull());
 
+        world.removeGameItem(Vector2.ZERO);
+
+        for (int x = 0; x < world.getSize().getX(); x++) {
+            for (int y = 0; y < world.getSize().getY(); y++) {
+                for (int z = 0; z < world.getSize().getZ(); z++) {
+                    world.addGameItem(new Vector2(x, y), dummy);
+                }
+            }
+        }
+        Assert.assertTrue(world.isFull());
+        world.removeGameItem(new Vector2(0, 0));
+        Assert.assertFalse(world.isFull());
     }
 
     @Test
     public void getHighestPosition() throws Exception {
-
+        Assert.assertEquals(new Vector3(0, 0, 0), world.getHighestPosition(Vector2.ZERO));
+        for (int z = 0; z < world.getSize().getZ(); z++) {
+            world.addGameItem(Vector2.ZERO, dummy);
+            Assert.assertEquals(new Vector3(0, 0, z), world.getHighestPosition(Vector2.ZERO));
+        }
     }
 
     @Test
