@@ -41,9 +41,9 @@ public class PNLOptions extends GUIPanel {
         this.add(comp);
     }
 
-    private void swichFullscreen() {
-        Config.getInstance().Fullscreen = !Config.getInstance().Fullscreen;
-        controller.getFrame().init();
+    private void swichFullscreen(boolean isFullscreen) {
+        Config.getInstance().Fullscreen = isFullscreen;
+        controller.restartFrame();
     }
 
     @Override
