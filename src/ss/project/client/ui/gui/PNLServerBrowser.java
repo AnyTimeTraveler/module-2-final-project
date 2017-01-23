@@ -11,11 +11,6 @@ public class PNLServerBrowser extends GUIPanel {
     }
 
     @Override
-    public void initialize() {
-
-    }
-
-    @Override
     public void onEnter() {
 
     }

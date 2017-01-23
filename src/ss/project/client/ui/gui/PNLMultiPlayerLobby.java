@@ -16,14 +16,6 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
     public PNLMultiPlayerLobby(Controller controller) {
         super(true);
-    }
-
-    @Override
-    public void initialize() {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
 
         this.setLayout(new BorderLayout());
 

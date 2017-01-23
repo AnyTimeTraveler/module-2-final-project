@@ -16,6 +16,13 @@ public class PNLMainMenu extends GUIPanel {
     public PNLMainMenu(Controller controller) {
         super();
         this.controller = controller;
+
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        addComponent(GUIUtils.createLabel("Main Menu", GUIUtils.LabelType.TITLE));
+        addComponent(GUIUtils.createButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS));
+        addComponent(GUIUtils.createButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
+        addComponent(GUIUtils.createButton("Options"), e -> controller.switchTo(Controller.Panel.OPTIONS));
+        addComponent(GUIUtils.createButton("Exit"), e -> controller.shutdown());
     }
 
     private void addComponent(JComponent comp) {
@@ -27,22 +34,6 @@ public class PNLMainMenu extends GUIPanel {
         comp.setAlignmentX(Component.CENTER_ALIGNMENT);
         comp.addActionListener(actionListener);
         this.add(comp);
-    }
-
-
-    @Override
-    public void initialize() {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
-
-        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        addComponent(GUIUtils.createLabel("Main Menu", GUIUtils.LabelType.TITLE));
-        addComponent(GUIUtils.createButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS));
-        addComponent(GUIUtils.createButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
-        addComponent(GUIUtils.createButton("Options"), e -> controller.switchTo(Controller.Panel.OPTIONS));
-        addComponent(GUIUtils.createButton("Exit"), e -> controller.shutdown());
     }
 
     @Override

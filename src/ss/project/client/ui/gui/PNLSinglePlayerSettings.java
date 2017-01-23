@@ -38,50 +38,6 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     public PNLSinglePlayerSettings(Controller controller) {
         super();
         this.controller = controller;
-    }
-
-    private void nextRow() {
-        y++;
-    }
-
-    private JSpinner createSpinner(int value, int min, int max, int width, int height) {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, min, max, 1));
-        c.gridx = x++;
-        c.gridy = y;
-        c.gridwidth = width;
-        c.gridheight = height;
-        c.weightx = 0.5f;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        return spinner;
-    }
-
-    private JLabel createLabel(String text, int width, int height) {
-        JLabel label = new JLabel(text);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = x;
-        c.gridy = y;
-        c.gridwidth = width;
-        c.gridheight = height;
-        return label;
-    }
-
-    private JPanel addPlayerPanes(int players) {
-        JPanel playerPanel = new JPanel();
-        playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
-        for (int i = 0; i < players; i++) {
-            PlayerPanel pp = new PlayerPanel();
-            pp.setAlignmentX(Component.CENTER_ALIGNMENT);
-            playerPanel.add(pp);
-        }
-        return playerPanel;
-    }
-
-    @Override
-    public void initialize() {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
 
         GridBagLayout mgr = new GridBagLayout();
         this.setLayout(mgr);
@@ -119,6 +75,42 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         c.gridheight = 1;
         this.add(startButton);
         playerPanels = new PlayerPanel[0];
+    }
+
+    private void nextRow() {
+        y++;
+    }
+
+    private JSpinner createSpinner(int value, int min, int max, int width, int height) {
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, min, max, 1));
+        c.gridx = x++;
+        c.gridy = y;
+        c.gridwidth = width;
+        c.gridheight = height;
+        c.weightx = 0.5f;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        return spinner;
+    }
+
+    private JLabel createLabel(String text, int width, int height) {
+        JLabel label = new JLabel(text);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = x;
+        c.gridy = y;
+        c.gridwidth = width;
+        c.gridheight = height;
+        return label;
+    }
+
+    private JPanel addPlayerPanes(int players) {
+        JPanel playerPanel = new JPanel();
+        playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
+        for (int i = 0; i < players; i++) {
+            PlayerPanel pp = new PlayerPanel();
+            pp.setAlignmentX(Component.CENTER_ALIGNMENT);
+            playerPanel.add(pp);
+        }
+        return playerPanel;
     }
 
     @Override

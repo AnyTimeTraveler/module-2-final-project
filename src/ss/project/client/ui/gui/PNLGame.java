@@ -42,22 +42,11 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     public PNLGame(Controller controller) {
         super(true);
         this.controller = controller;
-    }
-
-    @Override
-    public void initialize() {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
 
         width = 350;
         height = 350;
 
         controller.setFrameSize(width * 2 + 20, height * 2 + 40);
-
-        engine = controller.getEngine();
-        engine.setUI(this);
 
         this.setLayout(new GridBagLayout());
         gridBagConstraints = new GridBagConstraints();
@@ -66,6 +55,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         setBackground(Color.white);
     }
+
 
     @Override
     public void onEnter() {
@@ -76,6 +66,9 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         MinMaxComputerPlayer minMaxComputerPlayer1 = new MinMaxComputerPlayer("min max2");
         controller.setEngine(new Engine(new Vector3(4, 4, 4), new Player[]{minMaxComputerPlayer,
                 minMaxComputerPlayer1}));
+
+        engine = controller.getEngine();
+        engine.setUI(this);
 
         canvas2D = new GameCanvas2D[engine.getWorld().getSize().getZ()];
         backbuffer2D = new Image[canvas2D.length];

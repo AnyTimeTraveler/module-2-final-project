@@ -11,11 +11,6 @@ public class PNLMultiPlayerRoom extends GUIPanel {
     }
 
     @Override
-    public void initialize() {
-
-    }
-
-    @Override
     public void onEnter() {
 
     }

@@ -17,6 +17,11 @@ public class PNLOptions extends GUIPanel {
     public PNLOptions(Controller controller) {
         super();
         this.controller = controller;
+
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        addComponent(GUIUtils.createLabel("Options", GUIUtils.LabelType.TITLE));
+        addComponent(GUIUtils.createCheckBox("Fullscreen"), e -> swichFullscreen());
+        addComponent(GUIUtils.createButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
     }
 
     private void addComponent(JComponent comp) {
@@ -36,22 +41,8 @@ public class PNLOptions extends GUIPanel {
         this.add(comp);
     }
 
-    @Override
-    public void initialize() {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
-
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        addComponent(GUIUtils.createLabel("Options", GUIUtils.LabelType.TITLE));
-        addComponent(GUIUtils.createCheckBox("Fullscreen"), e -> swichFullscreen());
-        addComponent(GUIUtils.createButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
-    }
-
     private void swichFullscreen() {
-        boolean fullScreen = !Config.getInstance().Fullscreen;
-        Config.getInstance().Fullscreen = fullScreen;
+        Config.getInstance().Fullscreen = !Config.getInstance().Fullscreen;
         controller.getFrame().init();
     }
 
