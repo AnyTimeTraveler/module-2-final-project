@@ -77,6 +77,8 @@ public class GameCanvas2D extends Canvas {
         this.width = width;
         this.height = height;
         this.setSize(width, height);
+        this.setPreferredSize(new Dimension(width, height));
+        this.setMinimumSize(new Dimension(width, height));
         this.addMouseListener(new MouseListen());
     }
 
@@ -89,6 +91,7 @@ public class GameCanvas2D extends Canvas {
         paint(g);
     }
 
+    @Override
     public void paint(Graphics g) {
         if (engine != null) {
             render2D(gc, engine.getWorld());

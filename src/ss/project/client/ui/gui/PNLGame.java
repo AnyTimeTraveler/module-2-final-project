@@ -34,7 +34,9 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     private Object waiter;
     private HumanPlayer currentPlayer;
     private GridBagConstraints gridBagConstraints;
+    private GridBagConstraints worldPanelConstraints;
     private JLabel currentTurnLabel;
+    private JPanel worldPanel;
 
     public PNLGame(Controller controller) {
         super(true);
@@ -52,10 +54,15 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         setBackground(Color.white);
 
+        //Show the title.
         currentTurnLabel = GUIUtils.createLabel("", GUIUtils.LabelType.TITLE);
         gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
         this.add(currentTurnLabel, gridBagConstraints);
-        gridBagConstraints.gridwidth = 1;
+
+        //Create the world panel and add it.
+        worldPanel = new JPanel(new GridBagLayout());
+        worldPanelConstraints = new GridBagConstraints();
+        this.add(worldPanel, gridBagConstraints);
     }
 
     @Override
@@ -63,19 +70,23 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         controller.getEngine().setUI(this);
         canvas2D = new GameCanvas2D[controller.getEngine().getWorld().getSize().getZ()];
         backbuffer2D = new Image[canvas2D.length];
+        worldPanelConstraints.weightx = 0;
+        worldPanelConstraints.weighty = 0;
+        int panelsOnOneRow = (int) Math.ceil(canvas2D.length / 2f);
         for (int z = 0; z < canvas2D.length; z++) {
             // Create a 2D graphics canvas.
             canvas2D[z] = new GameCanvas2D(this, controller.getEngine(), z, width, height);
 
-            // Create the 2D backbuffer
+            // Create the 2D backbuffer.
             backbuffer2D[z] = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
             canvas2D[z].setBuffer(backbuffer2D[z]);
 
-            gridBagConstraints.gridx = z % 2;
-            gridBagConstraints.gridy = Math.floorDiv(z, 2) + 1;
-
-            this.add(canvas2D[z], gridBagConstraints);
+            worldPanelConstraints.gridx = z % panelsOnOneRow;
+            worldPanelConstraints.gridy = Math.floorDiv(z, panelsOnOneRow) + 1;
+            worldPanel.add(canvas2D[z], worldPanelConstraints);
         }
+        worldPanelConstraints.weightx = 0.5f;
+        worldPanelConstraints.weighty = 0.5f;
     }
 
     public Object getWaiter() {

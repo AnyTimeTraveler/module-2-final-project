@@ -43,7 +43,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     @Override
     public void doTurn(Engine engine) {
         if (worldCopy == null)
-            worldCopy = new World(engine.getWorld().getSize());
+            worldCopy = new World(engine.getWorld().getSize(), engine.getWorld().getWinLength());
         if (opponent == null)
             opponent = engine.getOtherPlayer(this);
         if (workers == null)
@@ -75,7 +75,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         Vector2 result = Vector2.ZERO;
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
-                World copy = new World(world.getSize());
+                World copy = new World(world.getSize(), world.getWinLength());
                 world.writeTo(copy);
                 int finalX = x;
                 int finalY = y;

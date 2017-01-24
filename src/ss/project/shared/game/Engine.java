@@ -18,8 +18,7 @@ public class Engine {
      * @param worldSize
      */
     public Engine(Vector3 worldSize, int winLength, Player[] players) {
-        this.world = new World(worldSize);
-        this.world.setWinLength(winLength);
+        this.world = new World(worldSize, winLength);
         this.players = players;
     }
 

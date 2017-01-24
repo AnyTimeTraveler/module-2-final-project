@@ -13,7 +13,7 @@ public class WorldTest {
 
     @Before
     public void setUp() throws Exception {
-        world = new World(new Vector3(4, 4, 4));
+        world = new World(new Vector3(4, 4, 4), 4);
         dummy = new Player("dummy") {
             @Override
             public void doTurn(Engine engine) {
@@ -31,7 +31,7 @@ public class WorldTest {
     @Test
     public void getSize() throws Exception {
         Assert.assertEquals(new Vector3(4, 4, 4), world.getSize());
-        World newWorld = new World(new Vector3(5, 6, 7));
+        World newWorld = new World(new Vector3(5, 6, 7), 4);
         Assert.assertEquals(new Vector3(5, 6, 7), newWorld.getSize());
     }
 
@@ -211,7 +211,7 @@ public class WorldTest {
 
     @Test
     public void writeTo() throws Exception {
-        World copy = new World(world.getSize());
+        World copy = new World(world.getSize(), 4);
         world.addGameItem(new Vector2(1, 1), dummy);
         world.addGameItem(new Vector2(3, 3), dummy2);
 
