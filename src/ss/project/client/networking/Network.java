@@ -4,6 +4,7 @@ import lombok.extern.java.Log;
 import ss.project.server.Controller;
 import ss.project.server.Room;
 import ss.project.shared.Protocol;
+import ss.project.shared.exceptions.ProtocolException;
 
 import java.io.*;
 import java.net.Socket;
@@ -75,7 +76,12 @@ public class Network extends Thread {
 
                 // await list of rooms
                 line = in.readLine();
-                Controller.setRooms(Room.parseRoomString(line));
+                try {
+                    Controller.setRooms(Room.parseRoomString(line));
+                } catch (ProtocolException e) {
+                    // Unhandled, yet.
+                    e.printStackTrace();
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

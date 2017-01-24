@@ -1,4 +1,4 @@
-package ss.project.server.exceptions;
+package ss.project.shared.exceptions;
 
 import ss.project.shared.game.Player;
 

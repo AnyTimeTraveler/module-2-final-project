@@ -1,21 +1,24 @@
 package ss.project.server;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import ss.project.server.exceptions.AlreadyJoinedException;
-import ss.project.server.exceptions.NotInRoomException;
-import ss.project.server.exceptions.RoomFullException;
+import ss.project.shared.Protocol;
+import ss.project.shared.exceptions.*;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * A room object with players.
  * <p>
  * Created by fw on 21/01/2017.
  */
+@EqualsAndHashCode
 public class Room {
     // DO NOT USE THIS DIRECTLY!
     private static int nextId;
@@ -26,10 +29,16 @@ public class Room {
     private int winLength;
     private Vector3 worldSize;
 
+    public Room(int id, int maxPlayers, int sizeX, int sizeY, int sizeZ, int winLength) {
+        this.id = id;
+        this.maxPlayers = maxPlayers;
+        this.worldSize = new Vector3(sizeX, sizeY, sizeZ);
+        this.winLength = winLength;
+        players = new ArrayList<>();
+    }
+
     /**
      * Create an empty room with the specified ID.
-     *
-     * @param id
      */
     public Room(int maxPlayers, Vector3 worldSize) {
         id = getNextId();
@@ -42,9 +51,32 @@ public class Room {
         return nextId++;
     }
 
-    public static List<Room> parseRoomString(String line) {
-        //TODO: Implement.
-        throw new NotImplementedException();
+    public static List<Room> parseRoomString(String line) throws ProtocolException {
+        Scanner sc = new Scanner(line);
+        // test for invalid message
+        if (!sc.next().equalsIgnoreCase(Protocol.Server.SENDLISTROOMS.getMessage())) {
+            throw new UnexpectedMessageException(Protocol.Server.SENDLISTROOMS.getMessage(), line);
+        }
+        List<Room> rooms = new ArrayList<>();
+        while (sc.hasNext()) {
+            // split each room by it's parameters
+            String[] roomParams = sc.next().split(Protocol.PIPE_SYMBOL);
+            // check if the amount of parameters matches
+            if (roomParams.length != Protocol.ROOM_PARAMETERS) {
+                throw new ParameterLengthsMismatchException(Protocol.ROOM_PARAMETERS, roomParams.length);
+            }
+            try {
+                // convert all strings to integers
+                int[] integers = Arrays.stream(roomParams).mapToInt(Integer::parseInt).toArray();
+                // create a room with the given parameters
+                rooms.add(new Room(integers[0], integers[1], integers[2], integers[3], integers[4], integers[5]));
+            } catch (NumberFormatException e) {
+                IllegalParameterException illegalParameterException = new IllegalParameterException("Could not convert arguments to numbers: " + Arrays.stream(roomParams).collect(Collectors.joining(", ")));
+                illegalParameterException.setStackTrace(e.getStackTrace());
+                throw illegalParameterException;
+            }
+        }
+        return rooms;
     }
 
     /**
@@ -112,5 +144,19 @@ public class Room {
      */
     public Vector3 getWorldSize() {
         return worldSize;
+    }
+
+    public String serialize() {
+        return String.join("|",
+                String.valueOf(id),
+                String.valueOf(maxPlayers),
+                String.valueOf(worldSize.getX()),
+                String.valueOf(worldSize.getY()),
+                String.valueOf(worldSize.getZ()),
+                String.valueOf(winLength));
+    }
+
+    public int getCurrentPlayers() {
+        return players.size();
     }
 }

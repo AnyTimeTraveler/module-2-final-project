@@ -1,6 +1,7 @@
 package ss.project.shared;
 
 import lombok.Getter;
+import ss.project.server.Room;
 
 import java.util.HashMap;
 
@@ -12,6 +13,8 @@ public class Protocol {
 
     public static final HashMap<String, String> ERRORMAP;
     public static final HashMap<String, String> WINMAP;
+    public static final int ROOM_PARAMETERS = 6;
+    public static final String PIPE_SYMBOL = "\\|";
 
     static {
         ERRORMAP = new HashMap<>();
@@ -47,6 +50,8 @@ public class Protocol {
             sb.append(' ');
             if (arg instanceof Boolean) {
                 sb.append((boolean) arg ? '1' : '0');
+            } else if (arg instanceof Room) {
+                sb.append(((Room) arg).serialize());
             } else {
                 sb.append(arg);
             }

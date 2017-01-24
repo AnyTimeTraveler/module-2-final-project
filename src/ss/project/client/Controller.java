@@ -3,10 +3,12 @@ package ss.project.client;
 import lombok.Getter;
 import lombok.Setter;
 import ss.project.client.ui.gui.*;
+import ss.project.server.Room;
 import ss.project.shared.game.Engine;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Created by simon on 21.01.17.
@@ -16,6 +18,9 @@ public class Controller {
     @Setter
     @Getter
     private Engine engine;
+    @Setter
+    @Getter
+    private List<Room> rooms;
     private FRMMain frame;
 
     private Controller() {
@@ -63,10 +68,6 @@ public class Controller {
 
     public void setFrameSize(int width, int height) {
         frame.setSize(width, height);
-    }
-
-    public FRMMain getFrame() {
-        return frame;
     }
 
     public enum Panel {

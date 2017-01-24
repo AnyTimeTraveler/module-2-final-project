@@ -2,8 +2,8 @@ package ss.project.server;
 
 
 import lombok.Getter;
-import ss.project.server.exceptions.InvalidInputException;
 import ss.project.shared.Protocol;
+import ss.project.shared.exceptions.InvalidInputException;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;

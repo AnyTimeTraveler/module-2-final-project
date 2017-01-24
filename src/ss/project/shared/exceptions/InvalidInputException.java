@@ -1,4 +1,4 @@
-package ss.project.server.exceptions;
+package ss.project.shared.exceptions;
 
 /**
  * Created by fw on 21/01/2017.
