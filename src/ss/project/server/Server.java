@@ -1,6 +1,5 @@
 package ss.project.server;
 
-import lombok.extern.java.Log;
 import ss.project.shared.Protocol;
 
 import java.io.IOException;
@@ -9,49 +8,48 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-@Log
 public class Server {
     private String ip;
     private int port;
     private List<ClientHandler> threads;
     private boolean closed;
+    private boolean ready;
 
     public Server(String ip, int portArg) {
         this.ip = ip;
         port = portArg;
         threads = new ArrayList<>();
         closed = false;
-        Thread.currentThread().setName("Server");
+        ready = false;
     }
 
     public static void main(String[] args) {
         Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
-//        server.run();
-//        Room room = new Room(1, Integer.MAX_VALUE);
+        server.run();
         System.out.println(server.getCapabilitiesMessage());
     }
 
     public void run() {
-        log.setLevel(Level.ALL);
+        Thread.currentThread().setName("Server");
         try {
             ServerSocket serverSocket = new ServerSocket(port, 255, InetAddress.getByName(ip));
-            log.info("Now listening on: " + ip + ":" + port);
+            System.out.println("Now listening on: " + ip + ":" + port);
             while (!closed) {
-                log.fine("Waiting for incoming connections...");
+                System.out.println("Waiting for incoming connections...");
+                ready = true;
                 Socket client = serverSocket.accept();
-                log.fine("Connection accepted!");
+                ready = false;
+                System.out.println("Connection accepted!");
                 addHandler(new ClientHandler(this, client));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void broadcast(String msg) {
-        log.info("Message to all clients: " + msg);
+        System.out.println("Message to all clients: " + msg);
         for (ClientHandler clientHandler : threads) {
             clientHandler.sendMessage(msg);
         }
@@ -60,12 +58,12 @@ public class Server {
     public void addHandler(ClientHandler handler) {
         threads.add(handler);
         handler.start();
-        log.fine("Started ClientHandler!");
+        System.out.println("Started ClientHandler!");
     }
 
     public void removeHandler(ClientHandler handler) {
         threads.remove(handler);
-        log.fine("Removed ClientHandler!");
+        System.out.println("Removed ClientHandler!");
     }
 
     public String getClientList() {
@@ -93,5 +91,9 @@ public class Server {
                 sc.MaxDimensionZ,
                 sc.MaxWinLength,
                 sc.ChatSupport);
+    }
+
+    public boolean isReady() {
+        return ready;
     }
 }

@@ -1,9 +1,11 @@
 package ss.project.server;
 
+import lombok.Getter;
 import ss.project.server.exceptions.AlreadyJoinedException;
 import ss.project.server.exceptions.NotInRoomException;
 import ss.project.server.exceptions.RoomFullException;
 import ss.project.shared.game.Player;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,19 +16,31 @@ import java.util.List;
  * Created by fw on 21/01/2017.
  */
 public class Room {
+    // DO NOT USE THIS DIRECTLY!
+    private static int nextId;
+    @Getter
     private int maxPlayers;
+    @Getter
     private int id;
+    @Getter
     private List<Player> players;
 
     /**
      * Create an empty room with the specified ID.
-     *
-     * @param id
      */
-    public Room(int id, int maxPlayers) {
-        this.id = id;
+    public Room(int maxPlayers) {
+        id = getNextId();
         this.maxPlayers = maxPlayers;
         players = new ArrayList<>();
+    }
+
+    private static synchronized int getNextId() {
+        return nextId++;
+    }
+
+    public static List<Room> parseRoomString(String line) {
+        //TODO: Implement.
+        throw new NotImplementedException();
     }
 
     /**

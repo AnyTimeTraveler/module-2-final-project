@@ -45,8 +45,4 @@ public class FRMMain extends JFrame {
         cp.revalidate();
         cp.repaint();
     }
-
-    public void shutdown() {
-        System.exit(0);
-    }
 }

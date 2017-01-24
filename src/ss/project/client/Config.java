@@ -24,21 +24,22 @@ public class Config {
 
     //Variables
     public String WindowTitle;
-    public HashMap<String, Class> playerTypes;
+    public HashMap<String, Class> PlayerTypes;
     public boolean Fullscreen;
-    public List<Connection> knownServers;
+    public List<Connection> KnownServers;
+    public String PlayerName;
 
     private Config() {
         WindowTitle = "Connect Four 3D";
         Fullscreen = false;
-        playerTypes = new HashMap<>();
-        playerTypes.put("Human", HumanPlayer.class);
-        playerTypes.put("Linear AI", LinearComputerPlayer.class);
-        playerTypes.put("Minmax AI", MinMaxComputerPlayer.class);
-        playerTypes.put("Random AI", RandomComputerPlayer.class);
-        knownServers = new ArrayList<>();
-        knownServers.add(new Connection("Localhost", "127.0.0.1", 1234));
-
+        PlayerTypes = new HashMap<>();
+        PlayerTypes.put("Human", HumanPlayer.class);
+        PlayerTypes.put("Linear AI", LinearComputerPlayer.class);
+        PlayerTypes.put("Minmax AI", MinMaxComputerPlayer.class);
+        PlayerTypes.put("Random AI", RandomComputerPlayer.class);
+        KnownServers = new ArrayList<>();
+        KnownServers.add(new Connection("Localhost", "127.0.0.1", 1234));
+        PlayerName = "Simon";
     }
 
     public static Config getInstance() {

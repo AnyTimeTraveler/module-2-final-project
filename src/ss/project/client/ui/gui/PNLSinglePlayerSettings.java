@@ -137,7 +137,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
             this.add(playerNameField);
             this.add(new JLabel("Type:"));
             playerType = new JComboBox<>();
-            for (String key : Config.getInstance().playerTypes.keySet()) {
+            for (String key : Config.getInstance().PlayerTypes.keySet()) {
                 playerType.addItem(key);
             }
             this.add(playerType);
@@ -163,7 +163,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
                 Player[] players = new Player[playerCount];
                 for (int i = 0; i < playerCount; i++) {
-                    players[i] = (Player) Config.getInstance().playerTypes.get(playerPanels[i].getPlayerType()).newInstance();
+                    players[i] = (Player) Config.getInstance().PlayerTypes.get(playerPanels[i].getPlayerType()).newInstance();
                     players[i].setName(playerPanels[i].getName());
                 }
 
