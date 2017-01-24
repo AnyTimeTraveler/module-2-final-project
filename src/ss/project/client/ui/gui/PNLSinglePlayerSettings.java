@@ -200,11 +200,11 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
                 Player[] players = new Player[playerCount];
                 for (int i = 0; i < playerCount; i++) {
-                    Class c = Config.getInstance().playerTypes.get(playerPanels.get(i).getPlayerType());
+                    Class c = Config.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType());
                     players[i] = (Player) c.newInstance();
                     players[i].setName(playerPanels.get(i).getName());
-                    players[i] = (Player) Config.getInstance().PlayerTypes.get(playerPanels[i].getPlayerType()).newInstance();
-                    players[i].setName(playerPanels[i].getName());
+                    players[i] = (Player) Config.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
+                    players[i].setName(playerPanels.get(i).getName());
                 }
 
                 Vector3 worldSize = new Vector3(worldSizeX, worldSizeY, worldSizeZ);
