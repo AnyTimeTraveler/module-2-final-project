@@ -40,19 +40,14 @@ public class WorldTest {
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 for (int z = 0; z < world.getSize().getZ(); z++) {
-                    Assert.assertNotNull(world.getWorldPosition(new Vector3(x, y, z)));
-                    Assert.assertEquals(world.getWorldPosition(new Vector3(x, y, z)).getCoordinates(), new Vector3(x, y, z));
+                    Assert.assertEquals(new Vector3(x, y, z), world.getWorldPosition(new Vector2(x, y)));
+                    world.addGameItem(new Vector2(x, y), dummy);
+                    if (z + 1 < world.getSize().getZ()) {
+                        Assert.assertEquals(new Vector3(x, y, z + 1), world.getWorldPosition(new Vector2(x, y)));
+                    } else {
+                        Assert.assertNull(world.getWorldPosition(new Vector2(x, y)));
+                    }
                 }
-            }
-        }
-    }
-
-    @Test
-    public void getWorldPosition1() throws Exception {
-        for (int x = 0; x < world.getSize().getX(); x++) {
-            for (int y = 0; y < world.getSize().getY(); y++) {
-                Assert.assertNotNull(world.getWorldPosition(new Vector2(x, y)));
-                Assert.assertEquals(world.getWorldPosition(new Vector2(x, y)).getCoordinates(), new Vector3(x, y, 0));
             }
         }
     }
@@ -95,8 +90,8 @@ public class WorldTest {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 for (int z = 0; z < world.getSize().getZ(); z++) {
                     Assert.assertTrue(world.addGameItem(new Vector2(x, y), dummy));
-                    Assert.assertNotNull(world.getWorldPosition(new Vector3(x, y, z)).getGameItem());
-                    Assert.assertTrue(world.getWorldPosition(new Vector3(x, y, z)).hasGameItem());
+                    Assert.assertNotNull(world.getOwner(new Vector3(x, y, z)));
+                    Assert.assertEquals(dummy, world.getOwner(new Vector3(x, y, z)));
                 }
             }
         }
@@ -109,9 +104,9 @@ public class WorldTest {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 for (int z = 0; z < world.getSize().getZ(); z++) {
                     Assert.assertTrue(world.addGameItem(new Vector2(x, y), dummy));
-                    Assert.assertTrue(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                    Assert.assertNotNull(world.getOwner(new Vector3(x, y, 0)));
                     world.removeGameItem(new Vector3(x, y, 0));
-                    Assert.assertFalse(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                    Assert.assertNull(world.getOwner(new Vector3(x, y, 0)));
                 }
             }
         }
@@ -127,9 +122,9 @@ public class WorldTest {
             for (int y = 0; y < world.getSize().getY(); y++) {
                 for (int z = 0; z < world.getSize().getZ(); z++) {
                     Assert.assertTrue(world.addGameItem(new Vector2(x, y), dummy));
-                    Assert.assertTrue(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                    Assert.assertNotNull(world.getOwner(new Vector3(x, y, 0)));
                     world.removeGameItem(new Vector2(x, y));
-                    Assert.assertFalse(world.getWorldPosition(new Vector3(x, y, 0)).hasGameItem());
+                    Assert.assertNull(world.getOwner(new Vector3(x, y, 0)));
                 }
             }
         }
@@ -140,10 +135,10 @@ public class WorldTest {
 
         for (int z = 0; z < world.getSize().getZ(); z++) {
             Assert.assertTrue(world.addGameItem(new Vector2(0, 0), dummy));
-            Assert.assertTrue(world.getWorldPosition(new Vector3(0, 0, z)).hasGameItem());
+            Assert.assertNotNull(world.getOwner(new Vector3(0, 0, 0)));
         }
         world.removeGameItem(new Vector2(0, 0));
-        Assert.assertFalse(world.getWorldPosition(new Vector3(0, 0, world.getSize().getZ() - 1)).hasGameItem());
+        Assert.assertNull(world.getOwner(new Vector3(0, 0, world.getSize().getZ() - 1)));
     }
 
     @Test
@@ -227,7 +222,7 @@ public class WorldTest {
         world.removeGameItem(new Vector2(1, 1));
 
         world.writeTo(copy);
-        Assert.assertFalse(world.getWorldPosition(new Vector3(1, 1, 0)).hasGameItem());
+        Assert.assertNull(world.getOwner(new Vector3(1, 1, 0)));
     }
 
     @Test

@@ -1,10 +1,14 @@
 package ss.project.shared.game;
 
+import lombok.Setter;
+
 public class World {
 
     private int remainingSpots;
     private Vector3 size;
-    private WorldPosition[][][] worldPosition;
+    private Player[][][] worldPosition;
+    @Setter
+    private int winLength;
 
     /**
      * Create a new world object, set the size and initialize it.
@@ -20,15 +24,7 @@ public class World {
      * Initialize the world by creating worldPosition objects.
      */
     private void initializeWorld(Vector3 worldSize) {
-        worldPosition = new WorldPosition[worldSize.getX()][worldSize.getY()][worldSize.getZ()];
-
-        for (int x = 0; x < worldSize.getX(); x++) {
-            for (int y = 0; y < worldSize.getY(); y++) {
-                for (int z = 0; z < worldSize.getZ(); z++) {
-                    worldPosition[x][y][z] = new WorldPosition(new Vector3(x, y, z));
-                }
-            }
-        }
+        worldPosition = new Player[worldSize.getX()][worldSize.getY()][worldSize.getZ()];
         remainingSpots = worldSize.getX() * worldSize.getY() * worldSize.getZ();
     }
 
@@ -42,33 +38,20 @@ public class World {
     }
 
     /**
-     * @param coordinates coordinates of the WorldPosition we want to know.
-     * @return WorldPosition at specified coordinates. Returns null if
-     * coordinates are outside range.
-     */
-    public WorldPosition getWorldPosition(Vector3 coordinates) {
-        if (!insideWorld(coordinates)) {
-            return null;
-        }
-        return worldPosition[coordinates.getX()][coordinates.getY()][coordinates.getZ()];
-    }
-
-    /**
      * @param coordinates coordinates of the z axis we want to get.
      * @return WorldPosition at the first empty WorldPosition at x and y.
      * Returns null if coordinates are outside range or if no empty spot
      * has been found.
      */
-    public WorldPosition getWorldPosition(Vector2 coordinates) {
-        if (!insideWorld(new Vector3(coordinates))) {
+    public Vector3 getWorldPosition(Vector2 coordinates) {
+        if (!insideWorld(coordinates)) {
             return null;
         }
 
         //get the highest possible worldposition.
         for (int z = 0; z < size.getZ(); z++) {
-            WorldPosition wp = worldPosition[coordinates.getX()][coordinates.getY()][z];
-            if (wp != null && !wp.hasGameItem()) {
-                return wp;
+            if (worldPosition[coordinates.getX()][coordinates.getY()][z] == null) {
+                return new Vector3(coordinates.getX(), coordinates.getY(), z);
             }
         }
         //No position possible
@@ -81,9 +64,11 @@ public class World {
      * @return
      */
     public boolean isOwner(Vector3 coordinates, Player player) {
-        WorldPosition worldPos = getWorldPosition(coordinates);
-        if (worldPos != null) {
-            return worldPos.isOwner(player);
+        if (insideWorld(coordinates)) {
+            Player actualPlayer = worldPosition[coordinates.getX()][coordinates.getY()][coordinates.getZ()];
+            if (actualPlayer != null) {
+                return actualPlayer.equals(player);
+            }
         }
         return false;
     }
@@ -95,11 +80,7 @@ public class World {
      * @return
      */
     public Player getOwner(Vector3 coordinates) {
-        WorldPosition worldPos = getWorldPosition(coordinates);
-        if (worldPos != null) {
-            return worldPos.getOwner();
-        }
-        return null;
+        return worldPosition[coordinates.getX()][coordinates.getY()][coordinates.getZ()];
     }
 
     /**
@@ -117,6 +98,18 @@ public class World {
     }
 
     /**
+     * @param coordinates
+     * @return True if the coordinates are inside the world range.
+     */
+    public boolean insideWorld(Vector2 coordinates) {
+        if (coordinates.getX() >= 0 && coordinates.getY() >= 0 && coordinates.getX() < getSize().getX() &&
+                coordinates.getY() < getSize().getY()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Create and set a new GameItem in this world with specified owner.
      *
      * @param coordinates Coordinates where the GameItem should be placed.
@@ -124,15 +117,17 @@ public class World {
      * @return False if this move is not possible, true if possible.
      */
     public boolean addGameItem(Vector2 coordinates, Player owner) {
-        WorldPosition wp = getWorldPosition(coordinates);
-        if (wp != null) {
+        Vector3 coords3d = getWorldPosition(coordinates);
+        if (coords3d != null) {
             //Set the item to this owner.
-            wp.setGameItem(owner);
-            remainingSpots--;
-            return true;
-        } else {
-            return false;
+            Player actualPlayer = worldPosition[coords3d.getX()][coords3d.getY()][coords3d.getZ()];
+            if (actualPlayer == null) {
+                worldPosition[coords3d.getX()][coords3d.getY()][coords3d.getZ()] = owner;
+                remainingSpots--;
+                return true;
+            }
         }
+        return false;
     }
 
     /**
@@ -141,9 +136,12 @@ public class World {
      * @param coordinates Coordinates of the gameitem.
      */
     public void removeGameItem(Vector3 coordinates) {
-        WorldPosition wp = getWorldPosition(coordinates);
-        if (wp != null && wp.hasGameItem()) {
-            wp.removeGameItem();
+        if (!insideWorld(coordinates)) {
+            return;
+        }
+        Player actualPlayer = worldPosition[coordinates.getX()][coordinates.getY()][coordinates.getZ()];
+        if (actualPlayer != null) {
+            worldPosition[coordinates.getX()][coordinates.getY()][coordinates.getZ()] = null;
             remainingSpots++;
         }
     }
@@ -154,17 +152,9 @@ public class World {
      * @param coordinates Coordinates of which it should check the highest gameitem.
      */
     public void removeGameItem(Vector2 coordinates) {
-        WorldPosition wp = getWorldPosition(coordinates);
-        if (wp != null) {
-            Vector3 highest = wp.getCoordinates();
-            if (highest.getZ() > 0) {
-                removeGameItem(highest.subtract(Vector3.UP));
-            }
-        } else {
-            Vector3 coords = new Vector3(coordinates.getX(), coordinates.getY(), this.getSize().getZ() - 1);
-            if (getOwner(coords) != null) {
-                removeGameItem(coords);
-            }
+        Vector3 coords3d = getHighestPosition(coordinates);
+        if (coords3d != null) {
+            removeGameItem(coords3d);
         }
     }
 
@@ -176,11 +166,10 @@ public class World {
      * @return
      */
     public boolean hasWon(Vector2 newCoordinates, Player player) {
-        WorldPosition wp = getWorldPosition(getHighestPosition(newCoordinates));
-        if (wp != null) {
-            //Vector3 newCoords = wp.getCoordinates().subtract(0, 0, 1);
-            if (insideWorld(wp.getCoordinates())) {
-                return hasWon(wp.getCoordinates(), player);
+        Vector3 coordinates = getHighestPosition(newCoordinates);
+        if (coordinates != null) {
+            if (insideWorld(coordinates)) {
+                return hasWon(coordinates, player);
             }
         }
         return false;
@@ -203,7 +192,7 @@ public class World {
                         Vector3 direction = newCoordinates.subtract(x, y, z);
                         int count1 = hasWon(newCoordinates, player, direction, 1);
                         int count2 = hasWon(newCoordinates, player, direction.inverse(), 0);
-                        if (count1 + count2 >= 4) {
+                        if (count1 + count2 >= winLength) {
                             //we won!
                             return true;
                         }
@@ -239,14 +228,17 @@ public class World {
      * returns the highest coordinates of a stack of gameitems that is still used.
      *
      * @param coordinates
-     * @return
+     * @return null if coordinates are out of bounds.
      */
     public Vector3 getHighestPosition(Vector2 coordinates) {
         //get the highest possible worldposition.
+        if (!insideWorld(coordinates)) {
+            return null;
+        }
         int highestZ = 0;
         for (int z = 0; z < size.getZ(); z++) {
-            WorldPosition wp = worldPosition[coordinates.getX()][coordinates.getY()][z];
-            if (wp != null && wp.hasGameItem()) {
+            Player actualPlayer = worldPosition[coordinates.getX()][coordinates.getY()][z];
+            if (actualPlayer != null) {
                 highestZ = z;
             } else {
                 break;
@@ -316,13 +308,13 @@ public class World {
                 result += "\n";
 
                 result += "X: ";
-                Player owner = worldPosition[x][0][z].getOwner();
+                Player owner = worldPosition[x][0][z];
                 if (owner == null) {
                     result += "x";
                 }
 
                 for (int y = 1; y < size.getY(); y++) {
-                    owner = worldPosition[x][y][z].getOwner();
+                    owner = worldPosition[x][y][z];
                     if (owner == null) {
                         result += " x";
                     }

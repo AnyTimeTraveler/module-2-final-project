@@ -3,12 +3,9 @@ package ss.project.client.ui.gui;
 import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
 import ss.project.client.ui.GameDisplay;
-import ss.project.shared.computerplayer.MinMaxComputerPlayer;
-import ss.project.shared.computerplayer.RandomComputerPlayer;
-import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
-import ss.project.shared.game.Vector3;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -33,11 +30,11 @@ public class PNLGame extends GUIPanel implements GameDisplay {
      * Backbuffer image used for 2D double buffering.
      */
     private Image[] backbuffer2D;
-    private Engine engine;
     private Controller controller;
     private Object waiter;
     private HumanPlayer currentPlayer;
     private GridBagConstraints gridBagConstraints;
+    private JLabel currentTurnLabel;
 
     public PNLGame(Controller controller) {
         super(true);
@@ -46,7 +43,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         width = 350;
         height = 350;
 
-        controller.setFrameSize(width * 2 + 20, height * 2 + 40);
+        controller.setFrameSize(width * 2 + 20, height * 2 + 100);
 
         this.setLayout(new GridBagLayout());
         gridBagConstraints = new GridBagConstraints();
@@ -54,32 +51,31 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         gridBagConstraints.weighty = 0.5f;
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         setBackground(Color.white);
+
+        currentTurnLabel = GUIUtils.createLabel("", GUIUtils.LabelType.TITLE);
+        gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
+        this.add(currentTurnLabel, gridBagConstraints);
+        gridBagConstraints.gridwidth = 1;
     }
 
     @Override
     public void onEnter() {
-        canvas2D = new GameCanvas2D[engine.getWorld().getSize().getZ()];
+        controller.getEngine().setUI(this);
+        canvas2D = new GameCanvas2D[controller.getEngine().getWorld().getSize().getZ()];
         backbuffer2D = new Image[canvas2D.length];
         for (int z = 0; z < canvas2D.length; z++) {
             // Create a 2D graphics canvas.
-            canvas2D[z] = new GameCanvas2D(this, engine, z, width, height);
-            //canvas2D[i].setLocation(width + 10, 5);
+            canvas2D[z] = new GameCanvas2D(this, controller.getEngine(), z, width, height);
 
             // Create the 2D backbuffer
-            //backbuffer2D = createImage(width, height);
             backbuffer2D[z] = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
             canvas2D[z].setBuffer(backbuffer2D[z]);
 
             gridBagConstraints.gridx = z % 2;
-            gridBagConstraints.gridy = Math.floorDiv(z, 2);
+            gridBagConstraints.gridy = Math.floorDiv(z, 2) + 1;
 
             this.add(canvas2D[z], gridBagConstraints);
         }
-
-        //EventQueue.invokeLater(engine::startGame);
-        Thread thread = new Thread(() -> engine.startGame());
-        thread.setDaemon(true);
-        thread.start();
     }
 
     public Object getWaiter() {
@@ -110,10 +106,9 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     @Override
     public void startTurn(Object waiter, HumanPlayer humanPlayer) {
         System.out.println("Start the turn... Show whose turn it is: " + humanPlayer.getName());
+        currentTurnLabel.setText(humanPlayer.getName() + "'s turn");
         this.waiter = waiter;
         this.currentPlayer = humanPlayer;
-        //canvas2D.setWaiter(waiter);
-        //canvas2D.setCurrentPlayer(humanPlayer);
     }
 
     @Override

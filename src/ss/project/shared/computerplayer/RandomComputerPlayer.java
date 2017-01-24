@@ -18,6 +18,10 @@ public class RandomComputerPlayer extends ComputerPlayer {
         System.out.println("Initialize");
     }
 
+    public RandomComputerPlayer() {
+        super();
+    }
+
     @Override
     public void doTurn(Engine engine) {
         setNewGameItem(engine);
