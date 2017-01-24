@@ -20,6 +20,7 @@ import java.util.logging.Level;
  */
 @Log
 public class PNLSinglePlayerSettings extends GUIPanel {
+    NameGenerator nameGenerator = new NameGenerator();
     private JLabel headline;
     private JSpinner worldX;
     private JSpinner worldY;
@@ -29,8 +30,6 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     private java.util.List<PlayerPanel> playerPanels = new ArrayList<>();
     private Controller controller;
     private GridBagConstraints gridBagConstraints;
-    ;
-
     private int x = 0;
     private int y = 0;
     /**
@@ -98,6 +97,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
          * Create the panel with a list of players.
          */
         playerPanel = new JPanel();
+        playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
         this.add(addPlayerPanes(2), gridBagConstraints);
 
         JButton startButton = new JButton("Start");
@@ -126,9 +126,8 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     }
 
     private JPanel addPlayerPanes(int players) {
-        playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
         playerPanel.removeAll();
-        NameGenerator nameGenerator = new NameGenerator();
+
         for (int i = 0; i < players; i++) {
             PlayerPanel pp;
             if (playerPanels.size() > i) {

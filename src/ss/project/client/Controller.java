@@ -39,9 +39,6 @@ public class Controller {
             controller.frame.init();
             controller.switchTo(Panel.MAIN_MENU);
         });
-
-//        //Start Networking
-//        Network client = new Network();
     }
 
     public void restartFrame() {

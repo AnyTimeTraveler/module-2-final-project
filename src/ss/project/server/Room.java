@@ -4,6 +4,7 @@ import ss.project.server.exceptions.AlreadyJoinedException;
 import ss.project.server.exceptions.NotInRoomException;
 import ss.project.server.exceptions.RoomFullException;
 import ss.project.shared.game.Player;
+import ss.project.shared.game.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +18,18 @@ public class Room {
     private int maxPlayers;
     private int id;
     private List<Player> players;
+    private int winLength;
+    private Vector3 worldSize;
 
     /**
      * Create an empty room with the specified ID.
      *
      * @param id
      */
-    public Room(int id, int maxPlayers) {
+    public Room(int id, int maxPlayers, Vector3 worldSize) {
         this.id = id;
         this.maxPlayers = maxPlayers;
+        this.worldSize = worldSize;
         players = new ArrayList<>();
     }
 
@@ -58,5 +62,41 @@ public class Room {
             throw new NotInRoomException(player);
         }
         players.remove(player);
+    }
+
+    /**
+     * Get the id of this room.
+     *
+     * @return an integer representing the id of this room.
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Get the winlength needed for this room.
+     *
+     * @return
+     */
+    public int getWinLength() {
+        return winLength;
+    }
+
+    /**
+     * Get the max amount of players that are possible in this room.
+     *
+     * @return
+     */
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    /**
+     * Get the size of this world.
+     *
+     * @return
+     */
+    public Vector3 getWorldSize() {
+        return worldSize;
     }
 }
