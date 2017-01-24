@@ -18,6 +18,7 @@ public class ClientHandler extends Thread {
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         closed = false;
+        player = new NetworkPlayer(this);
         this.setName("ClientHandler: Unknown");
     }
 
@@ -26,8 +27,11 @@ public class ClientHandler extends Thread {
         try {
             sendMessage(server.getCapabilitiesMessage());
             line = in.readLine();
-
-
+            if (line == null) {
+                closed = true;
+                return;
+            }
+            player.setCapabilitiesFromString(line);
         } catch (IOException e) {
             e.printStackTrace();
             closed = true;

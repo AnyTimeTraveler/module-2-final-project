@@ -1,5 +1,9 @@
 package ss.project.server;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,13 +11,21 @@ import java.util.List;
  */
 public class Controller {
 
-    private List<NetworkPlayer> lobby;
+    private static List<ClientHandler> waitingPlayers;
+    @Setter
+    @Getter
+    private static List<Room> rooms;
 
-    public Controller() {
-
+    static {
+        waitingPlayers = new ArrayList<>();
     }
 
-    public void registerClient() {
+    public static void registerClient(ClientHandler clientHandler) {
+        waitingPlayers.add(clientHandler);
+        checkIfRoomCanBeCreated();
+    }
+
+    private static void checkIfRoomCanBeCreated() {
 
     }
 }

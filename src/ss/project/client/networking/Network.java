@@ -1,6 +1,9 @@
 package ss.project.client.networking;
 
 import lombok.extern.java.Log;
+import ss.project.server.Controller;
+import ss.project.server.Room;
+import ss.project.shared.Protocol;
 
 import java.io.*;
 import java.net.Socket;
@@ -12,6 +15,7 @@ public class Network extends Thread {
     private BufferedReader in;
     private BufferedWriter out;
     private boolean closed;
+    private ServerInfo serverInfo;
 
     public Network(Connection connection)
             throws IOException {
@@ -19,7 +23,7 @@ public class Network extends Thread {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         closed = false;
-        new ClientInputReader(this).start();
+        //new ClientInputReader(this).start();
         this.setName("ServerInputReader");
     }
 
@@ -38,7 +42,17 @@ public class Network extends Thread {
             e.printStackTrace();
             log.severe("Couldn't construct a client object!");
         }
+    }
 
+    public ServerInfo ping() {
+        try {
+            String line = in.readLine();
+            socket.close();
+            return ServerInfo.fromString(line);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void run() {
@@ -46,7 +60,22 @@ public class Network extends Thread {
         String line;
         while (!closed) {
             try {
+                // read server capabilities
                 line = in.readLine();
+                // parse them
+                serverInfo = ServerInfo.fromString(line);
+                if (!serverInfo.getStatus().equals(ServerInfo.Status.ONLINE)) {
+                    socket.close();
+                    // something fucked up!
+                    return;
+                }
+
+                // send your own capabilities
+                sendMessage(getCapabilityString(2, "Simon", true, 4, 4, 4, 4, true, true));
+
+                // await list of rooms
+                line = in.readLine();
+                Controller.setRooms(Room.parseRoomString(line));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -80,6 +109,10 @@ public class Network extends Thread {
             e.printStackTrace();
         }
         closed = true;
+    }
+
+    private String getCapabilityString(int maxPlayers, String name, boolean roomSupport, int maxX, int maxY, int maxZ, int winLength, boolean chat, boolean autoRefresh) {
+        return Protocol.createMessage(Protocol.Client.SENDCAPABILITIES, maxPlayers, name, roomSupport, maxX, maxY, maxZ, winLength, chat, autoRefresh);
     }
 
     private class ClientInputReader extends Thread {
