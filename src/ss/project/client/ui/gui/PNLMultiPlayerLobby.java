@@ -43,7 +43,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         //TODO: Create a connection and retrieve all rooms.
         Room[] rooms = new Room[3];
         for (int i = 0; i < rooms.length; i++) {
-            rooms[i] = new Room(i, 5 - i, new Vector3(i, i + 1, i + 2));
+            rooms[i] = new Room(5 - i, new Vector3(i, i + 1, i + 2));
         }
         addRoomPanels(rooms);
     }
