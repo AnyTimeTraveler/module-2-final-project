@@ -293,7 +293,6 @@ public class World {
         return remainingSpots <= 0;
     }
 
-    @Deprecated
     @Override
     public String toString() {
         String result = "";
