@@ -3,6 +3,7 @@ package ss.project.client.networking;
 import lombok.extern.java.Log;
 import ss.project.server.Controller;
 import ss.project.server.Room;
+import ss.project.server.exceptions.InvalidInputException;
 import ss.project.shared.Protocol;
 
 import java.io.*;
@@ -75,7 +76,12 @@ public class Network extends Thread {
 
                 // await list of rooms
                 line = in.readLine();
-                Controller.setRooms(Room.parseRoomString(line));
+                try {
+                    Controller.setRooms(Room.parseRoomString(line));
+                } catch (InvalidInputException e) {
+                    e.printStackTrace();
+                    //TODO: handle the exception.
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

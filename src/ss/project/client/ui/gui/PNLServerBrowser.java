@@ -132,7 +132,9 @@ public class PNLServerBrowser extends GUIPanel {
             this.add(jPanel, BorderLayout.CENTER);
 
             JButton joinButton = new JButton("Join");
-            joinButton.addActionListener(e -> joinServer());
+            joinButton.addActionListener(e -> {
+                joinServer();
+            });
             this.add(joinButton, BorderLayout.EAST);
 
             refreshValues();

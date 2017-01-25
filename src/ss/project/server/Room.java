@@ -1,6 +1,5 @@
 package ss.project.server;
 
-import lombok.Getter;
 import ss.project.server.exceptions.AlreadyJoinedException;
 import ss.project.server.exceptions.InvalidInputException;
 import ss.project.server.exceptions.NotInRoomException;
@@ -23,7 +22,6 @@ public class Room {
      * DO NOT USE THIS DIRECTLY!
      */
     private static int nextId;
-    @Getter
     private int maxPlayers;
     private int id;
     /**

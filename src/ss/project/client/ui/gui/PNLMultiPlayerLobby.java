@@ -36,8 +36,12 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         this.add(roomsPanelOwner, BorderLayout.CENTER);
 
         JPanel jPanel = new JPanel();
-        jPanel.add(new JButton("Back"));
-        jPanel.add(new JButton("Create"));
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
+        jPanel.add(backButton);
+        JButton createButton = new JButton("Create");
+        createButton.addActionListener(e -> controller.switchTo(Controller.Panel.MULTI_PLAYER_ROOM_CREATION));
+        jPanel.add(createButton);
         this.add(jPanel, BorderLayout.SOUTH);
     }
 
@@ -46,7 +50,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         //TODO: Create a connection and retrieve all rooms.
         Room[] rooms = new Room[3];
         for (int i = 0; i < rooms.length; i++) {
-            rooms[i] = new Room(5 - i, new Vector3(i, i + 1, i + 2));
+            rooms[i] = new Room(5 - i, new Vector3(i, i + 1, i + 2), 4);
         }
         addRoomPanels(rooms);
     }
@@ -113,7 +117,9 @@ public class PNLMultiPlayerLobby extends GUIPanel {
             this.add(jPanel, BorderLayout.CENTER);
 
             JButton joinButton = new JButton("Join");
-            joinButton.addActionListener(e -> joinRoom());
+            joinButton.addActionListener(e -> {
+                joinRoom();
+            });
             this.add(joinButton, BorderLayout.EAST);
 
             refreshValues();

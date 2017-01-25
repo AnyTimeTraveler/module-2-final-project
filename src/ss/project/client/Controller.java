@@ -7,6 +7,7 @@ import ss.project.client.networking.ServerInfo;
 import ss.project.client.ui.gui.*;
 import ss.project.server.Room;
 import ss.project.shared.game.Engine;
+import ss.project.shared.game.Vector3;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,6 +66,18 @@ public class Controller {
      */
     public void joinRoom(Room room) {
         System.out.println("Join " + room.toString());
+        controller.switchTo(Panel.MULTI_PLAYER_ROOM);
+    }
+
+    public Room getCurrentRoom() {
+        //TODO: implement
+        return new Room(5, Vector3.ONE, 3);
+    }
+
+    public void leaveRoom() {
+        System.out.println("Leaving room");
+        //TODO: implement
+        controller.switchTo(Panel.MULTI_PLAYER_LOBBY);
     }
 
     /**
@@ -74,6 +87,7 @@ public class Controller {
      */
     public void joinServer(ServerInfo serverInfo) {
         System.out.println("Join " + serverInfo.toString());
+        controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
     }
 
     /**
