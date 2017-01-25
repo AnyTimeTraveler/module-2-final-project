@@ -1,13 +1,13 @@
 package ss.project.shared.game;
 
-import lombok.Setter;
+import lombok.Getter;
 
 public class World {
 
     private int remainingSpots;
     private Vector3 size;
     private Player[][][] worldPosition;
-    @Setter
+    @Getter
     private int winLength;
 
     /**
@@ -15,8 +15,9 @@ public class World {
      *
      * @param size A vector3 containing width,height and length.
      */
-    public World(Vector3 size) {
+    public World(Vector3 size, int winLength) {
         this.size = size;
+        this.winLength = winLength;
         initializeWorld(this.size);
     }
 
@@ -254,7 +255,7 @@ public class World {
      * @return A deepcopy of this world.
      */
     public World deepCopy() {
-        World newWorld = new World(this.getSize());
+        World newWorld = new World(this.getSize(), winLength);
         writeTo(newWorld);
         return newWorld;
     }

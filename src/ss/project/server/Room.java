@@ -20,12 +20,19 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode
 public class Room {
-    // DO NOT USE THIS DIRECTLY!
+    /**
+     * DO NOT USE THIS DIRECTLY!
+     */
     private static int nextId;
-    @Getter
     private int maxPlayers;
     private int id;
+    /**
+     * Current joined players.
+     */
     private List<Player> players;
+    /**
+     * Length needed to win a game.
+     */
     private int winLength;
     private Vector3 worldSize;
 
@@ -39,11 +46,33 @@ public class Room {
 
     /**
      * Create an empty room with the specified ID.
+     * Create a room and automaticly assign an ID.
+     *
+     * @param maxPlayers The amount of players that can join this room.
+     * @param worldSize  The dimensions of the world of this room.
+     * @param winLength  The length needed to win a game.
      */
-    public Room(int maxPlayers, Vector3 worldSize) {
+    public Room(int maxPlayers, Vector3 worldSize, int winLength) {
         id = getNextId();
         this.maxPlayers = maxPlayers;
         this.worldSize = worldSize;
+        this.winLength = winLength;
+        players = new ArrayList<>();
+    }
+
+    /**
+     * Create a room and give it a specified ID. Only do this if you already know the ID.
+     *
+     * @param id         The id this room should get.
+     * @param maxPlayers The amount of players that can join this room.
+     * @param worldSize  The dimensions of the world of this room.
+     * @param winLength  The length needed to win a game.
+     */
+    public Room(int id, int maxPlayers, Vector3 worldSize, int winLength) {
+        this.id = id;
+        this.maxPlayers = maxPlayers;
+        this.worldSize = worldSize;
+        this.winLength = winLength;
         players = new ArrayList<>();
     }
 

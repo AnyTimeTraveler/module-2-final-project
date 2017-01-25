@@ -15,7 +15,7 @@ public class WorldBiggerTest {
 
     @Before
     public void setUp() throws Exception {
-        world = new World(new Vector3(7, 7, 7));
+        world = new World(new Vector3(7, 7, 7), 4);
         dummy = new Player("dummy") {
             @Override
             public void doTurn(Engine engine) {

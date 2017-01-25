@@ -3,6 +3,7 @@ package ss.project.client.networking;
 import lombok.extern.java.Log;
 import ss.project.server.Controller;
 import ss.project.server.Room;
+import ss.project.server.exceptions.InvalidInputException;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.ProtocolException;
 
