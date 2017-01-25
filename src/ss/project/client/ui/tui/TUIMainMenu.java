@@ -1,15 +1,11 @@
 package ss.project.client.ui.tui;
 
+import ss.project.client.Controller;
+
 /**
  * Created by simon on 16.01.17.
  */
-public class MainMenu implements TUIPanel {
-
-    private final TUI tui;
-
-    MainMenu(TUI tui) {
-        this.tui = tui;
-    }
+public class TUIMainMenu implements TUIPanel {
 
     @Override
     public void printScreen() {
@@ -24,16 +20,16 @@ public class MainMenu implements TUIPanel {
     public void handleInput(String input) {
         switch (input) {
             case "1":
-                tui.switchTo(TUI.Panel.SINGLE_PLAYER_SETTINGS);
+                Controller.controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS);
                 break;
             case "2":
-                tui.switchTo(TUI.Panel.SERVER_BRWOSER);
+                Controller.controller.switchTo(Controller.Panel.SERVER_BRWOSER);
                 break;
             case "3":
-                tui.switchTo(TUI.Panel.OPTIONS);
+                Controller.controller.switchTo(Controller.Panel.OPTIONS);
                 break;
             case "4":
-                tui.shutdown();
+                Controller.controller.shutdown();
                 break;
             default:
                 System.out.println("Invalid input!");

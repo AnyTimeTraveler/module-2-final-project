@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import ss.project.client.networking.Connection;
 import ss.project.client.networking.ServerInfo;
+import ss.project.client.ui.UIFrame;
+import ss.project.client.ui.UIPanel;
 import ss.project.client.ui.gui.*;
+import ss.project.client.ui.tui.*;
 import ss.project.server.Room;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Vector3;
@@ -18,13 +21,17 @@ import java.util.List;
  */
 public class Controller {
     public static Controller controller;
+    /**
+     * If true it shows the gui, if false the tui.
+     */
+    private static boolean doGui;
     @Setter
     @Getter
     private Engine engine;
     @Setter
     @Getter
     private List<Room> rooms;
-    private FRMMain frame;
+    private UIFrame frame;
 
     private Controller() {
         try {
@@ -36,18 +43,53 @@ public class Controller {
 
     public static void main(String[] args) {
         controller = new Controller();
-        controller.start();
+        doGui = true;
+        if (args.length >= 1) {
+            if (args[0].equals("tui")) {
+                doGui = false;
+            }
+        }
+        controller.start(doGui);
     }
 
     /**
-     * Start the GUI.
+     * Start the gui or tui.
+     *
+     * @param gui If true, show the gui. If false show the tui.
      */
-    private void start() {
+    private void start(boolean gui) {
         EventQueue.invokeLater(() -> {
-            controller.frame = new FRMMain(controller);
+            if (gui) {
+                controller.frame = new FRMMain(controller);
+            } else {
+                controller.frame = new TUI();
+            }
+
             Thread.currentThread().setName("GUI");
+
+
+            if (gui) {
+                Panel.MAIN_MENU.setPanel(new PNLMainMenu(controller));
+                Panel.SINGLE_PLAYER_SETTINGS.setPanel(new PNLSinglePlayerSettings(controller));
+                Panel.GAME.setPanel(new PNLGame(controller));
+                Panel.MULTI_PLAYER_LOBBY.setPanel(new PNLMultiPlayerLobby(controller));
+                Panel.MULTI_PLAYER_ROOM.setPanel(new PNLMultiPlayerRoom(controller));
+                Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new PNLMultiPlayerRoomCreation(controller));
+                Panel.SERVER_BRWOSER.setPanel(new PNLServerBrowser(controller));
+                Panel.OPTIONS.setPanel(new PNLOptions(controller));
+            } else {
+                Panel.MAIN_MENU.setPanel(new TUIMainMenu());
+                Panel.SINGLE_PLAYER_SETTINGS.setPanel(new TUISinglePlayerSettings());
+                Panel.GAME.setPanel(new TUIGame());
+                Panel.MULTI_PLAYER_LOBBY.setPanel(new TUIMultiPlayerLobby());
+                Panel.MULTI_PLAYER_ROOM.setPanel(new TUIMultiPlayerRoom());
+                Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new TUIMultiPlayerRoomCreation());
+                Panel.SERVER_BRWOSER.setPanel(new TUIServerBrowser());
+                Panel.OPTIONS.setPanel(new TUIOptions());
+            }
+
+            controller.switchTo(Panel.MAIN_MENU);
             controller.frame.init();
-            controller.switchTo(Panel.SERVER_BRWOSER);
         });
     }
 
@@ -57,7 +99,7 @@ public class Controller {
      */
     public void restartFrame() {
         frame.dispose();
-        start();
+        start(doGui);
     }
 
     /**
@@ -183,24 +225,23 @@ public class Controller {
     }
 
     public enum Panel {
-        MAIN_MENU(new PNLMainMenu(controller)),
-        SINGLE_PLAYER_SETTINGS(new PNLSinglePlayerSettings(controller)),
-        SERVER_BRWOSER(new PNLServerBrowser(controller)),
-        OPTIONS(new PNLOptions(controller)),
-        MULTI_PLAYER_LOBBY(new PNLMultiPlayerLobby(controller)),
-        MULTI_PLAYER_ROOM(new PNLMultiPlayerRoom(controller)),
-        MULTI_PLAYER_ROOM_CREATION(new PNLMultiPlayerRoomCreation(controller)),
-        GAME(new PNLGame(controller));
+        MAIN_MENU(),
+        SINGLE_PLAYER_SETTINGS(),
+        SERVER_BRWOSER(),
+        OPTIONS(),
+        MULTI_PLAYER_LOBBY(),
+        MULTI_PLAYER_ROOM(),
+        MULTI_PLAYER_ROOM_CREATION(),
+        GAME();
 
-        private final GUIPanel panel;
+        private UIPanel panel;
 
-        Panel(GUIPanel panel) {
-            this.panel = panel;
-        }
-
-        private GUIPanel getPanel() {
+        private UIPanel getPanel() {
             return panel;
         }
-    }
 
+        private void setPanel(UIPanel panel) {
+            this.panel = panel;
+        }
+    }
 }

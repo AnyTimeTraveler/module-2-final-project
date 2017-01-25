@@ -1,12 +1,10 @@
 package ss.project.client.ui.tui;
 
-import ss.project.client.ui.gui.FRMMain;
-
 /**
  * Created by simon on 16.01.17.
  */
-public class Game implements TUIPanel {
-    public Game(FRMMain mainFrame) {
+public class TUIMultiPlayerRoom implements TUIPanel {
+    public TUIMultiPlayerRoom() {
 
     }
 

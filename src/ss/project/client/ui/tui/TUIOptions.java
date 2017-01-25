@@ -1,15 +1,12 @@
 package ss.project.client.ui.tui;
 
+import ss.project.client.Controller;
+
 /**
  * Created by simon on 16.01.17.
  */
-public class Options implements TUIPanel {
+public class TUIOptions implements TUIPanel {
 
-    private final TUI tui;
-
-    public Options(TUI tui) {
-        this.tui = tui;
-    }
 
     @Override
     public void printScreen() {
@@ -19,7 +16,8 @@ public class Options implements TUIPanel {
 
     @Override
     public void handleInput(String input) {
-        if (input.equalsIgnoreCase("1"))
-            tui.switchTo(TUI.Panel.MAIN_MENU);
+        if (input.equalsIgnoreCase("1")) {
+            Controller.controller.switchTo(Controller.Panel.MAIN_MENU);
+        }
     }
 }

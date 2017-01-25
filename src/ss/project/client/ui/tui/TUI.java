@@ -1,27 +1,40 @@
 package ss.project.client.ui.tui;
 
 
+import ss.project.client.ui.UIFrame;
+import ss.project.client.ui.UIPanel;
+
 import java.util.Scanner;
 
 /**
  * Created by simon on 23.12.16.
  */
-public class TUI {
+public class TUI implements UIFrame {
     private static TUI tui;
     private TUIPanel current;
     private boolean isRunning;
 
     public TUI() {
         isRunning = true;
-        switchTo(TUI.Panel.MAIN_MENU);
     }
 
-    void switchTo(Panel p) {
-        switchTo(p.getScreen());
+    public void switchTo(UIPanel panel) {
+        current = (TUIPanel) panel;
     }
 
-    private void switchTo(TUIPanel screen) {
-        current = screen;
+    @Override
+    public void init() {
+        run();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+
     }
 
     public void run() {
@@ -34,25 +47,6 @@ public class TUI {
 
     public void shutdown() {
         System.exit(0);
-    }
-    public enum Panel {
-        MAIN_MENU(new MainMenu(tui)),
-        SINGLE_PLAYER_SETTINGS(new SinglePlayerSettings()),
-        SERVER_BRWOSER(new ServerBrowser()),
-        OPTIONS(new Options(tui)),
-        MULTI_PLAYER_LOBBY(new MultiPlayerLobby()),
-        MULTI_PLAYER_ROOM(new MultiPlayerRoom()),
-        MULTI_PLAYER_ROOM_CREATION(new MultiPlayerRoomCreation());
-
-        private final TUIPanel screen;
-
-        Panel(TUIPanel screen) {
-            this.screen = screen;
-        }
-
-        private TUIPanel getScreen() {
-            return screen;
-        }
     }
 
 }

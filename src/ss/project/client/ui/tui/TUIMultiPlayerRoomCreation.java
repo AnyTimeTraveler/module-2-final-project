@@ -3,8 +3,8 @@ package ss.project.client.ui.tui;
 /**
  * Created by simon on 16.01.17.
  */
-public class MultiPlayerRoom implements TUIPanel {
-    public MultiPlayerRoom() {
+public class TUIMultiPlayerRoomCreation implements TUIPanel {
+    public TUIMultiPlayerRoomCreation() {
 
     }
 

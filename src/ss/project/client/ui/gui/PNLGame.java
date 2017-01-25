@@ -45,8 +45,6 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         width = 350;
         height = 350;
 
-        controller.setFrameSize(width * 2 + 20, height * 2 + 100);
-
         this.setLayout(new GridBagLayout());
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.weightx = 0.5f;
