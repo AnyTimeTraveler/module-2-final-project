@@ -1,3 +1,5 @@
+package ss.project;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,28 +15,31 @@ import java.io.IOException;
  */
 public class NetworkTest {
 
-    private Server server;
-    private Network client;
-
     @Before
     public void setup() throws IOException, InterruptedException {
-        server = new Server("127.0.0.1", 1234);
+
+    }
+
+    @Test
+    public void testPing() throws IOException, InterruptedException {
+        Server server = new Server("127.0.0.1", 1234);
         Thread serverThread = new Thread(server::run);
         serverThread.start();
         while (!server.isReady()) {
             Thread.sleep(10);
         }
-        client = new Network(new Connection("Simon", "127.0.0.1", 1234));
-    }
-
-    @Test
-    public void testPing() throws IOException {
+        Network client = new Network(new Connection("Simon", "127.0.0.1", 1234));
         Assert.assertEquals(ServerInfo.Status.ONLINE, client.ping().getStatus());
     }
 
-    @Test
-    public void testClientCapabilities() {
+    public void testClientCapabilities() throws InterruptedException, IOException {
+        Server server = new Server("127.0.0.1", 2345);
+        Thread serverThread = new Thread(server::run);
+        serverThread.start();
+        while (!server.isReady()) {
+            Thread.sleep(10);
+        }
+        Network client = new Network(new Connection("Simon", "127.0.0.1", 2345));
         client.run();
-        // TODO: Check for capabilities having arrived
     }
 }
