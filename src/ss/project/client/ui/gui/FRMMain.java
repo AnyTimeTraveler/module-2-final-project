@@ -1,7 +1,6 @@
 package ss.project.client.ui.gui;
 
 import ss.project.client.Config;
-import ss.project.client.Controller;
 import ss.project.client.ui.UIFrame;
 import ss.project.client.ui.UIPanel;
 
@@ -12,8 +11,6 @@ import java.awt.*;
  * Created by simon on 16.01.17.
  */
 public class FRMMain extends JFrame implements UIFrame {
-    public FRMMain(Controller controller) {
-public class FRMMain extends JFrame {
     public FRMMain() {
         super();
     }
