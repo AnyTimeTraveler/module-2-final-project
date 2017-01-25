@@ -100,6 +100,10 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
         this.add(addPlayerPanes(2), gridBagConstraints);
 
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> controller.switchTo(Controller.Panel.MAIN_MENU));
+        this.add(backButton);
+
         JButton startButton = new JButton("Start");
         startButton.addActionListener(new MyActionListener());
         this.add(startButton);

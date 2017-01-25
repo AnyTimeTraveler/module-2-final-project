@@ -13,6 +13,7 @@ import java.util.ArrayList;
  */
 public class PNLMultiPlayerLobby extends GUIPanel {
 
+    private Controller controller;
     private JPanel roomsPanelOwner;
     private java.util.List<RoomPanel> roomPanels;
 
@@ -21,6 +22,8 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
     public PNLMultiPlayerLobby(Controller controller) {
         super(true);
+
+        this.controller = controller;
 
         roomPanels = new ArrayList<RoomPanel>();
 
@@ -136,7 +139,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         }
 
         public void joinRoom() {
-            System.out.println("join: " + room.toString());
+            controller.joinRoom(getRoom());
         }
     }
 }

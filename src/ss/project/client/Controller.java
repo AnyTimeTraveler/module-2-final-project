@@ -2,7 +2,10 @@ package ss.project.client;
 
 import lombok.Getter;
 import lombok.Setter;
+import ss.project.client.networking.Connection;
+import ss.project.client.networking.ServerInfo;
 import ss.project.client.ui.gui.*;
+import ss.project.server.Room;
 import ss.project.shared.game.Engine;
 
 import javax.swing.*;
@@ -37,7 +40,7 @@ public class Controller {
             controller.frame = new FRMMain(controller);
             Thread.currentThread().setName("GUI");
             controller.frame.init();
-            controller.switchTo(Panel.MAIN_MENU);
+            controller.switchTo(Panel.SERVER_BRWOSER);
         });
     }
 
@@ -46,13 +49,58 @@ public class Controller {
         start();
     }
 
+    /**
+     * Start the game on a seperate thread.
+     */
     public void startGame() {
         Thread thread = new Thread(() -> engine.startGame());
         thread.setDaemon(true);
         thread.start();
     }
 
+    /**
+     * Join a room.
+     *
+     * @param room
+     */
+    public void joinRoom(Room room) {
+        System.out.println("Join " + room.toString());
+    }
 
+    /**
+     * Join the specified server.
+     *
+     * @param serverInfo
+     */
+    public void joinServer(ServerInfo serverInfo) {
+        System.out.println("Join " + serverInfo.toString());
+    }
+
+    /**
+     * Add a server to the list of servers in the config.
+     *
+     * @param serverName
+     */
+    public void addServer(String serverName) {
+        if (serverName != null) {
+            if (serverName.contains(":")) {
+                String[] data = serverName.split(":");
+                try {
+                    int port = new Integer(data[1]);
+                    if (Connection.validIP(data[0])) {
+                        Config.getInstance().KnownServers.add(new Connection("Added server", data[0], port));
+                    }
+                } catch (NumberFormatException e) {
+                    //Input was wrong.
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Stop the client.
+     */
     public void shutdown() {
         System.exit(0);
     }
