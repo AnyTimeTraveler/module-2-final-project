@@ -3,6 +3,7 @@ package ss.project.client.networking;
 import lombok.Data;
 import ss.project.shared.Protocol;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -50,7 +51,8 @@ public class ServerInfo {
             serverInfo.maxWinLength = Integer.parseInt(sc.next());
             serverInfo.chatSupport = sc.next().equals("1");
             return serverInfo;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NoSuchElementException e) {
+            //TODO: instead of printing stacktrace, handle the error and send error code.
             e.printStackTrace();
         }
         return new ServerInfo();
