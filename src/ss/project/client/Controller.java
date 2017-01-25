@@ -35,8 +35,10 @@ public class Controller {
         controller.start();
     }
 
+    /**
+     * Start the GUI.
+     */
     private void start() {
-        // Start GUI
         EventQueue.invokeLater(() -> {
             controller.frame = new FRMMain(controller);
             Thread.currentThread().setName("GUI");
@@ -45,6 +47,10 @@ public class Controller {
         });
     }
 
+    /**
+     * Restart the complete frame and go back to the default panel.
+     * Used when changing fullscreen mode.
+     */
     public void restartFrame() {
         frame.dispose();
         start();
@@ -69,15 +75,55 @@ public class Controller {
         controller.switchTo(Panel.MULTI_PLAYER_ROOM);
     }
 
+    /**
+     * Get the room we are currently connected to.
+     *
+     * @return A room instancen of the room we are connected to.
+     */
     public Room getCurrentRoom() {
         //TODO: implement
         return new Room(5, Vector3.ONE, 3);
     }
 
+    /**
+     * Get the list of rooms of the current server.
+     *
+     * @return An array of rooms.
+     */
+    public Room[] getRooms() {
+        if (getCurrentServer().isRoomSupport()) {
+            //Get all rooms from this server, it supports lobbies.
+            Room[] rooms = new Room[3];
+            for (int i = 0; i < rooms.length; i++) {
+                rooms[i] = new Room(5 - i, new Vector3(i, i + 1, i + 2), 4);
+            }
+            return rooms;
+        } else {
+            //This server does not support lobbies, show only one room with the server settings.
+            ServerInfo curServer = getCurrentServer();
+            return new Room[]{
+                    new Room(curServer.getMaxPlayers(), curServer.getWorldSize(), curServer.getMaxWinLength())
+            };
+        }
+    }
+
+    /**
+     * Leave the current room we joined.
+     */
     public void leaveRoom() {
         System.out.println("Leaving room");
         //TODO: implement
         controller.switchTo(Panel.MULTI_PLAYER_LOBBY);
+    }
+
+    /**
+     * Get the server we are currently connected to.
+     *
+     * @return
+     */
+    public ServerInfo getCurrentServer() {
+        //TODO: Get the current server.
+        return null;
     }
 
     /**
@@ -119,6 +165,11 @@ public class Controller {
         System.exit(0);
     }
 
+    /**
+     * Go to a specific panel for the GUI.
+     *
+     * @param p panel that needs to be shown.
+     */
     public void switchTo(Panel p) {
         frame.switchTo(p.getPanel());
     }

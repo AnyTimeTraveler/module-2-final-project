@@ -144,6 +144,9 @@ public class PNLMultiPlayerLobby extends GUIPanel {
             return room;
         }
 
+        /**
+         * Join this room.
+         */
         public void joinRoom() {
             controller.joinRoom(getRoom());
         }

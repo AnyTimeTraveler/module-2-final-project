@@ -16,6 +16,7 @@ public class FRMMain extends JFrame {
 
     /**
      * Fill the frame with content.
+     * Sets the title and default close operations.
      */
     public void init() {
         this.setName("Main Frame");
@@ -34,6 +35,12 @@ public class FRMMain extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * Remove the current panel and show a specific panel.
+     * Calls onLeave on the current panel and onEnter on the new panel.
+     *
+     * @param panel the panel that needs to be shown.
+     */
     public void switchTo(GUIPanel panel) {
         Container cp = getContentPane();
         if (cp.getComponentCount() > 0) {
