@@ -1,7 +1,6 @@
 package ss.project.client.ui.gui;
 
 import ss.project.client.Config;
-import ss.project.client.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +9,7 @@ import java.awt.*;
  * Created by simon on 16.01.17.
  */
 public class FRMMain extends JFrame {
-    public FRMMain(Controller controller) {
+    public FRMMain() {
         super();
     }
 

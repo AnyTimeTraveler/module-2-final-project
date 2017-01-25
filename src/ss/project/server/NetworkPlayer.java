@@ -2,6 +2,7 @@ package ss.project.server;
 
 
 import lombok.Getter;
+import lombok.Setter;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.InvalidInputException;
 import ss.project.shared.game.Engine;
@@ -32,6 +33,9 @@ public class NetworkPlayer extends Player {
     private boolean chatSupport;
     @Getter
     private boolean autoRefresh;
+    @Setter
+    @Getter
+    private Room currentRoom;
 
     public NetworkPlayer(ClientHandler clientHandler) throws IOException {
         super();

@@ -44,10 +44,10 @@ public class Controller {
      */
     private void start() {
         EventQueue.invokeLater(() -> {
-            controller.frame = new FRMMain(controller);
+            controller.frame = new FRMMain();
             Thread.currentThread().setName("GUI");
             controller.frame.init();
-            controller.switchTo(Panel.SERVER_BRWOSER);
+            controller.switchTo(Panel.MAIN_MENU);
         });
     }
 
@@ -75,6 +75,7 @@ public class Controller {
      * @param room
      */
     public void joinRoom(Room room) {
+        //TODO: implement
         System.out.println("Join " + room.toString());
         controller.switchTo(Panel.MULTI_PLAYER_ROOM);
     }
