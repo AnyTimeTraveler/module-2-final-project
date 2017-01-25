@@ -77,7 +77,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         nextRow();
         gridBagConstraints.gridheight = 1;
         gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.anchor = gridBagConstraints.CENTER;
+        gridBagConstraints.anchor = GridBagConstraints.CENTER;
 
         add(createLabel("Player Amount:"), gridBagConstraints);
         playerAmount = createSpinner(2, 0, 10);
@@ -91,7 +91,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
         nextRow();
         gridBagConstraints.gridheight = 1;
-        gridBagConstraints.gridwidth = gridBagConstraints.REMAINDER;
+        gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
 
         /**
          * Create the panel with a list of players.
@@ -125,8 +125,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     }
 
     private JLabel createLabel(String text) {
-        JLabel label = new JLabel(text);
-        return label;
+        return new JLabel(text);
     }
 
     private JPanel addPlayerPanes(int players) {
