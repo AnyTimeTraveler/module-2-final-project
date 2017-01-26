@@ -46,6 +46,7 @@ package ss.project.client.ui.gui;
 
 import ss.project.shared.game.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -57,10 +58,9 @@ import java.awt.event.MouseEvent;
  * <p>
  * Version: 1.0
  */
-public class GameCanvas2D extends Canvas {
+public class GameCanvas2D extends JPanel {
 
     Image backbuffer;    // Backbuffer image
-    Graphics gc;            // Graphics context of backbuffer
     Engine engine;        // PNLGame board
 
     private int width = 350;
@@ -76,26 +76,15 @@ public class GameCanvas2D extends Canvas {
         this.zLayer = zLayer;
         this.width = width;
         this.height = height;
-        this.setSize(width, height);
         this.setPreferredSize(new Dimension(width, height));
-        this.setMinimumSize(new Dimension(width, height));
         this.addMouseListener(new MouseListen());
     }
 
-    public void setBuffer(Image backbuffer) {
-        this.backbuffer = backbuffer;
-        gc = backbuffer.getGraphics();
-    }
-
-    public void update(Graphics g) {
-        paint(g);
-    }
-
     @Override
-    public void paint(Graphics g) {
+    public void paintComponent(Graphics g) {
         if (engine != null) {
-            render2D(gc, engine.getWorld());
-            g.drawImage(backbuffer, 0, 0, this);
+            super.paintComponent(g);
+            render2D(g, engine.getWorld());
         }
     }
 
@@ -105,6 +94,8 @@ public class GameCanvas2D extends Canvas {
      * @param world
      */
     private void render2D(Graphics gc, World world) {
+        width = getSize().width;
+        height = getSize().height;
         gc.setColor(background);
         gc.fillRect(0, 0, width, height);
 
