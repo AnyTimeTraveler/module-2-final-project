@@ -9,4 +9,8 @@ public interface GameDisplay {
     void startTurn(Object waiter, HumanPlayer humanPlayer);
 
     void update();
+
+    void showHint(int x, int y, int z);
+
+    void removeHint(int x, int y, int z);
 }

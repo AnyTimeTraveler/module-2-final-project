@@ -32,6 +32,8 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     private JLabel currentTurnLabel;
     private JPanel worldPanel;
 
+    private Timer animationTimer;
+
     public PNLGame(Controller controller) {
         super(true);
         this.controller = controller;
@@ -49,6 +51,9 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         worldPanel = new JPanel(new GridBagLayout());
         worldPanelConstraints = new GridBagConstraints();
         this.add(worldPanel, BorderLayout.CENTER);
+
+        animationTimer = new Timer(10, e -> doCanvasAnimations());
+        animationTimer.stop();
     }
 
     @Override
@@ -69,6 +74,8 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         }
         worldPanelConstraints.weightx = 0.5f;
         worldPanelConstraints.weighty = 0.5f;
+
+        animationTimer.start();
     }
 
     public Object getWaiter() {
@@ -80,7 +87,17 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     }
 
     public void showHint(int x, int y, int z) {
+        canvas2D[z].showHint(x, y, getCurrentPlayer());
+    }
 
+    public void removeHint(int x, int y, int z) {
+        canvas2D[z].removeHint(x, y);
+    }
+
+    private void doCanvasAnimations() {
+        for (int i = 0; i < canvas2D.length; i++) {
+            canvas2D[i].increaseAnimationState();
+        }
     }
 
     @Override
@@ -122,5 +139,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         for (int i = 0; i < canvas2D.length; i++) {
             this.remove(canvas2D[i]);
         }
+
+        animationTimer.stop();
     }
 }

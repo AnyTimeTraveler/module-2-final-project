@@ -43,6 +43,14 @@ public class Vector2 {
     }
 
     @Override
+    public int hashCode() {
+        int result = 5;
+        result = 37 * result + x;
+        result = 37 * result + y;
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

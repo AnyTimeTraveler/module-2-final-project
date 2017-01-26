@@ -50,6 +50,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class: GameCanvas2D
@@ -69,6 +71,9 @@ public class GameCanvas2D extends JPanel {
     private int offset = 10;
     private int zLayer;
     private PNLGame owner;
+
+    private Map<Vector2, Player> specialDrawMap = new HashMap<>();
+    private int animationState = 0;
 
     GameCanvas2D(PNLGame owner, Engine engine, int zLayer, int width, int height) {
         this.owner = owner;
@@ -106,16 +111,66 @@ public class GameCanvas2D extends JPanel {
 
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
-                //WorldPosition worldPosition = world.getWorldPosition(new Vector3(x, y, zLayer));
                 Player actualPlayer = world.getOwner(new Vector3(x, y, zLayer));
                 if (actualPlayer != null) {
                     gc.setColor(owner.getPlayerColor(actualPlayer));
+                } else if (specialDrawMap.containsKey(new Vector2(x, y))) {
+                    gc.setColor(multiplyColor(owner.getPlayerColor(specialDrawMap.get(new Vector2(x, y))), getAnimationState() / 100f));
                 } else {
                     gc.setColor(Color.black);
                 }
                 gc.fillRoundRect((int) (offset + x * partX + 0.5f * offset), (int) (offset + y * partY + 0.5f * offset), (int) blockWidth, (int) blockHeight, 5, 5);
             }
         }
+    }
+
+    private int getAnimationState() {
+        return animationState;
+    }
+
+    public void increaseAnimationState() {
+        animationState++;
+        if (animationState > 100) {
+            animationState = 0;
+        }
+
+        this.repaint();
+    }
+
+    private Color multiplyColor(Color color1, float value) {
+        float red = (color1.getRed() * value) / 255;
+        float green = (color1.getGreen() * value) / 255;
+        float blue = (color1.getBlue() * value) / 255;
+        float alpha = (color1.getAlpha()) / 255;
+
+        return new Color(red, green, blue, alpha);
+    }
+
+    private Color multiplyAlpha(Color color1, float value) {
+        float red = (color1.getRed()) / 255;
+        float green = (color1.getGreen()) / 255;
+        float blue = (color1.getBlue()) / 255;
+        float alpha = (color1.getAlpha() * value) / 255;
+
+        return new Color(red, green, blue, alpha);
+    }
+
+    private Color combineColor(Color color1, Color color2) {
+        float red = (color1.getRed() * color2.getRed()) / 255;
+        float green = (color1.getGreen() * color2.getGreen()) / 255;
+        float blue = (color1.getBlue() * color2.getBlue()) / 255;
+        float alpha = (color1.getAlpha() * color2.getAlpha()) / 255;
+
+        return new Color(red, green, blue, alpha);
+    }
+
+    public void showHint(int x, int y, Player player) {
+        specialDrawMap.put(new Vector2(x, y), player);
+        System.out.println(specialDrawMap.size());
+    }
+
+    public void removeHint(int x, int y) {
+        specialDrawMap.remove(new Vector2(x, y));
     }
 
     private Vector2 getActualCoordinates(int xPixels, int yPixels, Vector3 worldSize) {
