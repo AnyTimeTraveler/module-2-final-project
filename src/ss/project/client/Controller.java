@@ -60,13 +60,12 @@ public class Controller {
     private void start(boolean gui) {
         EventQueue.invokeLater(() -> {
             if (gui) {
-                controller.frame = new FRMMain(controller);
+                controller.frame = new FRMMain();
             } else {
                 controller.frame = new TUI();
             }
 
             Thread.currentThread().setName("GUI");
-
 
             if (gui) {
                 Panel.MAIN_MENU.setPanel(new PNLMainMenu(controller));
@@ -117,6 +116,7 @@ public class Controller {
      * @param room
      */
     public void joinRoom(Room room) {
+        //TODO: implement
         System.out.println("Join " + room.toString());
         controller.switchTo(Panel.MULTI_PLAYER_ROOM);
     }

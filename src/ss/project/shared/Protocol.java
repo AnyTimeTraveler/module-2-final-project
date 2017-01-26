@@ -1,6 +1,7 @@
 package ss.project.shared;
 
 import lombok.Getter;
+import ss.project.server.LeaderboardEntry;
 import ss.project.server.Room;
 
 import java.util.HashMap;
@@ -25,9 +26,6 @@ public class Protocol {
         ERRORMAP.put("5", "The given move is not possible on this board");
         ERRORMAP.put("6", "Client is not allowed to leave the room after the game has started");
         ERRORMAP.put("7", "A message with piping in a wrong place was received");
-    }
-
-    static {
         WINMAP = new HashMap<>();
         WINMAP.put("1", "The game was won!");
         WINMAP.put("2", "Draw! The board is full.");
@@ -52,6 +50,8 @@ public class Protocol {
                 sb.append((boolean) arg ? '1' : '0');
             } else if (arg instanceof Room) {
                 sb.append(((Room) arg).serialize());
+            } else if (arg instanceof LeaderboardEntry) {
+                sb.append(((LeaderboardEntry) arg).serialize());
             } else {
                 sb.append(arg);
             }
@@ -62,10 +62,10 @@ public class Protocol {
     /**
      * Client to server messages.
      *
-     * @author Merel Meekes
+     * @author Simon Struck
      */
     public enum Client {
-
+        CREATEROOM("createRoom"),
         JOINROOM("joinRoom"),
         GETROOMLIST("getRoomList"),
         LEAVEROOM("leaveRoom"),
@@ -75,23 +75,26 @@ public class Protocol {
         SENDCAPABILITIES("sendCapabilities");
 
         @Getter
-        private String message;
+        private final String message;
 
         Client(String message) {
             this.message = message;
         }
 
+        public boolean equals(String other) {
+            return other.equalsIgnoreCase(message);
+        }
     }
 
     /**
      * Server to client messages.
      *
-     * @author Merel Meekes
+     * @author Simon Struck
      */
     public enum Server {
-
         SERVERCAPABILITIES("serverCapabilities"),
         SENDLISTROOMS("sendListRooms"),
+        ROOMCREATED("roomCreated"),
         ASSIGNID("assignID"),
         STARTGAME("startGame"),
         TURNOFPLAYER("playerTurn"),
@@ -102,12 +105,11 @@ public class Protocol {
         SENDLEADERBOARD("sendLeaderBoard");
 
         @Getter
-        private String message;
+        private final String message;
 
         Server(String message) {
             this.message = message;
         }
-
     }
 
 }

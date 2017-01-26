@@ -1,8 +1,8 @@
 package ss.project;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import ss.project.client.Controller;
 import ss.project.client.networking.Connection;
 import ss.project.client.networking.Network;
 import ss.project.client.networking.ServerInfo;
@@ -15,11 +15,6 @@ import java.io.IOException;
  */
 public class NetworkTest {
 
-    @Before
-    public void setup() throws IOException, InterruptedException {
-
-    }
-
     @Test
     public void testPing() throws IOException, InterruptedException {
         Server server = new Server("127.0.0.1", 1234);
@@ -28,10 +23,11 @@ public class NetworkTest {
         while (!server.isReady()) {
             Thread.sleep(10);
         }
-        Network client = new Network(new Connection("Simon", "127.0.0.1", 1234));
+        Network client = new Network(Controller.controller, new Connection("Simon", "127.0.0.1", 1234));
         Assert.assertEquals(ServerInfo.Status.ONLINE, client.ping().getStatus());
     }
 
+    @Test
     public void testClientCapabilities() throws InterruptedException, IOException {
         Server server = new Server("127.0.0.1", 2345);
         Thread serverThread = new Thread(server::run);
@@ -39,7 +35,10 @@ public class NetworkTest {
         while (!server.isReady()) {
             Thread.sleep(10);
         }
-        Network client = new Network(new Connection("Simon", "127.0.0.1", 2345));
-        client.run();
+        Network client = new Network(Controller.controller, new Connection("Simon", "127.0.0.1", 2345));
+        client.start();
+        Thread.sleep(100);
+        Assert.assertEquals(1, server.getClientHandlers().size());
+
     }
 }

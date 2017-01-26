@@ -3,14 +3,15 @@ package ss.project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ss.project.client.HumanPlayer;
+import ss.project.server.ClientHandler;
+import ss.project.server.NetworkPlayer;
 import ss.project.server.Room;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.AlreadyJoinedException;
 import ss.project.shared.exceptions.NotInRoomException;
 import ss.project.shared.exceptions.RoomFullException;
-import ss.project.shared.game.Player;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,10 +25,11 @@ public class RoomTest {
     private Room room4;
     private Room room5;
     private List<Room> roomList;
+    private ClientHandler clientHandler;
 
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         room = new Room(1, 2, 4, 5, 6, 7);
         room2 = new Room(2, 3, 5, 6, 7, 6);
         room3 = new Room(3, 3, 6, 7, 8, 5);
@@ -47,7 +49,7 @@ public class RoomTest {
 
     @Test
     public void join() throws Exception {
-        Player player = new HumanPlayer();
+        NetworkPlayer player = new NetworkPlayer(null);
         room.join(player);
         Assert.assertEquals(1, room.getCurrentPlayers());
         try {
@@ -56,10 +58,10 @@ public class RoomTest {
         } catch (AlreadyJoinedException e) {
             // good.
         }
-        Player player1 = new HumanPlayer();
+        NetworkPlayer player1 = new NetworkPlayer(null);
         room.join(player1);
         Assert.assertEquals(2, room.getCurrentPlayers());
-        Player player2 = new HumanPlayer();
+        NetworkPlayer player2 = new NetworkPlayer(null);
         try {
             room.join(player2);
             Assert.fail("Expected RoomFullException");
@@ -70,7 +72,7 @@ public class RoomTest {
 
     @Test(expected = NotInRoomException.class)
     public void leave() throws Exception {
-        Player player = new HumanPlayer();
+        NetworkPlayer player = new NetworkPlayer(null);
         room.leave(player);
     }
 

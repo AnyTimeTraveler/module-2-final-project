@@ -2,12 +2,16 @@ package ss.project.server;
 
 import ss.project.shared.Protocol;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Server {
     private String ip;
@@ -15,19 +19,22 @@ public class Server {
     private List<ClientHandler> threads;
     private boolean closed;
     private boolean ready;
+    private List<Room> rooms;
 
     public Server(String ip, int portArg) {
         this.ip = ip;
         port = portArg;
-        threads = new ArrayList<>();
         closed = false;
         ready = false;
+        threads = new ArrayList<>();
+        rooms = new ArrayList<>();
     }
 
     public static void main(String[] args) {
+
         Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
+//        server.determineWifiAddress();
         server.run();
-        System.out.println(server.getCapabilitiesMessage());
     }
 
     public void run() {
@@ -66,19 +73,8 @@ public class Server {
         System.out.println("Removed ClientHandler!");
     }
 
-    public String getClientList() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Connected clients:");
-        for (ClientHandler clientHandler : threads) {
-            sb.append('\n');
-            sb.append(clientHandler.getName());
-        }
-        return sb.toString();
-    }
-
-    public void shutdown() {
-        closed = true;
-
+    public List<ClientHandler> getClientHandlers() {
+        return threads;
     }
 
     public String getCapabilitiesMessage() {
@@ -95,5 +91,55 @@ public class Server {
 
     public boolean isReady() {
         return ready;
+    }
+
+    public String getRoomListString() {
+        return Protocol.createMessage(Protocol.Server.SENDLISTROOMS, rooms);
+    }
+
+    public Room getRoomByID(int roomId) {
+        for (Room room : rooms) {
+            if (room.getId() == roomId) {
+                return room;
+            }
+        }
+        return null;
+    }
+
+    public String getLeaderboardMessage() {
+        return Protocol.createMessage(Protocol.Server.SENDLEADERBOARD, ServerConfig.getInstance().Leaderboard);
+    }
+
+    private String determineWifiAddress() {
+        System.out.println(System.getProperty("os.name"));
+        Runtime ifconfig = Runtime.getRuntime();
+        Process p;
+        try {
+            if (System.getProperty("os.name").contains("win")) {
+                p = ifconfig.exec("ipconfig");
+            } else {
+                p = ifconfig.exec("ifconfig");
+            }
+            p.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            sb.append(br.readLine());
+            while (br.ready()) {
+                sb.append('\n');
+                sb.append(br.readLine());
+            }
+
+            String output = sb.toString();
+            System.out.println(output);
+
+            int w = output.indexOf("wlo1");
+            Pattern re = Pattern.compile(".+wlo1.+inet addr:([0-9|\\.]+).+");
+            Matcher m = re.matcher(output);
+            return m.group(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

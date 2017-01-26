@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerConfig {
 
@@ -26,6 +28,7 @@ public class ServerConfig {
     public int MaxDimensionZ;
     public int MaxWinLength;
     public boolean ChatSupport;
+    public List<LeaderboardEntry> Leaderboard;
 
     private ServerConfig() {
         Host = "127.0.0.1";
@@ -37,6 +40,7 @@ public class ServerConfig {
         MaxDimensionZ = 4;
         MaxWinLength = 4;
         ChatSupport = true;
+        Leaderboard = new ArrayList<>();
     }
 
     public static ServerConfig getInstance() {
