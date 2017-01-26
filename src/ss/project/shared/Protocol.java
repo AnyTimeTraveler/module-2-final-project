@@ -12,6 +12,9 @@ import java.util.HashMap;
  */
 public class Protocol {
 
+    /**
+     *
+     */
     public static final HashMap<String, String> ERRORMAP;
     public static final HashMap<String, String> WINMAP;
     public static final int ROOM_PARAMETERS = 6;
@@ -33,10 +36,22 @@ public class Protocol {
         WINMAP.put("4", "Player didn't respond. The game cannot continue.");
     }
 
+    /**
+     * Create a message that follows the protocol naming.
+     *
+     * @param message Type of message.
+     * @param args    Any arguments of this message.
+     * @return A string message.
+     */
     public static String createMessage(Client message, Object... args) {
         return createMessage(message.getMessage(), args);
     }
 
+    /**
+     * @param message
+     * @param args
+     * @return
+     */
     public static String createMessage(Server message, Object... args) {
         return createMessage(message.getMessage(), args);
     }

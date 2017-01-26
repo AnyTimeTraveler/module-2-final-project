@@ -41,7 +41,7 @@ public class ClientEngine extends Engine {
             //It's us, we should check whether it's valid.
 
             if (super.addGameItem(coordinates, owner)) {
-
+                //It's valid, now send a message to the server.
                 network.sendMessage(Protocol.createMessage(Protocol.Client.MAKEMOVE, coordinates.getX(), coordinates.getY()));
                 return true;
             } else {
