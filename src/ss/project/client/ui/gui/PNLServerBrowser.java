@@ -3,10 +3,12 @@ package ss.project.client.ui.gui;
 import ss.project.client.Config;
 import ss.project.client.Controller;
 import ss.project.client.networking.Connection;
+import ss.project.client.networking.Network;
 import ss.project.client.networking.ServerInfo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +58,11 @@ public class PNLServerBrowser extends GUIPanel {
         java.util.List<Connection> connections = Config.getInstance().KnownServers;
         List<ServerInfo> serverInfos = new ArrayList<>();
         for (int i = 0; i < connections.size(); i++) {
-            serverInfos.add(new ServerInfo(ServerInfo.Status.ONLINE, 1, true, 4, 4, 4, 4, true));
+            try {
+                serverInfos.add(new Network(Controller.getController(), connections.get(i)).ping());
+            } catch (IOException e) {
+                serverInfos.add(new ServerInfo(ServerInfo.Status.OFFLINE, 0, false, 0, 0, 0, 0, false));
+            }
         }
         addServerPanels(serverInfos);
     }

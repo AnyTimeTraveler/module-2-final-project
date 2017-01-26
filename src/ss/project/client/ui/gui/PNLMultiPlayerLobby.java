@@ -2,7 +2,6 @@ package ss.project.client.ui.gui;
 
 import ss.project.client.Controller;
 import ss.project.server.Room;
-import ss.project.shared.game.Vector3;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,12 +51,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
     @Override
     public void onEnter() {
-        //TODO: Create a connection and retrieve all rooms.
-        Room[] rooms = new Room[3];
-        for (int i = 0; i < rooms.length; i++) {
-            rooms[i] = new Room(5 - i, new Vector3(i, i + 1, i + 2), 4);
-        }
-        addRoomPanels(rooms);
+        addRoomPanels(Controller.getController().getRooms());
     }
 
     @Override
@@ -65,21 +59,23 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
     }
 
-    private void addRoomPanels(Room[] rooms) {
+    private void addRoomPanels(java.util.List<Room> rooms) {
         roomsPanelOwner.removeAll();
-        for (int i = 0; i < rooms.length; i++) {
-            RoomPanel roomPanel;
-            if (roomPanels.size() > i) {
-                roomPanel = roomPanels.get(i);
-                roomPanel.refreshValues();
-            } else {
-                roomPanel = new RoomPanel(rooms[i]);
+        if (rooms != null) {
+            for (int i = 0; i < rooms.size(); i++) {
+                RoomPanel roomPanel;
+                if (roomPanels.size() > i) {
+                    roomPanel = roomPanels.get(i);
+                    roomPanel.refreshValues();
+                } else {
+                    roomPanel = new RoomPanel(rooms.get(i));
+                }
+                roomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                if (!roomPanels.contains(roomPanel)) {
+                    roomPanels.add(roomPanel);
+                }
+                roomsPanelOwner.add(roomPanel);
             }
-            roomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            if (!roomPanels.contains(roomPanel)) {
-                roomPanels.add(roomPanel);
-            }
-            roomsPanelOwner.add(roomPanel);
         }
         this.repaint();
         roomsPanelOwner.revalidate();

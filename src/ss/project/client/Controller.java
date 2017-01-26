@@ -143,21 +143,20 @@ public class Controller {
      *
      * @return An array of rooms.
      */
-    public Room[] getRooms() {
+    public List<Room> getRooms() {
         if (getCurrentServer().isRoomSupport()) {
             //Get all rooms from this server, it supports lobbies.
             Room[] rooms = new Room[3];
             for (int i = 0; i < rooms.length; i++) {
                 rooms[i] = new Room(5 - i, new Vector3(i, i + 1, i + 2), 4);
             }
-            return rooms;
+            return null;
         } else {
             //This server does not support lobbies, show only one room with the server settings.
             ServerInfo curServer = getCurrentServer();
-            return new Room[]{
-                    new Room(curServer.getMaxPlayers(), curServer.getWorldSize(), curServer.getMaxWinLength())
-            };
+
         }
+        return null;
     }
 
     /**
