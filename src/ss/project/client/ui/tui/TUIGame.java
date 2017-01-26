@@ -65,6 +65,12 @@ public class TUIGame implements TUIPanel, GameDisplay {
         return result;
     }
 
+    /**
+     * Get a character of a player.
+     *
+     * @param player
+     * @return
+     */
     Character getPlayerCharacter(Player player) {
         if (player == null) {
             return 'x';

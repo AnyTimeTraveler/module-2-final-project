@@ -10,7 +10,10 @@ public class TUIServerBrowser implements TUIPanel {
 
     @Override
     public void printScreen() {
-
+        System.out.println(ASCIIArt.getHeadline("Game", 120));
+        for (int i = 0; i < 5; i++) {
+            //Create server options.
+        }
     }
 
     @Override

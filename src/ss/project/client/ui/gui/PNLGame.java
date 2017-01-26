@@ -102,6 +102,12 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         }
     }
 
+    /**
+     * Get the color of the player.
+     *
+     * @param player
+     * @return
+     */
     public Color getPlayerColor(Player player) {
         if (!playerColorMap.containsKey(player)) {
             float r = random.nextFloat() / 2 + 0.5f;
