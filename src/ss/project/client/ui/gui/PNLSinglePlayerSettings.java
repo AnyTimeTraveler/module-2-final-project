@@ -80,14 +80,14 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         gridBagConstraints.anchor = GridBagConstraints.CENTER;
 
         add(createLabel("Player Amount:"), gridBagConstraints);
-        playerAmount = createSpinner(2, 0, 10);
+        playerAmount = createSpinner(2, 2, 10);
         playerAmount.addChangeListener(e -> addPlayerPanes(((SpinnerNumberModel) playerAmount.getModel()).getNumber().intValue()));
         nextColumn();
         add(playerAmount, gridBagConstraints);
         nextColumn();
         add(createLabel("Win Length:"), gridBagConstraints);
         nextColumn();
-        add(winLength = createSpinner(4, 0, 100), gridBagConstraints);
+        add(winLength = createSpinner(4, 1, 100), gridBagConstraints);
 
         nextRow();
         gridBagConstraints.gridheight = 1;

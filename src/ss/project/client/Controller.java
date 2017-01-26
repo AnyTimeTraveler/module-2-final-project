@@ -163,6 +163,21 @@ public class Controller {
     }
 
     /**
+     * Create a new room on the server.
+     *
+     * @param amountOfPlayers
+     * @param worldX
+     * @param worldY
+     * @param worldZ
+     * @param winLength
+     */
+    public void createRoom(int amountOfPlayers, int worldX, int worldY, int worldZ, int winLength) {
+        System.out.println("createRoom " + amountOfPlayers + " " + worldX + " " + worldY + " " + worldZ + " " + winLength);
+        //TODO: implement
+        switchTo(Panel.MULTI_PLAYER_LOBBY);
+    }
+
+    /**
      * Get the server we are currently connected to.
      *
      * @return

@@ -52,6 +52,10 @@ public class GUIUtils {
         return result;
     }
 
+    public static JSpinner createSpinner(int value, int min, int max) {
+        return new JSpinner(new SpinnerNumberModel(value, min, max, 1));
+    }
+
     public enum LabelType {
         DEFAULT,
         TITLE
