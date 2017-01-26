@@ -57,4 +57,32 @@ public class ClientEngine extends Engine {
     public void finishGame(FinishReason reason) {
 
     }
+
+    /**
+     * Sets a players move.
+     *
+     * @param playerId id of player
+     * @param x        coordinate
+     * @param y        coordinate
+     */
+    public void notifyMove(int playerId, int x, int y) {
+
+    }
+
+    /**
+     * Game has ended.
+     *
+     * @param reason        Reason for end of game
+     * @param winningPlayer player (optional)
+     */
+    public void notifyEnd(int reason, int winningPlayer) {
+    }
+
+    /**
+     * Sets current players turn.
+     *
+     * @param playerID
+     */
+    public void setTurn(int playerID) {
+    }
 }

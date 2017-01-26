@@ -21,6 +21,7 @@ public class Server {
     private List<ClientHandler> threads;
     private boolean closed;
     private boolean ready;
+    private Room defaultRoom;
 
     public Server(String ip, int portArg) {
         this.ip = ip;
@@ -29,7 +30,7 @@ public class Server {
         ready = false;
         threads = new ArrayList<>();
         rooms = new ArrayList<>();
-        rooms.add(new Room(2, new Vector3(4, 4, 4), 4));
+        createDefaultRoom();
     }
 
     public static void main(String[] args) {
@@ -37,6 +38,11 @@ public class Server {
         Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
 //        server.determineWifiAddress();
         server.run();
+    }
+
+    private void createDefaultRoom() {
+        defaultRoom = new Room(2, new Vector3(4, 4, 4), 4);
+        rooms.add(defaultRoom);
     }
 
     public void run() {
@@ -152,6 +158,9 @@ public class Server {
     }
 
     public Room getDefaultRoom() {
-        return null;
+        if (defaultRoom == null || defaultRoom.isFull()) {
+            createDefaultRoom();
+        }
+        return defaultRoom;
     }
 }

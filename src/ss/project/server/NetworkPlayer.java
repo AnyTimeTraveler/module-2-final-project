@@ -3,22 +3,28 @@ package ss.project.server;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Synchronized;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.InvalidInputException;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
-import ss.project.shared.game.World;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class NetworkPlayer extends Player {
 
+
+    /**
+     * DO NOT USE THIS DIRECTLY!
+     */
+    private static int nextId;
     private final Object moveLock;
     @Getter
+    private int id;
+    @Getter
     private ClientHandler clientHandler;
-    private World world;
     @Getter
     private int maxPlayers;
     @Getter
@@ -47,14 +53,19 @@ public class NetworkPlayer extends Player {
 
     public NetworkPlayer(ClientHandler clientHandler) throws IOException {
         super();
+        this.id = getNextId();
         this.clientHandler = clientHandler;
         inGame = false;
         moveLock = new Object();
     }
 
+    @Synchronized
+    private static int getNextId() {
+        return nextId++;
+    }
+
     @Override
     public void doTurn(Engine engine) {
-        this.world = engine.getWorld();
         move = null;
         expectingMove = true;
         sendMoveNotification();
@@ -67,10 +78,11 @@ public class NetworkPlayer extends Player {
             }
         }
         engine.getWorld().addGameItem(move, this);
+
     }
 
     private void sendMoveNotification() {
-
+        currentRoom.sendMessage(Protocol.createMessage(Protocol.Client.MAKEMOVE, id));
     }
 
     /**

@@ -6,6 +6,7 @@ import ss.project.client.Controller;
 import ss.project.server.Room;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.ProtocolException;
+import ss.project.shared.game.ClientEngine;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,6 +20,7 @@ public class Network extends Thread {
     private ServerInfo serverInfo;
     @Getter
     private boolean ready;
+    private ClientEngine engine;
 
     public Network(Controller controller, Connection connection)
             throws IOException {
@@ -72,6 +74,12 @@ public class Network extends Thread {
                     return;
                 }
                 ready = true;
+                while (!closed) {
+                    line = in.readLine();
+                    engine.setTurn(12);
+                    engine.notifyMove(3, 2, 4);
+                    engine.notifyEnd(3, 12);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -108,36 +116,5 @@ public class Network extends Thread {
 
     private String getCapabilityString(int maxPlayers, String name, boolean roomSupport, int maxX, int maxY, int maxZ, int winLength, boolean chat, boolean autoRefresh) {
         return Protocol.createMessage(Protocol.Client.SENDCAPABILITIES, maxPlayers, name, roomSupport, maxX, maxY, maxZ, winLength, chat, autoRefresh);
-    }
-
-    private class ClientInputReader extends Thread {
-
-        private final Network client;
-        private BufferedReader in;
-
-        public ClientInputReader(Network client) {
-            this.client = client;
-            in = new BufferedReader(new InputStreamReader(System.in));
-            this.setDaemon(true);
-            this.setName("ConsoleInputReader");
-        }
-
-        @Override
-        public void run() {
-            try {
-                String line;
-                while (!client.closed) {
-//                    log.fine("Ready to read Network input:");
-                    line = in.readLine();
-                    if (line.equals("end")) {
-                        client.shutdown();
-                    }
-                    client.sendMessage(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                closed = true;
-            }
-        }
     }
 }

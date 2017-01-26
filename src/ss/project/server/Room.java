@@ -1,6 +1,7 @@
 package ss.project.server;
 
 import lombok.EqualsAndHashCode;
+import lombok.Synchronized;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.*;
 import ss.project.shared.game.Engine;
@@ -117,7 +118,8 @@ public class Room {
         }
     }
 
-    private static synchronized int getNextId() {
+    @Synchronized
+    private static int getNextId() {
         return nextId++;
     }
 
@@ -151,18 +153,21 @@ public class Room {
         }
         players.add(player);
         player.setCurrentRoom(this);
-        if (players.size() == maxPlayers) {
+        if (isFull()) {
             startGame();
         }
     }
 
     private void startGame() {
+        for (NetworkPlayer np : players) {
+            np.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, np.getId()));
+        }
         Player[] players = new Player[this.players.size()];
         this.players.toArray(players);
         engine = new Engine(worldSize, winLength, players);
-        Thread thread = new Thread(() -> engine.startGame());
-        thread.setDaemon(true);
-        thread.start();
+        engineThread = new Thread(() -> engine.startGame());
+        engineThread.setDaemon(true);
+        engineThread.start();
     }
 
     /**
@@ -233,5 +238,9 @@ public class Room {
         for (NetworkPlayer p : players) {
             p.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, message));
         }
+    }
+
+    public boolean isFull() {
+        return players.size() == maxPlayers;
     }
 }
