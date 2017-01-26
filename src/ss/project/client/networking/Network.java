@@ -64,7 +64,7 @@ public class Network extends Thread {
                 // await list of rooms
                 line = in.readLine();
                 try {
-                    controller.setRooms(Room.parseRoomString(line));
+                    controller.setRooms(Room.parseRoomListString(line));
                 } catch (ProtocolException e) {
                     // Unhandled, yet.
                     e.printStackTrace();

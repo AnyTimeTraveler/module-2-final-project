@@ -150,4 +150,8 @@ public class Server {
         }
         return null;
     }
+
+    public Room getDefaultRoom() {
+        return null;
+    }
 }
