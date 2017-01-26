@@ -20,16 +20,16 @@ public class TUIMainMenu implements TUIPanel {
     public void handleInput(String input) {
         switch (input) {
             case "1":
-                Controller.controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS);
+                Controller.getController().switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS);
                 break;
             case "2":
-                Controller.controller.switchTo(Controller.Panel.SERVER_BRWOSER);
+                Controller.getController().switchTo(Controller.Panel.SERVER_BRWOSER);
                 break;
             case "3":
-                Controller.controller.switchTo(Controller.Panel.OPTIONS);
+                Controller.getController().switchTo(Controller.Panel.OPTIONS);
                 break;
             case "4":
-                Controller.controller.shutdown();
+                Controller.getController().shutdown();
                 break;
             default:
                 System.out.println("Invalid input!");

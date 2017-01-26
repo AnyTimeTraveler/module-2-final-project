@@ -23,7 +23,7 @@ public class ClientHandler extends Thread {
         this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         closed = false;
         player = new NetworkPlayer(this);
-        this.setName("ClientHandler: Unknown");
+        this.setName("ClientHandler: Unknown Player");
     }
 
     public void run() {
@@ -36,6 +36,8 @@ public class ClientHandler extends Thread {
                 return;
             }
             player.setCapabilitiesFromString(line);
+
+            this.setName("ClientHandler: " + player.getName());
 
             if (player.isRoomSupport()) {
                 sendMessage(server.getRoomListString());
@@ -58,32 +60,36 @@ public class ClientHandler extends Thread {
 
     private void interpretLine(String line) {
         String[] parts = line.split(" ");
-        if (Protocol.Client.GETROOMLIST.equals(parts[0])) {
-            sendMessage(server.getRoomListString());
-        } else if (Protocol.Client.CREATEROOM.equals(parts[0])) {
-            // TODO: Implement once the new protocol is out.
-        } else if (Protocol.Client.JOINROOM.equals(parts[0])) {
-            try {
-                int roomId = Integer.parseInt(parts[1]);
-                Room toJoin = server.getRoomByID(roomId);
-                if (toJoin == null) {
-                    sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 2));
-                    return;
-                }
+        if (getPlayer().isInGame()) {
+            //TODO: Not done yet.
+        } else {
+            if (Protocol.Client.GETROOMLIST.equals(parts[0])) {
+                sendMessage(server.getRoomListString());
+            } else if (Protocol.Client.CREATEROOM.equals(parts[0])) {
+                // TODO: Implement once the new protocol is out.
+            } else if (Protocol.Client.JOINROOM.equals(parts[0])) {
                 try {
-                    toJoin.join(player);
-                } catch (AlreadyJoinedException | RoomFullException e) {
-                    sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 3));
+                    int roomId = Integer.parseInt(parts[1]);
+                    Room toJoin = server.getRoomByID(roomId);
+                    if (toJoin == null) {
+                        sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 2));
+                        return;
+                    }
+                    try {
+                        toJoin.join(player);
+                    } catch (AlreadyJoinedException | RoomFullException e) {
+                        sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 3));
+                        e.printStackTrace();
+                    }
+                } catch (NumberFormatException e) {
+                    // Just log it for now.
                     e.printStackTrace();
                 }
-            } catch (NumberFormatException e) {
-                // Just log it for now.
-                e.printStackTrace();
+            } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
+                // TODO: Implement
+            } else if (Protocol.Client.REQUESTLEADERBOARD.equals(parts[0])) {
+                sendMessage(server.getLeaderboardMessage());
             }
-        } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
-            // TODO: Implement
-        } else if (Protocol.Client.REQUESTLEADERBOARD.equals(parts[0])) {
-            sendMessage(server.getLeaderboardMessage());
         }
     }
 
@@ -95,6 +101,12 @@ public class ClientHandler extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
             closed = true;
+        }
+    }
+
+    public NetworkPlayer getPlayer() {
+        synchronized (player) {
+            return player;
         }
     }
 

@@ -23,7 +23,7 @@ public class TUIGame implements TUIPanel, GameDisplay {
 
     @Override
     public void printScreen() {
-        Controller.controller.getEngine().setUI(this);
+        Controller.getController().getEngine().setUI(this);
 
         System.out.println(ASCIIArt.getHeadline("Game", 120));
         if (humanPlayer != null) {
@@ -31,7 +31,7 @@ public class TUIGame implements TUIPanel, GameDisplay {
         }
 
         //Draw the game.
-        World world = Controller.controller.getEngine().getWorld();
+        World world = Controller.getController().getEngine().getWorld();
         System.out.println(printWorld(world));
     }
 

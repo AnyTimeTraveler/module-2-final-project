@@ -1,6 +1,6 @@
 package ss.project.client.networking;
 
-import lombok.extern.java.Log;
+import lombok.Getter;
 import ss.project.client.Config;
 import ss.project.client.Controller;
 import ss.project.server.Room;
@@ -10,7 +10,6 @@ import ss.project.shared.exceptions.ProtocolException;
 import java.io.*;
 import java.net.Socket;
 
-@Log
 public class Network extends Thread {
     private Controller controller;
     private Socket socket;
@@ -18,6 +17,8 @@ public class Network extends Thread {
     private BufferedWriter out;
     private boolean closed;
     private ServerInfo serverInfo;
+    @Getter
+    private boolean ready;
 
     public Network(Controller controller, Connection connection)
             throws IOException {
@@ -26,6 +27,7 @@ public class Network extends Thread {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         closed = false;
+        ready = false;
         //new ClientInputReader(this).start();
         this.setName("ServerInputReader");
     }
@@ -42,7 +44,7 @@ public class Network extends Thread {
     }
 
     public void run() {
-        log.finer("Waiting for Server response...");
+        System.out.println("Waiting for Server response...");
         String line;
         while (!closed) {
             try {
@@ -57,7 +59,7 @@ public class Network extends Thread {
                 }
 
                 // send your own capabilities
-                sendMessage(getCapabilityString(2, Config.getInstance().PlayerName, true, 4, 4, 4, 4, true, true));
+                sendMessage(getCapabilityString(Config.getInstance().MaxPlayers, Config.getInstance().PlayerName, Config.getInstance().RoomSupport, Config.getInstance().MaxDimensionX, Config.getInstance().MaxDimensionY, Config.getInstance().MaxDimensionZ, Config.getInstance().MaxWinLength, Config.getInstance().ChatSupport, Config.getInstance().AutoRefresh));
 
                 // await list of rooms
                 line = in.readLine();
@@ -69,7 +71,7 @@ public class Network extends Thread {
                     // Badly handled
                     return;
                 }
-
+                ready = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -94,7 +96,7 @@ public class Network extends Thread {
      * close the socket connection.
      */
     public void shutdown() {
-        log.fine("Closing socket connection...");
+        System.out.println("Closing socket connection...");
         try {
             out.write("end");
             out.newLine();

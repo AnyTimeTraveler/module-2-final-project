@@ -28,6 +28,14 @@ public class Config {
     public boolean Fullscreen;
     public List<Connection> KnownServers;
     public String PlayerName;
+    public int MaxPlayers;
+    public boolean RoomSupport;
+    public int MaxDimensionX;
+    public int MaxDimensionY;
+    public int MaxDimensionZ;
+    public int MaxWinLength;
+    public boolean ChatSupport;
+    public boolean AutoRefresh;
 
     private Config() {
         WindowTitle = "Connect Four 3D";
@@ -40,6 +48,14 @@ public class Config {
         KnownServers = new ArrayList<>();
         KnownServers.add(new Connection("Localhost", "127.0.0.1", 1234));
         PlayerName = "Simon";
+        MaxPlayers = 10;
+        RoomSupport = true;
+        MaxDimensionX = 4;
+        MaxDimensionY = 4;
+        MaxDimensionZ = 4;
+        MaxWinLength = 4;
+        ChatSupport = true;
+        AutoRefresh = true;
     }
 
     public static Config getInstance() {

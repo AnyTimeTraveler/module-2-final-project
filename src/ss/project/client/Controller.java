@@ -20,11 +20,17 @@ import java.util.List;
  * Created by simon on 21.01.17.
  */
 public class Controller {
-    public static Controller controller;
+    @Getter
+    private static Controller controller;
     /**
      * If true it shows the gui, if false the tui.
      */
     private static boolean doGui;
+
+    static {
+        controller = new Controller();
+    }
+
     @Setter
     @Getter
     private Engine engine;
@@ -42,7 +48,6 @@ public class Controller {
     }
 
     public static void main(String[] args) {
-        controller = new Controller();
         doGui = true;
         if (args.length >= 1) {
             if (args[0].equals("tui")) {

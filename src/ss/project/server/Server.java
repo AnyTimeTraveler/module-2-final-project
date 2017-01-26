@@ -1,6 +1,7 @@
 package ss.project.server;
 
 import ss.project.shared.Protocol;
+import ss.project.shared.game.Vector3;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,12 +15,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Server {
+    private final List<Room> rooms;
     private String ip;
     private int port;
     private List<ClientHandler> threads;
     private boolean closed;
     private boolean ready;
-    private List<Room> rooms;
 
     public Server(String ip, int portArg) {
         this.ip = ip;
@@ -28,6 +29,7 @@ public class Server {
         ready = false;
         threads = new ArrayList<>();
         rooms = new ArrayList<>();
+        rooms.add(new Room(2, new Vector3(4, 4, 4), 4));
     }
 
     public static void main(String[] args) {
@@ -94,13 +96,19 @@ public class Server {
     }
 
     public String getRoomListString() {
-        return Protocol.createMessage(Protocol.Server.SENDLISTROOMS, rooms);
+        synchronized (rooms) {
+            Room[] roomCopy = new Room[rooms.size()];
+            rooms.toArray(roomCopy);
+            return Protocol.createMessage(Protocol.Server.SENDLISTROOMS, roomCopy);
+        }
     }
 
     public Room getRoomByID(int roomId) {
-        for (Room room : rooms) {
-            if (room.getId() == roomId) {
-                return room;
+        synchronized (rooms) {
+            for (Room room : rooms) {
+                if (room.getId() == roomId) {
+                    return room;
+                }
             }
         }
         return null;

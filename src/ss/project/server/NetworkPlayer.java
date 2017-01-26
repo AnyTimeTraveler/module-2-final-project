@@ -36,10 +36,14 @@ public class NetworkPlayer extends Player {
     @Setter
     @Getter
     private Room currentRoom;
+    @Setter
+    @Getter
+    private boolean inGame;
 
     public NetworkPlayer(ClientHandler clientHandler) throws IOException {
         super();
         this.clientHandler = clientHandler;
+        inGame = false;
     }
 
     @Override
@@ -82,7 +86,7 @@ public class NetworkPlayer extends Player {
             sc.next();
         }
         maxPlayers = Integer.parseInt(sc.next());
-        super.setName(sc.next());
+        setName(sc.next());
         roomSupport = sc.next().equals("1");
         maxDimensionX = Integer.parseInt(sc.next());
         maxDimensionY = Integer.parseInt(sc.next());

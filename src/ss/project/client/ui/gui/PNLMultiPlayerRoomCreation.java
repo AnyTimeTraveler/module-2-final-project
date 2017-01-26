@@ -76,7 +76,7 @@ public class PNLMultiPlayerRoomCreation extends GUIPanel {
         int worldSizeY = (int) worldY.getValue();
         int worldSizeZ = (int) worldZ.getValue();
         int winLen = (int) winLength.getValue();
-        Controller.controller.createRoom(playerCount, worldSizeX, worldSizeY, worldSizeZ, winLen);
+        Controller.getController().createRoom(playerCount, worldSizeX, worldSizeY, worldSizeZ, winLen);
     }
 
     void nextColumn(GridBagConstraints gridBagConstraints) {

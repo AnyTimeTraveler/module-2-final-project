@@ -17,7 +17,7 @@ public class TUIOptions implements TUIPanel {
     @Override
     public void handleInput(String input) {
         if (input.equalsIgnoreCase("1")) {
-            Controller.controller.switchTo(Controller.Panel.MAIN_MENU);
+            Controller.getController().switchTo(Controller.Panel.MAIN_MENU);
         }
     }
 }
