@@ -31,7 +31,7 @@ public class ServerConfig {
     public List<LeaderboardEntry> Leaderboard;
 
     private ServerConfig() {
-        Host = "127.0.0.1";
+        Host = "130.89.232.205";
         Port = 1234;
         MaxPlayers = 2;
         RoomSupport = true;

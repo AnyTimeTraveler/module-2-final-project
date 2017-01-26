@@ -120,9 +120,9 @@ public class TUISinglePlayerSettings implements TUIPanel {
                 }
                 //We're done in this screen, start the game.
                 Engine engine = new Engine(new Vector3(x, y, z), winlength, players.toArray(new Player[players.size()]));
-                Controller.controller.setEngine(engine);
-                Controller.controller.switchTo(Controller.Panel.GAME);
-                Controller.controller.startGame();
+                Controller.getController().setEngine(engine);
+                Controller.getController().switchTo(Controller.Panel.GAME);
+                Controller.getController().startGame();
                 break;
             }
         }

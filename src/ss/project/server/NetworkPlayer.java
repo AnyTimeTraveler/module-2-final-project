@@ -15,6 +15,8 @@ import java.util.Scanner;
 
 public class NetworkPlayer extends Player {
 
+    private final Object moveLock;
+    @Getter
     private ClientHandler clientHandler;
     private World world;
     @Getter
@@ -36,22 +38,39 @@ public class NetworkPlayer extends Player {
     @Setter
     @Getter
     private Room currentRoom;
+    @Setter
+    @Getter
+    private boolean inGame;
+    private Vector2 move;
+    @Getter
+    private boolean expectingMove;
 
     public NetworkPlayer(ClientHandler clientHandler) throws IOException {
         super();
         this.clientHandler = clientHandler;
+        inGame = false;
+        moveLock = new Object();
     }
 
     @Override
     public void doTurn(Engine engine) {
         this.world = engine.getWorld();
-
-        //Read from our input stream.
-        try {
-            getMoveCoordinates("REPLACE BY INPUTSTREAM");
-        } catch (InvalidInputException e) {
-            e.printStackTrace();
+        move = null;
+        expectingMove = true;
+        sendMoveNotification();
+        synchronized (moveLock) {
+            try {
+                moveLock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                // TODO: Undecided
+            }
         }
+        engine.getWorld().addGameItem(move, this);
+    }
+
+    private void sendMoveNotification() {
+
     }
 
     /**
@@ -82,7 +101,7 @@ public class NetworkPlayer extends Player {
             sc.next();
         }
         maxPlayers = Integer.parseInt(sc.next());
-        super.setName(sc.next());
+        setName(sc.next());
         roomSupport = sc.next().equals("1");
         maxDimensionX = Integer.parseInt(sc.next());
         maxDimensionY = Integer.parseInt(sc.next());
@@ -90,5 +109,12 @@ public class NetworkPlayer extends Player {
         maxWinLength = Integer.parseInt(sc.next());
         chatSupport = sc.next().equals("1");
         autoRefresh = sc.next().equals("1");
+    }
+
+    public void setMove(int x, int y) {
+        synchronized (moveLock) {
+            this.move = new Vector2(x, y);
+            moveLock.notify();
+        }
     }
 }

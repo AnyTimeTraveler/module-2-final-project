@@ -40,7 +40,7 @@ public class RoomTest {
 
     @Test
     public void parseRoomString() throws Exception {
-        List<Room> generatedRooms = Room.parseRoomString(Protocol.createMessage(Protocol.Server.SENDLISTROOMS, room, room2, room3, room4, room5));
+        List<Room> generatedRooms = Room.parseRoomListString(Protocol.createMessage(Protocol.Server.SENDLISTROOMS, room, room2, room3, room4, room5));
         Assert.assertEquals(roomList.size(), generatedRooms.size());
         for (int i = 0; i < roomList.size(); i++) {
             Assert.assertEquals(roomList.get(i), generatedRooms.get(i));

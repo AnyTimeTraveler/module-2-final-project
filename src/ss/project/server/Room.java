@@ -3,6 +3,7 @@ package ss.project.server;
 import lombok.EqualsAndHashCode;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.*;
+import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
 
@@ -19,22 +20,35 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode
 public class Room {
+
     /**
      * DO NOT USE THIS DIRECTLY!
      */
     private static int nextId;
+    private Engine engine;
+    private Thread engineThread;
     private int maxPlayers;
     private int id;
     /**
      * Current joined players.
      */
-    private List<Player> players;
+    private List<NetworkPlayer> players;
     /**
      * Length needed to win a game.
      */
     private int winLength;
     private Vector3 worldSize;
 
+    /**
+     * Create a room and give it a specified ID. Only do this if you already know the ID.
+     *
+     * @param id         The id this room should get.
+     * @param maxPlayers The amount of players that can join this room.
+     * @param sizeX      The x-dimension of the world of this room.
+     * @param sizeY      The y-dimension of the world of this room.
+     * @param sizeZ      The z-dimension of the world of this room.
+     * @param winLength  The length needed to win a game.
+     */
     public Room(int id, int maxPlayers, int sizeX, int sizeY, int sizeZ, int winLength) {
         this.id = id;
         this.maxPlayers = maxPlayers;
@@ -48,13 +62,15 @@ public class Room {
      * Create a room and automaticly assign an ID.
      *
      * @param maxPlayers The amount of players that can join this room.
-     * @param worldSize  The dimensions of the world of this room.
+     * @param sizeX      The x-dimension of the world of this room.
+     * @param sizeY      The y-dimension of the world of this room.
+     * @param sizeZ      The z-dimension of the world of this room.
      * @param winLength  The length needed to win a game.
      */
-    public Room(int maxPlayers, Vector3 worldSize, int winLength) {
+    public Room(int maxPlayers, int sizeX, int sizeY, int sizeZ, int winLength) {
         id = getNextId();
         this.maxPlayers = maxPlayers;
-        this.worldSize = worldSize;
+        this.worldSize = new Vector3(sizeX, sizeY, sizeZ);
         this.winLength = winLength;
         players = new ArrayList<>();
     }
@@ -64,15 +80,22 @@ public class Room {
      *
      * @param id         The id this room should get.
      * @param maxPlayers The amount of players that can join this room.
-     * @param worldSize  The dimensions of the world of this room.
+     * @param worldSize  The x-dimension of the world of this room.
      * @param winLength  The length needed to win a game.
      */
     public Room(int id, int maxPlayers, Vector3 worldSize, int winLength) {
-        this.id = id;
-        this.maxPlayers = maxPlayers;
-        this.worldSize = worldSize;
-        this.winLength = winLength;
-        players = new ArrayList<>();
+        this(id, maxPlayers, worldSize.getX(), worldSize.getY(), worldSize.getZ(), winLength);
+    }
+
+    /**
+     * Create a room and give it a specified ID. Only do this if you already know the ID.
+     *
+     * @param maxPlayers The amount of players that can join this room.
+     * @param worldSize  The x-dimension of the world of this room.
+     * @param winLength  The length needed to win a game.
+     */
+    public Room(int maxPlayers, Vector3 worldSize, int winLength) {
+        this(maxPlayers, worldSize.getX(), worldSize.getY(), worldSize.getZ(), winLength);
     }
 
     public static Room fromString(String line) throws ProtocolException {
@@ -98,7 +121,7 @@ public class Room {
         return nextId++;
     }
 
-    public static List<Room> parseRoomString(String line) throws ProtocolException {
+    public static List<Room> parseRoomListString(String line) throws ProtocolException {
         Scanner sc = new Scanner(line);
         // test for invalid message
         if (!sc.next().equalsIgnoreCase(Protocol.Server.SENDLISTROOMS.getMessage())) {
@@ -128,6 +151,18 @@ public class Room {
         }
         players.add(player);
         player.setCurrentRoom(this);
+        if (players.size() == maxPlayers) {
+            startGame();
+        }
+    }
+
+    private void startGame() {
+        Player[] players = new Player[this.players.size()];
+        this.players.toArray(players);
+        engine = new Engine(worldSize, winLength, players);
+        Thread thread = new Thread(() -> engine.startGame());
+        thread.setDaemon(true);
+        thread.start();
     }
 
     /**
@@ -192,5 +227,11 @@ public class Room {
 
     public int getCurrentPlayers() {
         return players.size();
+    }
+
+    public void sendMessage(String message) {
+        for (NetworkPlayer p : players) {
+            p.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, message));
+        }
     }
 }
