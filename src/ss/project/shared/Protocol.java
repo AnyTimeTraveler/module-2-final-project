@@ -17,6 +17,7 @@ public class Protocol {
      */
     public static final HashMap<String, String> ERRORMAP;
     public static final HashMap<String, String> WINMAP;
+    public static final HashMap<Integer, WinReason> WINREASONMAP;
     public static final int ROOM_PARAMETERS = 6;
     public static final String PIPE_SYMBOL = "\\|";
 
@@ -29,12 +30,20 @@ public class Protocol {
         ERRORMAP.put("5", "The given move is not possible on this board");
         ERRORMAP.put("6", "Client is not allowed to leave the room after the game has started");
         ERRORMAP.put("7", "A message with piping in a wrong place was received");
+
         WINMAP = new HashMap<>();
         WINMAP.put("1", "The game was won!");
         WINMAP.put("2", "Draw! The board is full.");
         WINMAP.put("3", "Player disconnected. The game cannot continue.");
         WINMAP.put("4", "Player didn't respond. The game cannot continue.");
+
+        WINREASONMAP = new HashMap<>();
+        WINREASONMAP.put(1, WinReason.WINLENGTHACHIEVED);
+        WINREASONMAP.put(2, WinReason.BOARDISFULL);
+        WINREASONMAP.put(3, WinReason.PLAYERDISCONNECTED);
+        WINREASONMAP.put(4, WinReason.GAMETIMEOUT);
     }
+
 
     /**
      * Create a message that follows the protocol naming.
@@ -72,6 +81,19 @@ public class Protocol {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Get the winreason from an id.
+     *
+     * @param id
+     * @return
+     */
+    public static WinReason getWinReason(int id) {
+        if (WINREASONMAP.containsKey(id)) {
+            return WINREASONMAP.get(id);
+        }
+        throw new IllegalArgumentException("winreason is not a valid id: " + id);
     }
 
     /**
@@ -127,4 +149,29 @@ public class Protocol {
         }
     }
 
+    /**
+     * Reasons the game has ended.
+     */
+    public enum WinReason {
+        WINLENGTHACHIEVED(1),
+        BOARDISFULL(2),
+        PLAYERDISCONNECTED(3),
+        GAMETIMEOUT(4);
+
+        @Getter
+        private final int id;
+
+        WinReason(int id) {
+            this.id = id;
+        }
+
+        public boolean equals(String message) {
+            try {
+                int number = Integer.parseInt(message);
+                return getId() == number;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+    }
 }

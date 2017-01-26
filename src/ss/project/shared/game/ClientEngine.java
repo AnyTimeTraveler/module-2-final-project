@@ -55,7 +55,7 @@ public class ClientEngine extends Engine {
      * @param reason
      */
     public void finishGame(FinishReason reason) {
-
+        //We shouldn't do anything, we should just wait til notifyEnd is called.
     }
 
     /**
@@ -66,7 +66,7 @@ public class ClientEngine extends Engine {
      * @param y        coordinate
      */
     public void notifyMove(int playerId, int x, int y) {
-
+        super.addGameItem(new Vector2(x, y), getPlayer(playerId));
     }
 
     /**
@@ -76,6 +76,25 @@ public class ClientEngine extends Engine {
      * @param winningPlayer player (optional)
      */
     public void notifyEnd(int reason, int winningPlayer) {
+        Protocol.WinReason winReason = Protocol.getWinReason(reason);
+        switch (winReason) {
+            case BOARDISFULL: {
+                super.finishGame(FinishReason.FULL);
+                break;
+            }
+            case GAMETIMEOUT: {
+                System.out.println("What to do now...? Game has timeout...");
+                break;
+            }
+            case PLAYERDISCONNECTED: {
+                System.out.println(getPlayer(winningPlayer) + " disconnected the room");
+                break;
+            }
+            case WINLENGTHACHIEVED: {
+                System.out.println(getPlayer(winningPlayer) + " won the game...!");
+                break;
+            }
+        }
     }
 
     /**
@@ -84,5 +103,6 @@ public class ClientEngine extends Engine {
      * @param playerID
      */
     public void setTurn(int playerID) {
+        getUI().setCurrentPlayer(getPlayer(playerID));
     }
 }

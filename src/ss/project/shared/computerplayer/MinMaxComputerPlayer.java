@@ -102,7 +102,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             for (int x = 0; x < workers.length; x++) {
                 for (int y = 0; y < workers[x].length; y++) {
                     int value = workers[x][y].get();
-                    System.out.println(getName() + " (" + x + "," + y + ") " + value);
+                    //System.out.println(getName() + " (" + x + "," + y + ") " + value);
                     if (value > bestValue) {
                         result = new Vector2(x, y);
                         bestValue = value;

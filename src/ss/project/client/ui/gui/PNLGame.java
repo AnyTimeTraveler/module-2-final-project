@@ -86,6 +86,10 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         return this.currentPlayer;
     }
 
+    public void setCurrentPlayer(Player player) {
+        currentTurnLabel.setText(player.getName() + " 's turn");
+    }
+
     public void showHint(int x, int y, int z) {
         canvas2D[z].showHint(x, y, getCurrentPlayer());
     }
@@ -126,7 +130,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     @Override
     public void startTurn(Object waiter, HumanPlayer humanPlayer) {
         System.out.println("Start the turn... Show whose turn it is: " + humanPlayer.getName());
-        currentTurnLabel.setText(humanPlayer.getName() + "'s turn");
+        setCurrentPlayer(humanPlayer);
         this.waiter = waiter;
         this.currentPlayer = humanPlayer;
     }

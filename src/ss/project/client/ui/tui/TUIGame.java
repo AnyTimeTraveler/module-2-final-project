@@ -120,4 +120,9 @@ public class TUIGame implements TUIPanel, GameDisplay {
     public void removeHint(int x, int y, int z) {
 
     }
+
+    @Override
+    public void setCurrentPlayer(Player player) {
+        System.out.println("Current player: " + player.getName());
+    }
 }

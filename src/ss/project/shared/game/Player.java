@@ -14,6 +14,7 @@ public abstract class Player {
      * Used in multiplayer.
      */
     @Getter
+    @Setter
     private int id;
 
     public Player() {
@@ -27,15 +28,6 @@ public abstract class Player {
      */
     public Player(String name) {
         setName(name);
-    }
-
-    /**
-     * Set the id of this player. Used in multiplayer.
-     *
-     * @param value
-     */
-    protected void setId(int value) {
-        id = value;
     }
 
     /**

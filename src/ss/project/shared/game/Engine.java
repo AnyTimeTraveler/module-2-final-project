@@ -2,9 +2,12 @@ package ss.project.shared.game;
 
 import ss.project.client.ui.GameDisplay;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Engine {
     private World world;
-    private Player[] players;
+    private Map<Integer, Player> players = new HashMap<>();
     private GameDisplay gameDisplay;
 
     /**
@@ -19,7 +22,10 @@ public class Engine {
      */
     public Engine(Vector3 worldSize, int winLength, Player[] players) {
         this.world = new World(worldSize, winLength);
-        this.players = players;
+        //this.players = players;
+        for (Player player : players) {
+            this.players.put(player.getId(), player);
+        }
     }
 
     /**
@@ -74,8 +80,8 @@ public class Engine {
      * @return Null if ID not in range, else the player object.
      */
     public Player getPlayer(int id) {
-        if (id < players.length && id >= 0) {
-            return players[id];
+        if (players.containsKey(id)) {
+            return players.get(id);
         }
         return null;
     }
@@ -84,7 +90,7 @@ public class Engine {
      * @return the amount of current players, both computerplayer and real.
      */
     public int getPlayerCount() {
-        return players.length;
+        return players.size();
     }
 
     /**
@@ -95,9 +101,9 @@ public class Engine {
      * @return null if no other player has been found.
      */
     public Player getOtherPlayer(Player player) {
-        for (int i = 0; i < getPlayerCount(); i++) {
-            if (!getPlayer(i).equals(player)) {
-                return getPlayer(i);
+        for (HashMap.Entry<Integer, Player> entry : players.entrySet()) {
+            if (!entry.getValue().equals(player)) {
+                return entry.getValue();
             }
         }
         return null;

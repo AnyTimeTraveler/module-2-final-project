@@ -50,7 +50,10 @@ public class HumanPlayer extends Player {
             }
 
             //We placed something!
-            engine.getUI().removeHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
+            if (hintPos != null) {
+                engine.getUI().removeHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
+            }
+
             if (!engine.addGameItem(selectedCoordinates, this)) {
                 //we failed...
                 doTurn(engine);
