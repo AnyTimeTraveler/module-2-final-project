@@ -40,8 +40,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         this.depth = 6;
     }
 
-    @Override
-    public void doTurn(Engine engine) {
+    private void initialize(Engine engine) {
         if (worldCopy == null)
             worldCopy = new World(engine.getWorld().getSize(), engine.getWorld().getWinLength());
         if (opponent == null)
@@ -51,8 +50,13 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         if (executor == null) {
             executor = Executors.newWorkStealingPool();
         }
-
         engine.getWorld().writeTo(worldCopy);
+    }
+
+    @Override
+    public void doTurn(Engine engine) {
+        initialize(engine);
+
         Vector2 bestPos = getBestPosition(worldCopy);
         System.out.println(bestPos.toString());
         if (!engine.addGameItem(bestPos, this)) {
@@ -67,6 +71,17 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
                 }
             }
         }
+    }
+
+    /**
+     * Get the result of the calculation. Is not checked if actually right.
+     *
+     * @param engine
+     * @return
+     */
+    public Vector2 getMove(Engine engine) {
+        initialize(engine);
+        return getBestPosition(worldCopy);
     }
 
     private Vector2 getBestPosition(World world) {

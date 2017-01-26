@@ -110,4 +110,14 @@ public class TUIGame implements TUIPanel, GameDisplay {
     public void update() {
         printScreen();
     }
+
+    @Override
+    public void showHint(int x, int y, int z) {
+        System.out.println("Why don't you try: " + x + "," + y + "," + z);
+    }
+
+    @Override
+    public void removeHint(int x, int y, int z) {
+
+    }
 }
