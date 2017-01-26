@@ -39,6 +39,11 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
         jPanel.add(backButton);
+
+        JButton leaderBoardButton = new JButton("Leaderboard");
+        leaderBoardButton.addActionListener(e -> controller.switchTo(Controller.Panel.LEADERBOARD));
+        jPanel.add(leaderBoardButton);
+
         JButton createButton = new JButton("Create");
         createButton.addActionListener(e -> controller.switchTo(Controller.Panel.MULTI_PLAYER_ROOM_CREATION));
         jPanel.add(createButton);

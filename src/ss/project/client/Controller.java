@@ -76,6 +76,7 @@ public class Controller {
                 Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new PNLMultiPlayerRoomCreation(controller));
                 Panel.SERVER_BRWOSER.setPanel(new PNLServerBrowser(controller));
                 Panel.OPTIONS.setPanel(new PNLOptions(controller));
+                Panel.LEADERBOARD.setPanel(new PNLLeaderboard(controller));
             } else {
                 Panel.MAIN_MENU.setPanel(new TUIMainMenu());
                 Panel.SINGLE_PLAYER_SETTINGS.setPanel(new TUISinglePlayerSettings());
@@ -85,6 +86,7 @@ public class Controller {
                 Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new TUIMultiPlayerRoomCreation());
                 Panel.SERVER_BRWOSER.setPanel(new TUIServerBrowser());
                 Panel.OPTIONS.setPanel(new TUIOptions());
+                Panel.LEADERBOARD.setPanel(new TUILeaderboard());
             }
 
             controller.switchTo(Panel.MAIN_MENU);
@@ -247,7 +249,8 @@ public class Controller {
         MULTI_PLAYER_LOBBY(),
         MULTI_PLAYER_ROOM(),
         MULTI_PLAYER_ROOM_CREATION(),
-        GAME();
+        GAME(),
+        LEADERBOARD();
 
         private UIPanel panel;
 
