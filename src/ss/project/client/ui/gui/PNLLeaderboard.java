@@ -10,7 +10,8 @@ import java.awt.*;
  * Created by fw on 26/01/2017.
  */
 public class PNLLeaderboard extends GUIPanel {
-    JPanel leaderBoardList;
+    private JPanel leaderBoardList;
+    private GridBagConstraints gridBagConstraints;
 
     public PNLLeaderboard(Controller controller) {
         super();
@@ -19,7 +20,8 @@ public class PNLLeaderboard extends GUIPanel {
         this.add(GUIUtils.createLabel("Leaderboard", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
 
         leaderBoardList = new JPanel();
-        leaderBoardList.setLayout(new BoxLayout(leaderBoardList, BoxLayout.Y_AXIS));
+        leaderBoardList.setLayout(new GridBagLayout());
+        gridBagConstraints = new GridBagConstraints();
         this.add(leaderBoardList, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back");
@@ -39,8 +41,11 @@ public class PNLLeaderboard extends GUIPanel {
 
     private void showLeaderBoardEntries(LeaderboardEntry[] entries) {
         leaderBoardList.removeAll();
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         for (int i = 0; i < entries.length; i++) {
-            leaderBoardList.add(new ScoreBoardItem(entries[i]));
+            gridBagConstraints.gridy = i;
+            leaderBoardList.add(new ScoreBoardItem(entries[i]), gridBagConstraints);
+
         }
     }
 

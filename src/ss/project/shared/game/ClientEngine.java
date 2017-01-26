@@ -1,5 +1,6 @@
 package ss.project.shared.game;
 
+import ss.project.client.Controller;
 import ss.project.client.networking.Network;
 import ss.project.shared.Protocol;
 
@@ -36,6 +37,7 @@ public class ClientEngine extends Engine {
      * @param owner
      * @return True if it's a legit move. False if not.
      */
+    @Override
     public boolean addGameItem(Vector2 coordinates, Player owner) {
         if (owner.getId() == playerID) {
             //It's us, we should check whether it's valid.
@@ -54,7 +56,8 @@ public class ClientEngine extends Engine {
     /**
      * @param reason
      */
-    public void finishGame(FinishReason reason) {
+    @Override
+    public void finishGame(Protocol.WinReason reason) {
         //We shouldn't do anything, we should just wait til notifyEnd is called.
     }
 
@@ -79,7 +82,7 @@ public class ClientEngine extends Engine {
         Protocol.WinReason winReason = Protocol.getWinReason(reason);
         switch (winReason) {
             case BOARDISFULL: {
-                super.finishGame(FinishReason.FULL);
+                super.finishGame(Protocol.WinReason.BOARDISFULL);
                 break;
             }
             case GAMETIMEOUT: {
@@ -95,6 +98,9 @@ public class ClientEngine extends Engine {
                 break;
             }
         }
+        this.winReason = winReason;
+        winner = winningPlayer;
+        Controller.getController().switchTo(Controller.Panel.GAMEEND);
     }
 
     /**

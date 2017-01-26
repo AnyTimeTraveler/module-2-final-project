@@ -103,6 +103,7 @@ public class PNLServerBrowser extends GUIPanel {
         private JLabel playerAmount;
         private JLabel worldSize;
         private JCheckBox lobbySupport;
+        private JButton joinButton;
 
         /**
          * Create a new roomPanel and set the correct data.
@@ -137,7 +138,7 @@ public class PNLServerBrowser extends GUIPanel {
             jPanel.add(lobbySupport, constraints);
             this.add(jPanel, BorderLayout.CENTER);
 
-            JButton joinButton = new JButton("Join");
+            joinButton = new JButton("Join");
             joinButton.addActionListener(e -> {
                 joinServer();
             });
@@ -156,6 +157,12 @@ public class PNLServerBrowser extends GUIPanel {
             worldSize.setText("World:" + serverInfo.getMaxDimensionX() + "," + serverInfo.getMaxDimensionY() + "," + serverInfo.getMaxDimensionZ());
             chatSupport.setSelected(serverInfo.isChatSupport());
             lobbySupport.setSelected(serverInfo.isRoomSupport());
+
+            if (serverInfo.getStatus().equals(ServerInfo.Status.ONLINE)) {
+                joinButton.setEnabled(true);
+            } else {
+                joinButton.setEnabled(false);
+            }
         }
 
         /**

@@ -49,29 +49,18 @@ public class Controller {
 
     public static void main(String[] args) {
         doGui = true;
-        if (args.length >= 1) {
-            if (args[0].equals("tui")) {
-                doGui = false;
-            }
-        }
+        if (args.length >= 1) if (args[0].equals("tui")) doGui = false;
         controller.start(doGui);
     }
 
     /**
-     * Start the gui or tui.
-     *
-     * @param gui If true, show the gui. If false show the tui.
+     * Start the gui or tui. @param gui If true, show the gui. If false show the tui.
      */
     private void start(boolean gui) {
         EventQueue.invokeLater(() -> {
-            if (gui) {
-                controller.frame = new FRMMain();
-            } else {
-                controller.frame = new TUI();
-            }
-
+            if (gui) controller.frame = new FRMMain();
+            else controller.frame = new TUI();
             Thread.currentThread().setName("GUI");
-
             if (gui) {
                 Panel.MAIN_MENU.setPanel(new PNLMainMenu(controller));
                 Panel.SINGLE_PLAYER_SETTINGS.setPanel(new PNLSinglePlayerSettings(controller));
@@ -82,6 +71,7 @@ public class Controller {
                 Panel.SERVER_BRWOSER.setPanel(new PNLServerBrowser(controller));
                 Panel.OPTIONS.setPanel(new PNLOptions(controller));
                 Panel.LEADERBOARD.setPanel(new PNLLeaderboard(controller));
+                Panel.GAMEEND.setPanel(new PNLGameEnd(controller));
             } else {
                 Panel.MAIN_MENU.setPanel(new TUIMainMenu());
                 Panel.SINGLE_PLAYER_SETTINGS.setPanel(new TUISinglePlayerSettings());
@@ -92,16 +82,15 @@ public class Controller {
                 Panel.SERVER_BRWOSER.setPanel(new TUIServerBrowser());
                 Panel.OPTIONS.setPanel(new TUIOptions());
                 Panel.LEADERBOARD.setPanel(new TUILeaderboard());
+                Panel.GAMEEND.setPanel(new TUIGameEnd());
             }
-
-            controller.switchTo(Panel.MAIN_MENU);
+            controller.switchTo(Panel.GAMEEND);
             controller.frame.init();
         });
     }
 
     /**
-     * Restart the complete frame and go back to the default panel.
-     * Used when changing fullscreen mode.
+     * Restart the complete frame and go back to the default panel. Used when changing fullscreen mode.
      */
     public void restartFrame() {
         frame.dispose();
@@ -118,20 +107,15 @@ public class Controller {
     }
 
     /**
-     * Join a room.
-     *
-     * @param room
+     * Join a room. @param room
      */
-    public void joinRoom(Room room) {
-        //TODO: implement
+    public void joinRoom(Room room) { /*TODO: implement*/
         System.out.println("Join " + room.toString());
         controller.switchTo(Panel.MULTI_PLAYER_ROOM);
     }
 
     /**
-     * Get the room we are currently connected to.
-     *
-     * @return A room instancen of the room we are connected to.
+     * Get the room we are currently connected to. @return A room instancen of the room we are connected to.
      */
     public Room getCurrentRoom() {
         //TODO: implement
@@ -254,7 +238,8 @@ public class Controller {
         MULTI_PLAYER_ROOM(),
         MULTI_PLAYER_ROOM_CREATION(),
         GAME(),
-        LEADERBOARD();
+        LEADERBOARD(),
+        GAMEEND();
 
         private UIPanel panel;
 

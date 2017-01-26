@@ -1,15 +1,21 @@
 package ss.project.shared.game;
 
+import lombok.Getter;
+import ss.project.client.Controller;
 import ss.project.client.ui.GameDisplay;
+import ss.project.shared.Protocol;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Engine {
+    @Getter
+    protected Protocol.WinReason winReason;
+    @Getter
+    protected int winner;
     private World world;
     private Map<Integer, Player> players = new HashMap<>();
     private GameDisplay gameDisplay;
-
     /**
      * True while the gameDisplay is running.
      */
@@ -63,10 +69,10 @@ public class Engine {
         if (result) {
             if (this.getWorld().hasWon(coordinates, owner)) {
                 //Someone won!
-                finishGame(FinishReason.WON);
+                finishGame(Protocol.WinReason.WINLENGTHACHIEVED);
                 System.out.println(owner.getName() + " won!");
             } else if (getWorld().isFull()) {
-                finishGame(FinishReason.FULL);
+                finishGame(Protocol.WinReason.BOARDISFULL);
             }
             getUI().update();
         }
@@ -135,37 +141,24 @@ public class Engine {
     /**
      * @param reason
      */
-    public void finishGame(FinishReason reason) {
+    public void finishGame(Protocol.WinReason reason) {
         switch (reason) {
-            case CRASHED: {
+            case WINLENGTHACHIEVED: {
                 break;
             }
-            case WON: {
+            case BOARDISFULL: {
                 break;
             }
-            case FULL: {
+            case PLAYERDISCONNECTED: {
+                break;
+            }
+            case GAMETIMEOUT: {
                 break;
             }
         }
         gameRunning = false;
+        winReason = reason;
+        Controller.getController().switchTo(Controller.Panel.GAMEEND);
         System.out.println("Finished game (reason " + reason.toString() + ")");
-    }
-
-    /**
-     * Reasons why the gameDisplay has finished.
-     */
-    public enum FinishReason {
-        /**
-         * Someone has won.
-         */
-        WON,
-        /**
-         * The board is full.
-         */
-        FULL,
-        /**
-         * The gameDisplay has crashed.
-         */
-        CRASHED
     }
 }
