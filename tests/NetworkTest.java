@@ -1,5 +1,3 @@
-package ss.project;
-
 import org.junit.Assert;
 import org.junit.Test;
 import ss.project.client.Config;
@@ -11,6 +9,7 @@ import ss.project.server.NetworkPlayer;
 import ss.project.server.Server;
 
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by simon on 23.01.17.
@@ -19,25 +18,25 @@ public class NetworkTest {
 
     @Test
     public void testPing() throws IOException, InterruptedException {
-        Server server = new Server("127.0.0.1", 1234);
+        Server server = new Server("127.0.0.1", 1024 + new Random().nextInt(6000));
         Thread serverThread = new Thread(server::run);
         serverThread.start();
         while (!server.isReady()) {
             Thread.sleep(10);
         }
-        Network client = new Network(Controller.getController(), new Connection("Simon", "127.0.0.1", 1234));
+        Network client = new Network(Controller.getController(), new Connection("Simon", "127.0.0.1", server.getPort()));
         Assert.assertEquals(ServerInfo.Status.ONLINE, client.ping().getStatus());
     }
 
     @Test
     public void testClientCapabilities() throws InterruptedException, IOException {
-        Server server = new Server("127.0.0.1", 2345);
+        Server server = new Server("127.0.0.1", 1024 + new Random().nextInt(6000));
         Thread serverThread = new Thread(server::run);
         serverThread.start();
         while (!server.isReady()) {
             Thread.sleep(10);
         }
-        Network client = new Network(Controller.getController(), new Connection("Simon", "127.0.0.1", 2345));
+        Network client = new Network(Controller.getController(), new Connection("Simon", "127.0.0.1", server.getPort()));
         client.start();
         while (!client.isReady()) {
             Thread.sleep(10);

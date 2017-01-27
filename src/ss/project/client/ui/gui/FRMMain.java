@@ -26,7 +26,7 @@ public class FRMMain extends JFrame implements UIFrame {
         this.setName("Main Frame");
         if (Config.getInstance().Fullscreen) {
             this.setLocation(0, 0);
-            this.setSize(new Dimension(1920, 1080));
+            this.setSize(new Dimension(Config.getInstance().FullscreenWidth, Config.getInstance().FullscreenHeight));
             this.setUndecorated(true);
             this.setAlwaysOnTop(true);
             this.setExtendedState(JFrame.MAXIMIZED_BOTH);

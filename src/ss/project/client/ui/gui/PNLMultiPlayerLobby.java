@@ -24,7 +24,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
         this.controller = controller;
 
-        roomPanels = new ArrayList<RoomPanel>();
+        roomPanels = new ArrayList<>();
 
         this.setLayout(new BorderLayout());
 

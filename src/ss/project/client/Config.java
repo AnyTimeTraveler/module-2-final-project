@@ -2,6 +2,7 @@ package ss.project.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import ss.project.client.networking.Connection;
 import ss.project.shared.computerplayer.LinearComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer;
@@ -23,10 +24,18 @@ public class Config {
     private static Config instance;
 
     //Variables
+    @Expose
     public String WindowTitle;
     public HashMap<String, Class> PlayerTypes;
+    @Expose
     public boolean Fullscreen;
+    @Expose
+    public int FullscreenHeight;
+    @Expose
+    public int FullscreenWidth;
+    @Expose
     public List<Connection> KnownServers;
+    @Expose
     public String PlayerName;
     public int MaxPlayers;
     public boolean RoomSupport;
@@ -40,6 +49,8 @@ public class Config {
     private Config() {
         WindowTitle = "Connect Four 3D";
         Fullscreen = false;
+        FullscreenWidth = 1920;
+        FullscreenHeight = 1080;
         PlayerTypes = new HashMap<>();
         PlayerTypes.put("Human", HumanPlayer.class);
         PlayerTypes.put("Linear AI", LinearComputerPlayer.class);
@@ -88,7 +99,7 @@ public class Config {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
             return gson.fromJson(reader, Config.class);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Config file not found!");
             return null;
         }
     }
@@ -102,7 +113,7 @@ public class Config {
     }
 
     public void toFile(File file) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
         String jsonConfig = gson.toJson(this);
         FileWriter writer;
         try {

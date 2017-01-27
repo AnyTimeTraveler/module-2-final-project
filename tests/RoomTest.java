@@ -1,35 +1,53 @@
-package ss.project;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ss.project.server.ClientHandler;
 import ss.project.server.NetworkPlayer;
 import ss.project.server.Room;
+import ss.project.server.Server;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.AlreadyJoinedException;
 import ss.project.shared.exceptions.NotInRoomException;
 import ss.project.shared.exceptions.RoomFullException;
 
-import java.io.IOException;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by simon on 24.01.17.
  */
 public class RoomTest {
+    private static Server server;
+    private static Socket socket;
+    private static ClientHandler clientHandler;
+
+    static {
+        try {
+            server = new Server("127.0.0.1", 1024 + new Random().nextInt(6000));
+            Thread serverThread = new Thread(server::run);
+            serverThread.setDaemon(true);
+            serverThread.start();
+            while (!server.isReady()) {
+                Thread.sleep(10);
+            }
+            socket = new Socket("127.0.0.1", server.getPort());
+            clientHandler = new ClientHandler(server, socket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private Room room;
     private Room room2;
     private Room room3;
     private Room room4;
     private Room room5;
     private List<Room> roomList;
-    private ClientHandler clientHandler;
-
 
     @Before
-    public void setup() throws IOException {
+    public void setup() throws Exception {
         room = new Room(1, 2, 4, 5, 6, 7);
         room2 = new Room(2, 3, 5, 6, 7, 6);
         room3 = new Room(3, 3, 6, 7, 8, 5);
@@ -49,7 +67,7 @@ public class RoomTest {
 
     @Test
     public void join() throws Exception {
-        NetworkPlayer player = new NetworkPlayer(null);
+        NetworkPlayer player = new NetworkPlayer(clientHandler);
         room.join(player);
         Assert.assertEquals(1, room.getCurrentPlayers());
         try {
@@ -58,7 +76,7 @@ public class RoomTest {
         } catch (AlreadyJoinedException e) {
             // good.
         }
-        NetworkPlayer player1 = new NetworkPlayer(null);
+        NetworkPlayer player1 = new NetworkPlayer(clientHandler);
         room.join(player1);
         Assert.assertEquals(2, room.getCurrentPlayers());
         NetworkPlayer player2 = new NetworkPlayer(null);
@@ -72,7 +90,7 @@ public class RoomTest {
 
     @Test(expected = NotInRoomException.class)
     public void leave() throws Exception {
-        NetworkPlayer player = new NetworkPlayer(null);
+        NetworkPlayer player = new NetworkPlayer(clientHandler);
         room.leave(player);
     }
 

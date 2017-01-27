@@ -1,5 +1,3 @@
-package ss.project;
-
 import org.junit.Before;
 import org.junit.Test;
 import ss.project.shared.game.Engine;

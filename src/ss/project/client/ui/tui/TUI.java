@@ -10,7 +10,6 @@ import java.util.Scanner;
  * Created by simon on 23.12.16.
  */
 public class TUI implements UIFrame {
-    private static TUI tui;
     private TUIPanel current;
     private boolean isRunning;
 
@@ -29,7 +28,7 @@ public class TUI implements UIFrame {
 
     @Override
     public void dispose() {
-
+        System.exit(0);
     }
 
     @Override
@@ -43,10 +42,6 @@ public class TUI implements UIFrame {
             current.printScreen();
             current.handleInput(scanner.nextLine());
         }
-    }
-
-    public void shutdown() {
-        System.exit(0);
     }
 
 }

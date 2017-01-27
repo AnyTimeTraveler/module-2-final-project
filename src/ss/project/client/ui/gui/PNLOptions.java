@@ -22,6 +22,7 @@ public class PNLOptions extends GUIPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addComponent(GUIUtils.createLabel("Options", GUIUtils.LabelType.TITLE));
         fullScreenCheckbox = GUIUtils.createCheckBox("Fullscreen");
+        //TODO:Add Resolution Spinners
         addComponent(fullScreenCheckbox, e -> swichFullscreen(((JCheckBox) e.getSource()).isSelected()));
         addComponent(GUIUtils.createButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
     }

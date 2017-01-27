@@ -1,18 +1,16 @@
 package ss.project.client.ui.gui;
 
 import ss.project.client.Controller;
-import ss.project.server.Room;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by simon on 16.01.17.
  */
 public class PNLMultiPlayerRoom extends GUIPanel {
-    Room room;
+    private final JLabel headline;
+    private final Controller controller;
     Timer timer;
     JLabel waitingLabel;
     /**
@@ -21,27 +19,21 @@ public class PNLMultiPlayerRoom extends GUIPanel {
     int waitingState;
 
     public PNLMultiPlayerRoom(Controller controller) {
-        room = controller.getCurrentRoom();
-
+        this.controller = controller;
         this.setLayout(new BorderLayout());
-        this.add(GUIUtils.createLabel("Room " + room.getId(), GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
+        headline = GUIUtils.createLabel("Room null", GUIUtils.LabelType.TITLE);
+        this.add(headline, BorderLayout.NORTH);
         waitingLabel = GUIUtils.createLabel("Waiting", GUIUtils.LabelType.TITLE);
         this.add(waitingLabel, BorderLayout.CENTER);
 
-        ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                String waitText = "Waiting";
-                for (int i = 0; i < waitingState % 4; i++) {
-                    waitText += ".";
-                }
-                waitingState++;
-                waitingLabel.setText(waitText);
+        timer = new Timer(200, evt -> {
+            String waitText = "Waiting";
+            for (int i = 0; i < waitingState % 4; i++) {
+                waitText += ".";
             }
-        };
-
-
-        timer = new Timer(200, taskPerformer);
-        timer.start();
+            waitingState++;
+            waitingLabel.setText(waitText);
+        });
 
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> controller.leaveRoom());
@@ -50,6 +42,7 @@ public class PNLMultiPlayerRoom extends GUIPanel {
 
     @Override
     public void onEnter() {
+        headline.setText("Room " + controller.getCurrentRoom().getId());
         timer.start();
     }
 

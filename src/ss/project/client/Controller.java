@@ -10,6 +10,7 @@ import ss.project.client.ui.UIPanel;
 import ss.project.client.ui.gui.*;
 import ss.project.client.ui.tui.*;
 import ss.project.server.Room;
+import ss.project.shared.ChatMessage;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.ClientEngine;
 import ss.project.shared.game.Engine;
@@ -17,6 +18,7 @@ import ss.project.shared.game.Vector3;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,22 +27,28 @@ import java.util.List;
 public class Controller {
     @Getter
     private static Controller controller;
-    /**
-     * If true it shows the gui, if false the tui.
-     */
-    private static boolean doGui;
 
     static {
         controller = new Controller();
     }
 
+    /**
+     * If true it shows the gui, if false the tui.
+     */
+    @Getter
+    private boolean doGui;
     @Setter
     @Getter
     private Engine engine;
     @Setter
-    @Getter
     private List<Room> rooms;
     private UIFrame frame;
+    @Getter
+    private Network network;
+    @Getter
+    @Setter
+    private Room currentRoom;
+    private List<ChatMessage> chatMessages;
     /**
      * True if we are online and connected. False if not.
      * TODO: update this value correctly.
@@ -55,53 +63,70 @@ public class Controller {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+        chatMessages = new ArrayList<>();
     }
 
     public static void main(String[] args) {
-        doGui = true;
-        if (args.length >= 1) if (args[0].equals("tui")) doGui = false;
-        controller.start(doGui);
+        controller.start((args.length == 0 || !args[0].equals("tui")));
+    }
+
+    public void addMessage(ChatMessage message) {
+        chatMessages.add(message);
+    }
+
+    public List<ChatMessage> getRecentChatMessages(int amount) {
+        return chatMessages.subList(amount < chatMessages.size() ? chatMessages.size() - amount : 0, chatMessages.size());
     }
 
     /**
-     * Start the gui or tui. @param gui If true, show the gui. If false show the tui.
+     * Start the gui or tui.
+     *
+     * @param gui If true, show the gui. If false show the tui.
      */
     private void start(boolean gui) {
+        doGui = gui;
         setConnected(false);
+
+        Thread.currentThread().setName("GUI");
+        if (gui) {
+            Panel.MAIN_MENU.setPanel(new PNLMainMenu(controller));
+            Panel.SINGLE_PLAYER_SETTINGS.setPanel(new PNLSinglePlayerSettings(controller));
+            Panel.GAME.setPanel(new PNLGame(controller));
+            Panel.MULTI_PLAYER_LOBBY.setPanel(new PNLMultiPlayerLobby(controller));
+            Panel.MULTI_PLAYER_ROOM.setPanel(new PNLMultiPlayerRoom(controller));
+            Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new PNLMultiPlayerRoomCreation(controller));
+            Panel.SERVER_BRWOSER.setPanel(new PNLServerBrowser(controller));
+            Panel.OPTIONS.setPanel(new PNLOptions(controller));
+            Panel.LEADERBOARD.setPanel(new PNLLeaderboard(controller));
+            Panel.GAMEEND.setPanel(new PNLGameEnd(controller));
+        } else {
+            Panel.MAIN_MENU.setPanel(new TUIMainMenu());
+            Panel.SINGLE_PLAYER_SETTINGS.setPanel(new TUISinglePlayerSettings());
+            Panel.GAME.setPanel(new TUIGame());
+            Panel.MULTI_PLAYER_LOBBY.setPanel(new TUIMultiPlayerLobby());
+            Panel.MULTI_PLAYER_ROOM.setPanel(new TUIMultiPlayerRoom());
+            Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new TUIMultiPlayerRoomCreation());
+            Panel.SERVER_BRWOSER.setPanel(new TUIServerBrowser());
+            Panel.OPTIONS.setPanel(new TUIOptions());
+            Panel.LEADERBOARD.setPanel(new TUILeaderboard());
+            Panel.GAMEEND.setPanel(new TUIGameEnd());
+        }
         EventQueue.invokeLater(() -> {
-            if (gui) controller.frame = new FRMMain();
-            else controller.frame = new TUI();
-            Thread.currentThread().setName("GUI");
             if (gui) {
-                Panel.MAIN_MENU.setPanel(new PNLMainMenu(controller));
-                Panel.SINGLE_PLAYER_SETTINGS.setPanel(new PNLSinglePlayerSettings(controller));
-                Panel.GAME.setPanel(new PNLGame(controller));
-                Panel.MULTI_PLAYER_LOBBY.setPanel(new PNLMultiPlayerLobby(controller));
-                Panel.MULTI_PLAYER_ROOM.setPanel(new PNLMultiPlayerRoom(controller));
-                Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new PNLMultiPlayerRoomCreation(controller));
-                Panel.SERVER_BRWOSER.setPanel(new PNLServerBrowser(controller));
-                Panel.OPTIONS.setPanel(new PNLOptions(controller));
-                Panel.LEADERBOARD.setPanel(new PNLLeaderboard(controller));
-                Panel.GAMEEND.setPanel(new PNLGameEnd(controller));
+                frame = new FRMMain();
+                frame.init();
+                switchTo(Panel.MAIN_MENU);
             } else {
-                Panel.MAIN_MENU.setPanel(new TUIMainMenu());
-                Panel.SINGLE_PLAYER_SETTINGS.setPanel(new TUISinglePlayerSettings());
-                Panel.GAME.setPanel(new TUIGame());
-                Panel.MULTI_PLAYER_LOBBY.setPanel(new TUIMultiPlayerLobby());
-                Panel.MULTI_PLAYER_ROOM.setPanel(new TUIMultiPlayerRoom());
-                Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new TUIMultiPlayerRoomCreation());
-                Panel.SERVER_BRWOSER.setPanel(new TUIServerBrowser());
-                Panel.OPTIONS.setPanel(new TUIOptions());
-                Panel.LEADERBOARD.setPanel(new TUILeaderboard());
-                Panel.GAMEEND.setPanel(new TUIGameEnd());
+                frame = new TUI();
+                frame.init();
+                switchTo(Panel.MAIN_MENU);
             }
-            controller.frame.init();
-            controller.switchTo(Panel.MAIN_MENU);
         });
     }
 
     /**
-     * Restart the complete frame and go back to the default panel. Used when changing fullscreen mode.
+     * Restart the complete frame and go back to the default panel.
+     * Used when changing fullscreen mode.
      */
     public void restartFrame() {
         frame.dispose();
@@ -118,25 +143,19 @@ public class Controller {
     }
 
     /**
-     * Join a room. @param room
+     * Send a request to the server to join a room.
+     *
+     * @param room Room to join
      */
-    public void joinRoom(Room room) { /*TODO: implement*/
-        System.out.println("Join " + room.toString());
-        controller.switchTo(Panel.MULTI_PLAYER_ROOM);
-    }
-
-    /**
-     * Get the room we are currently connected to. @return A room instancen of the room we are connected to.
-     */
-    public Room getCurrentRoom() {
-        //TODO: implement
-        return new Room(5, Vector3.ONE, 3);
+    public void joinRoom(Room room) {
+        currentRoom = room;
+        network.sendMessage(Protocol.createMessage(Protocol.Client.JOINROOM, room.getId()));
     }
 
     /**
      * Get the list of rooms of the current server.
      *
-     * @return An array of rooms.
+     * @return A list of rooms.
      */
     public List<Room> getRooms() {
         if (getCurrentServer().isRoomSupport()) {
@@ -166,16 +185,11 @@ public class Controller {
     /**
      * Create a new room on the server.
      *
-     * @param amountOfPlayers
-     * @param worldX
-     * @param worldY
-     * @param worldZ
-     * @param winLength
+     * @param room
      */
-    public void createRoom(int amountOfPlayers, int worldX, int worldY, int worldZ, int winLength) {
-        System.out.println("createRoom " + amountOfPlayers + " " + worldX + " " + worldY + " " + worldZ + " " + winLength);
-        //TODO: implement
-        switchTo(Panel.MULTI_PLAYER_LOBBY);
+    public void createRoom(Room room) {
+        network.sendMessage(Protocol.createMessage(Protocol.Client.CREATEROOM, room));
+
     }
 
     /**
@@ -184,8 +198,7 @@ public class Controller {
      * @return
      */
     public ServerInfo getCurrentServer() {
-        //TODO: Get the current server.
-        return null;
+        return network.getServerInfo();
     }
 
     /**
@@ -209,9 +222,10 @@ public class Controller {
             if (serverName.contains(":")) {
                 String[] data = serverName.split(":");
                 try {
-                    int port = new Integer(data[1]);
+                    int port = Integer.parseInt(data[1]);
                     if (Connection.validIP(data[0])) {
                         Config.getInstance().KnownServers.add(new Connection("Added server", data[0], port));
+                        Config.getInstance().toFile();
                     }
                 } catch (NumberFormatException e) {
                     //Input was wrong.
@@ -241,6 +255,13 @@ public class Controller {
         frame.setSize(width, height);
     }
 
+    public void showError(String message, StackTraceElement[] stackTrace) {
+        System.err.println(message);
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            System.err.println("    " + stackTraceElement);
+        }
+    }
+
     public void sendChatMessage(String input) {
         if (isConnected()) {
             if (getEngine() instanceof ClientEngine) {
@@ -252,25 +273,19 @@ public class Controller {
     }
 
     public enum Panel {
-        MAIN_MENU(),
-        SINGLE_PLAYER_SETTINGS(),
-        SERVER_BRWOSER(),
-        OPTIONS(),
-        MULTI_PLAYER_LOBBY(),
-        MULTI_PLAYER_ROOM(),
-        MULTI_PLAYER_ROOM_CREATION(),
-        GAME(),
-        LEADERBOARD(),
-        GAMEEND();
+        MAIN_MENU,
+        SINGLE_PLAYER_SETTINGS,
+        SERVER_BRWOSER,
+        OPTIONS,
+        MULTI_PLAYER_LOBBY,
+        MULTI_PLAYER_ROOM,
+        MULTI_PLAYER_ROOM_CREATION,
+        GAME,
+        LEADERBOARD,
+        GAMEEND;
 
+        @Getter
+        @Setter
         private UIPanel panel;
-
-        private UIPanel getPanel() {
-            return panel;
-        }
-
-        private void setPanel(UIPanel panel) {
-            this.panel = panel;
-        }
     }
 }

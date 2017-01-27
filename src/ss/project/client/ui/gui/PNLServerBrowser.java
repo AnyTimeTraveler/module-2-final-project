@@ -1,5 +1,6 @@
 package ss.project.client.ui.gui;
 
+import lombok.Getter;
 import ss.project.client.Config;
 import ss.project.client.Controller;
 import ss.project.client.networking.Connection;
@@ -18,8 +19,8 @@ import java.util.List;
 public class PNLServerBrowser extends GUIPanel {
 
     private Controller controller;
-    private JPanel roomsPanelOwner;
-    private java.util.List<ServerPanel> serverPanels;
+    private JPanel serversListPanel;
+    private List<ServerPanel> serverPanels;
 
     private int roomPanelHeight = 75;
     private int spaceBetweenText = 10;
@@ -29,15 +30,15 @@ public class PNLServerBrowser extends GUIPanel {
 
         this.controller = controller;
 
-        serverPanels = new ArrayList<ServerPanel>();
+        serverPanels = new ArrayList<>();
 
         this.setLayout(new BorderLayout());
 
         this.add(GUIUtils.createLabel("Servers", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
 
-        roomsPanelOwner = new JPanel();
-        roomsPanelOwner.setLayout(new BoxLayout(roomsPanelOwner, BoxLayout.Y_AXIS));
-        this.add(roomsPanelOwner, BorderLayout.CENTER);
+        serversListPanel = new JPanel();
+        serversListPanel.setLayout(new BoxLayout(serversListPanel, BoxLayout.Y_AXIS));
+        this.add(serversListPanel, BorderLayout.CENTER);
 
         JPanel jPanel = new JPanel();
         JButton backButton = new JButton("Back");
@@ -45,21 +46,27 @@ public class PNLServerBrowser extends GUIPanel {
         backButton.addActionListener(e -> controller.switchTo(Controller.Panel.MAIN_MENU));
         JButton addButton = new JButton("Add");
         addButton.addActionListener(e -> {
+            onLeave();
             controller.addServer(JOptionPane.showInputDialog(this, "IP:PORT"));
             onEnter();
         });
         jPanel.add(addButton);
+        JButton refreshButton = new JButton("Refresh");
+        refreshButton.addActionListener(e -> {
+            onLeave();
+            onEnter();
+        });
+        jPanel.add(refreshButton);
         this.add(jPanel, BorderLayout.SOUTH);
     }
 
     @Override
     public void onEnter() {
-        //TODO: Create a connection and retrieve all rooms.
-        java.util.List<Connection> connections = Config.getInstance().KnownServers;
+        List<Connection> connections = Config.getInstance().KnownServers;
         List<ServerInfo> serverInfos = new ArrayList<>();
-        for (int i = 0; i < connections.size(); i++) {
+        for (Connection connection : connections) {
             try {
-                serverInfos.add(new Network(Controller.getController(), connections.get(i)).ping());
+                serverInfos.add(new Network(Controller.getController(), connection).ping());
             } catch (IOException e) {
                 serverInfos.add(new ServerInfo(ServerInfo.Status.OFFLINE, 0, false, 0, 0, 0, 0, false));
             }
@@ -69,41 +76,26 @@ public class PNLServerBrowser extends GUIPanel {
 
     @Override
     public void onLeave() {
-
+        serversListPanel.removeAll();
     }
 
+
     private void addServerPanels(List<ServerInfo> serverInfos) {
-        roomsPanelOwner.removeAll();
-        for (int i = 0; i < serverInfos.size(); i++) {
-            ServerPanel serverPanel;
-            if (serverPanels.size() > i) {
-                serverPanel = serverPanels.get(i);
-                serverPanel.refreshValues();
-            } else {
-                serverPanel = new ServerPanel(serverInfos.get(i));
-            }
+        for (ServerInfo serverInfo : serverInfos) {
+            ServerPanel serverPanel = new ServerPanel(serverInfo);
             serverPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            if (!serverPanels.contains(serverPanel)) {
-                serverPanels.add(serverPanel);
-            }
-            roomsPanelOwner.add(serverPanel);
+            serversListPanel.add(serverPanel);
         }
-        this.repaint();
-        roomsPanelOwner.revalidate();
+        serversListPanel.revalidate();
+        serversListPanel.repaint();
     }
 
     /**
      * A panel showing information about a lobby.
      */
     private class ServerPanel extends JPanel {
+        @Getter
         private ServerInfo serverInfo;
-        private JLabel serverStatus;
-        private JCheckBox chatSupport;
-        private JLabel winLength;
-        private JLabel playerAmount;
-        private JLabel worldSize;
-        private JCheckBox lobbySupport;
-        private JButton joinButton;
 
         /**
          * Create a new roomPanel and set the correct data.
@@ -118,64 +110,34 @@ public class PNLServerBrowser extends GUIPanel {
             this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             this.setMaximumSize(new Dimension(10000, roomPanelHeight));
 
-            serverStatus = new JLabel("");
+            JLabel serverStatus = new JLabel(serverInfo.getStatus().toString());
             this.add(serverStatus, BorderLayout.WEST);
 
             JPanel jPanel = new JPanel(new GridBagLayout());
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.insets = new Insets(0, 0, 0, spaceBetweenText);
-            winLength = new JLabel("", SwingConstants.CENTER);
+            JLabel winLength = new JLabel("Win length: " + serverInfo.getMaxWinLength(), SwingConstants.CENTER);
             jPanel.add(winLength, constraints);
-            playerAmount = new JLabel();
+            JLabel playerAmount = new JLabel("Players: " + serverInfo.getMaxPlayers());
             jPanel.add(playerAmount, constraints);
-            worldSize = new JLabel();
+            JLabel worldSize = new JLabel("World:" + serverInfo.getMaxDimensionX() + "," + serverInfo.getMaxDimensionY() + "," + serverInfo.getMaxDimensionZ());
             jPanel.add(worldSize, constraints);
-            chatSupport = new JCheckBox("Chat", false);
+            JCheckBox chatSupport = new JCheckBox("Chat", serverInfo.isChatSupport());
             chatSupport.setEnabled(false);
             jPanel.add(chatSupport, constraints);
-            lobbySupport = new JCheckBox("Lobby", false);
+            JCheckBox lobbySupport = new JCheckBox("Lobby", serverInfo.isRoomSupport());
             lobbySupport.setEnabled(false);
             jPanel.add(lobbySupport, constraints);
             this.add(jPanel, BorderLayout.CENTER);
 
-            joinButton = new JButton("Join");
-            joinButton.addActionListener(e -> {
-                joinServer();
-            });
-            this.add(joinButton, BorderLayout.EAST);
-
-            refreshValues();
-        }
-
-        /**
-         * Refresh all values shown on the screen from this room.
-         */
-        public void refreshValues() {
-            serverStatus.setText(serverInfo.getStatus().toString());
-            winLength.setText("Win length: " + serverInfo.getMaxWinLength());
-            playerAmount.setText("Players: " + serverInfo.getMaxPlayers());
-            worldSize.setText("World:" + serverInfo.getMaxDimensionX() + "," + serverInfo.getMaxDimensionY() + "," + serverInfo.getMaxDimensionZ());
-            chatSupport.setSelected(serverInfo.isChatSupport());
-            lobbySupport.setSelected(serverInfo.isRoomSupport());
-
+            JButton joinButton = new JButton("Join");
+            joinButton.addActionListener(e -> controller.joinServer(serverInfo));
             if (serverInfo.getStatus().equals(ServerInfo.Status.ONLINE)) {
                 joinButton.setEnabled(true);
             } else {
                 joinButton.setEnabled(false);
             }
-        }
-
-        /**
-         * Get the room corresponding to this ServerPanel.
-         *
-         * @return
-         */
-        public ServerInfo getServerInfo() {
-            return serverInfo;
-        }
-
-        public void joinServer() {
-            controller.joinServer(getServerInfo());
+            this.add(joinButton, BorderLayout.EAST);
         }
     }
 }

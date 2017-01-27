@@ -15,7 +15,7 @@ public class PNLChat extends GUIPanel {
         this.setLayout(new BorderLayout());
         this.add(GUIUtils.createLabel("Chat", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
 
-        inputField = new JTextField("Chat message");
+        inputField = new HintTextField("Chat message...");
         inputField.addActionListener(e -> doInput(inputField.getText()));
         this.add(inputField, BorderLayout.SOUTH);
     }
