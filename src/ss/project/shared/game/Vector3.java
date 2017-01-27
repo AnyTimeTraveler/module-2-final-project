@@ -30,12 +30,18 @@ public class Vector3 {
      * @param y the y coordinate.
      * @param z the z coordinate.
      */
+    //@ ensures getX()==x;
+    //@ ensures getY()==y;
+    //@ ensures getZ()==z;
     public Vector3(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
+    //@ ensures getX()==vector2.getX();
+    //@ ensures getY()==vector2.getY();
+    //@ ensures getZ()==0;
     public Vector3(Vector2 vector2) {
         this.x = vector2.getX();
         this.y = vector2.getY();
@@ -45,6 +51,7 @@ public class Vector3 {
     /**
      * @return the x coordinate.
      */
+    //@ pure;
     public int getX() {
         return x;
     }
@@ -52,6 +59,7 @@ public class Vector3 {
     /**
      * @return the y coordinate.
      */
+    //@ pure;
     public int getY() {
         return y;
     }
@@ -59,6 +67,7 @@ public class Vector3 {
     /**
      * @return the z coordinate.
      */
+    //@ pure;
     public int getZ() {
         return z;
     }

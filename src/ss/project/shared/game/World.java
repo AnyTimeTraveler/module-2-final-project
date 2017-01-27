@@ -15,6 +15,8 @@ public class World {
      *
      * @param size A vector3 containing width,height and length.
      */
+    //@ ensures this.getSize().equals(size);
+    //@ ensures this.getWinLength().equals(winLength);
     public World(Vector3 size, int winLength) {
         this.size = size;
         this.winLength = winLength;
@@ -24,6 +26,7 @@ public class World {
     /**
      * Initialize the world by creating worldPosition objects.
      */
+    //@ ensures !this.isFull();
     private void initializeWorld(Vector3 worldSize) {
         worldPosition = new Player[worldSize.getX()][worldSize.getY()][worldSize.getZ()];
         remainingSpots = worldSize.getX() * worldSize.getY() * worldSize.getZ();
@@ -34,6 +37,7 @@ public class World {
      *
      * @return the size of this world.
      */
+    //@ pure;
     public Vector3 getSize() {
         return size;
     }
@@ -44,6 +48,7 @@ public class World {
      * Returns null if coordinates are outside range or if no empty spot
      * has been found.
      */
+    //@ pure;
     public Vector3 getWorldPosition(Vector2 coordinates) {
         if (!insideWorld(coordinates)) {
             return null;
@@ -80,6 +85,8 @@ public class World {
      * @param coordinates
      * @return
      */
+    //@ pure;
+    //@ requires coordinates != null;
     public Player getOwner(Vector3 coordinates) {
         return worldPosition[coordinates.getX()][coordinates.getY()][coordinates.getZ()];
     }
@@ -166,6 +173,9 @@ public class World {
      * @param player
      * @return
      */
+    //@ requires newCoordinates != null;
+    //@ requires player != null;
+    //@ pure;
     public boolean hasWon(Vector2 newCoordinates, Player player) {
         Vector3 coordinates = getHighestPosition(newCoordinates);
         if (coordinates != null) {
@@ -182,6 +192,9 @@ public class World {
      * @param newCoordinates The coordinates where the player has put a new object.
      * @param player         The player has placed a new object.
      */
+    //@ pure;
+    //@ requires newCoordinates != null;
+    //@ requires player != null;
     public boolean hasWon(Vector3 newCoordinates, Player player) {
         for (int x = newCoordinates.getX() - 1; x < newCoordinates.getX() + 2; x++) {
             for (int y = newCoordinates.getY() - 1; y < newCoordinates.getY() + 2; y++) {
@@ -214,6 +227,11 @@ public class World {
      *                    has won!
      * @return The amount on a row.
      */
+    //@ pure;
+    //@ requires coordinates != null;
+    //@ requires player != null;
+    //@ requires direction != null;
+    //@ requires count >=0 ;
     private int hasWon(Vector3 coordinates, Player player, Vector3 direction, int count) {
         Vector3 newCoordinates = coordinates.add(direction);
         if (isOwner(newCoordinates, player)) {
@@ -231,6 +249,8 @@ public class World {
      * @param coordinates
      * @return null if coordinates are out of bounds.
      */
+    //@ pure;
+    //@ requires coordinates != null;
     public Vector3 getHighestPosition(Vector2 coordinates) {
         //get the highest possible worldposition.
         if (!insideWorld(coordinates)) {
@@ -254,6 +274,7 @@ public class World {
      *
      * @return A deepcopy of this world.
      */
+    //@ ensures \result != null;
     public World deepCopy() {
         World newWorld = new World(this.getSize(), winLength);
         writeTo(newWorld);
@@ -265,6 +286,8 @@ public class World {
      *
      * @param destination The world that should be edited and be synchronized with this world.
      */
+    //@ reuires destination != null;
+    //@ ensures \result != null;
     public void writeTo(World destination) {
         for (int x = 0; x < this.getSize().getX(); x++) {
             for (int y = 0; y < this.getSize().getY(); y++) {
@@ -289,6 +312,7 @@ public class World {
      *
      * @return True if it's full, false if not.
      */
+    //@ pure;
     public boolean isFull() {
         return remainingSpots <= 0;
     }

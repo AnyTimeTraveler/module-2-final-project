@@ -28,9 +28,10 @@ public class Engine {
      *
      * @param worldSize
      */
+    //@ ensures this.world != null;
+    //@ ensures this.players.size() == players.length;
     public Engine(Vector3 worldSize, int winLength, Player[] players) {
         this.world = new World(worldSize, winLength);
-        //this.players = players;
         for (Player player : players) {
             this.players.put(player.getId(), player);
         }
@@ -39,6 +40,7 @@ public class Engine {
     /**
      * @return world of this gameDisplay.
      */
+    //@ pure;
     public World getWorld() {
         return world;
     }
@@ -48,6 +50,7 @@ public class Engine {
      *
      * @return
      */
+    //@ pure;
     public GameDisplay getUI() {
         return gameDisplay;
     }
@@ -57,6 +60,8 @@ public class Engine {
      *
      * @param gameDisplay
      */
+    //@ requires gameDisplay != null;
+    //@ ensures getUI().equals(gameDisplay);
     public void setUI(GameDisplay gameDisplay) {
         this.gameDisplay = gameDisplay;
     }
@@ -89,6 +94,8 @@ public class Engine {
      * @param id Index number of the player.
      * @return Null if ID not in range, else the player object.
      */
+    //@ pure;
+    //@ requires id >= 0;
     public Player getPlayer(int id) {
         if (players.containsKey(id)) {
             return players.get(id);
@@ -99,6 +106,7 @@ public class Engine {
     /**
      * @return the amount of current players, both computerplayer and real.
      */
+    //@ ensures \result >= 0;
     public int getPlayerCount() {
         return players.size();
     }
@@ -110,6 +118,7 @@ public class Engine {
      * @param player
      * @return null if no other player has been found.
      */
+    //@ ensures (\exists Player p; players.containsValue(p); p.equals(player)) ==> \result != null;
     public Player getOtherPlayer(Player player) {
         for (HashMap.Entry<Integer, Player> entry : players.entrySet()) {
             if (!entry.getValue().equals(player)) {
@@ -122,6 +131,7 @@ public class Engine {
     /**
      * Start the gameDisplay and make every player do turns.
      */
+    //@ ensures gameRunning;
     public void startGame() {
         gameRunning = true;
 
@@ -130,13 +140,6 @@ public class Engine {
             return;
         }
 
-//        while (gameRunning) {
-//            getPlayer(currentPlayer).doTurn(this);
-//            currentPlayer++;
-//            if (currentPlayer >= getPlayerCount()) {
-//                currentPlayer = 0;
-//            }
-//        }
         while (gameRunning) {
             Iterator<Map.Entry<Integer, Player>> iterator = players.entrySet().iterator();
             while (iterator.hasNext() && gameRunning) {
@@ -149,6 +152,8 @@ public class Engine {
     /**
      * @param reason
      */
+    //@ ensures (reason.equals(WINLENGTHACHIEVED) || reason.equals(PLAYERDISCONNECTED)) ==> getWinner() == playerid;
+    //@ ensures getWinReason().equals(reason);
     public void finishGame(Protocol.WinReason reason, int playerid) {
         switch (reason) {
             case WINLENGTHACHIEVED: {
