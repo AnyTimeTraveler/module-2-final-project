@@ -6,6 +6,7 @@ import ss.project.client.ui.GameDisplay;
 import ss.project.shared.Protocol;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Engine {
@@ -19,6 +20,7 @@ public class Engine {
     /**
      * True while the gameDisplay is running.
      */
+    @Getter
     private boolean gameRunning;
 
     /**
@@ -69,12 +71,14 @@ public class Engine {
         if (result) {
             if (this.getWorld().hasWon(coordinates, owner)) {
                 //Someone won!
-                finishGame(Protocol.WinReason.WINLENGTHACHIEVED);
+                finishGame(Protocol.WinReason.WINLENGTHACHIEVED, owner.getId());
                 System.out.println(owner.getName() + " won!");
             } else if (getWorld().isFull()) {
-                finishGame(Protocol.WinReason.BOARDISFULL);
+                finishGame(Protocol.WinReason.BOARDISFULL, -1);
             }
-            getUI().update();
+            if (getUI() != null) {
+                getUI().update();
+            }
         }
         return result;
     }
@@ -121,19 +125,23 @@ public class Engine {
     public void startGame() {
         gameRunning = true;
 
-        //By default start with player 0.
-        int currentPlayer = 0;
-
         //Don't start the gameDisplay if there are no players.
         if (getPlayerCount() <= 0) {
             return;
         }
 
+//        while (gameRunning) {
+//            getPlayer(currentPlayer).doTurn(this);
+//            currentPlayer++;
+//            if (currentPlayer >= getPlayerCount()) {
+//                currentPlayer = 0;
+//            }
+//        }
         while (gameRunning) {
-            getPlayer(currentPlayer).doTurn(this);
-            currentPlayer++;
-            if (currentPlayer >= getPlayerCount()) {
-                currentPlayer = 0;
+            Iterator<Map.Entry<Integer, Player>> iterator = players.entrySet().iterator();
+            while (iterator.hasNext() && gameRunning) {
+                Map.Entry<Integer, Player> pair = iterator.next();
+                pair.getValue().doTurn(this);
             }
         }
     }
@@ -141,15 +149,17 @@ public class Engine {
     /**
      * @param reason
      */
-    public void finishGame(Protocol.WinReason reason) {
+    public void finishGame(Protocol.WinReason reason, int playerid) {
         switch (reason) {
             case WINLENGTHACHIEVED: {
+                this.winner = playerid;
                 break;
             }
             case BOARDISFULL: {
                 break;
             }
             case PLAYERDISCONNECTED: {
+                this.winner = playerid;
                 break;
             }
             case GAMETIMEOUT: {
@@ -158,7 +168,8 @@ public class Engine {
         }
         gameRunning = false;
         winReason = reason;
-        Controller.getController().switchTo(Controller.Panel.GAMEEND);
-        System.out.println("Finished game (reason " + reason.toString() + ")");
+        if (getUI() != null) {
+            Controller.getController().switchTo(Controller.Panel.GAMEEND);
+        }
     }
 }

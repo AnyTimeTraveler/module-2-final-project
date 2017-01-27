@@ -60,7 +60,7 @@ public class ClientEngine extends Engine {
      * @param reason
      */
     @Override
-    public void finishGame(Protocol.WinReason reason) {
+    public void finishGame(Protocol.WinReason reason, int playerID) {
         //We shouldn't do anything, we should just wait til notifyEnd is called.
     }
 
@@ -85,7 +85,7 @@ public class ClientEngine extends Engine {
         Protocol.WinReason winReason = Protocol.getWinReason(reason);
         switch (winReason) {
             case BOARDISFULL: {
-                super.finishGame(Protocol.WinReason.BOARDISFULL);
+                super.finishGame(Protocol.WinReason.BOARDISFULL, -1);
                 break;
             }
             case GAMETIMEOUT: {
