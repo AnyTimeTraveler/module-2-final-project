@@ -1,5 +1,6 @@
 package ss.project.shared.game;
 
+import lombok.Getter;
 import ss.project.client.Controller;
 import ss.project.client.networking.Network;
 import ss.project.shared.Protocol;
@@ -8,7 +9,9 @@ import ss.project.shared.Protocol;
  * Created by fw on 26/01/2017.
  */
 public class ClientEngine extends Engine {
+    @Getter
     Network network;
+    @Getter
     int playerID;
 
     /**

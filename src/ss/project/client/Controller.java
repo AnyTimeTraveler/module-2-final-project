@@ -3,12 +3,15 @@ package ss.project.client;
 import lombok.Getter;
 import lombok.Setter;
 import ss.project.client.networking.Connection;
+import ss.project.client.networking.Network;
 import ss.project.client.networking.ServerInfo;
 import ss.project.client.ui.UIFrame;
 import ss.project.client.ui.UIPanel;
 import ss.project.client.ui.gui.*;
 import ss.project.client.ui.tui.*;
 import ss.project.server.Room;
+import ss.project.shared.Protocol;
+import ss.project.shared.game.ClientEngine;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Vector3;
 
@@ -38,6 +41,13 @@ public class Controller {
     @Getter
     private List<Room> rooms;
     private UIFrame frame;
+    /**
+     * True if we are online and connected. False if not.
+     * TODO: update this value correctly.
+     */
+    @Getter
+    @Setter
+    private boolean isConnected;
 
     private Controller() {
         try {
@@ -57,6 +67,7 @@ public class Controller {
      * Start the gui or tui. @param gui If true, show the gui. If false show the tui.
      */
     private void start(boolean gui) {
+        setConnected(false);
         EventQueue.invokeLater(() -> {
             if (gui) controller.frame = new FRMMain();
             else controller.frame = new TUI();
@@ -84,8 +95,8 @@ public class Controller {
                 Panel.LEADERBOARD.setPanel(new TUILeaderboard());
                 Panel.GAMEEND.setPanel(new TUIGameEnd());
             }
-            controller.switchTo(Panel.GAMEEND);
             controller.frame.init();
+            controller.switchTo(Panel.MAIN_MENU);
         });
     }
 
@@ -185,6 +196,7 @@ public class Controller {
     public void joinServer(ServerInfo serverInfo) {
         System.out.println("Join " + serverInfo.toString());
         controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
+        setConnected(true);
     }
 
     /**
@@ -227,6 +239,16 @@ public class Controller {
 
     public void setFrameSize(int width, int height) {
         frame.setSize(width, height);
+    }
+
+    public void sendChatMessage(String input) {
+        if (isConnected()) {
+            if (getEngine() instanceof ClientEngine) {
+                System.out.println("Send message: " + input);
+                Network network = ((ClientEngine) getEngine()).getNetwork();
+                network.sendMessage(Protocol.createMessage(Protocol.Client.SENDMESSAGE, ((ClientEngine) getEngine()).getPlayerID(), input));
+            }
+        }
     }
 
     public enum Panel {

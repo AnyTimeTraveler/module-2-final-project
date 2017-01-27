@@ -11,6 +11,9 @@ import java.awt.*;
  * Created by simon on 16.01.17.
  */
 public class FRMMain extends JFrame implements UIFrame {
+    private JPanel mainPanel;
+    private JPanel chatPanel;
+
     public FRMMain() {
         super();
     }
@@ -28,12 +31,19 @@ public class FRMMain extends JFrame implements UIFrame {
             this.setAlwaysOnTop(true);
             this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         } else {
-            this.setSize(new Dimension(800, 800));
+            this.setSize(new Dimension(1200, 800));
         }
         this.requestFocus();
         this.setTitle(Config.getInstance().WindowTitle);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
+
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setMinimumSize(new Dimension(600, 0));
+        chatPanel = new PNLChat();
+
+        JSplitPane jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, chatPanel);
+        add(jSplitPane);
     }
 
     /**
@@ -43,14 +53,13 @@ public class FRMMain extends JFrame implements UIFrame {
      * @param panel the panel that needs to be shown.
      */
     public void switchTo(UIPanel panel) {
-        Container cp = getContentPane();
-        if (cp.getComponentCount() > 0) {
-            ((GUIPanel) cp.getComponent(0)).onLeave();
-            cp.remove(0);
+        if (mainPanel.getComponentCount() > 0) {
+            ((GUIPanel) mainPanel.getComponent(0)).onLeave();
+            mainPanel.remove(0);
         }
-        cp.add((GUIPanel) panel);
+        mainPanel.add((GUIPanel) panel, BorderLayout.CENTER);
         ((GUIPanel) panel).onEnter();
-        cp.revalidate();
-        cp.repaint();
+        mainPanel.revalidate();
+        mainPanel.repaint();
     }
 }

@@ -20,7 +20,14 @@ public class PNLGameEnd extends GUIPanel {
 
         JPanel bottomPanel = new JPanel();
         JButton backButton = new JButton("Back");
-        backButton.addActionListener(e -> Controller.getController().switchTo(Controller.Panel.MULTI_PLAYER_LOBBY));
+        backButton.addActionListener(e ->
+        {
+            if (Controller.getController().isConnected()) {
+                Controller.getController().switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
+            } else {
+                Controller.getController().switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS);
+            }
+        });
         bottomPanel.add(backButton);
         this.add(bottomPanel, BorderLayout.SOUTH);
     }

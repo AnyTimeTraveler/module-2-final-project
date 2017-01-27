@@ -17,23 +17,22 @@ public class PNLMainMenu extends GUIPanel {
         super();
         this.controller = controller;
 
-        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        addComponent(GUIUtils.createLabel("Main Menu", GUIUtils.LabelType.TITLE));
-        addComponent(GUIUtils.createButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS));
-        addComponent(GUIUtils.createButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
-        addComponent(GUIUtils.createButton("Options"), e -> controller.switchTo(Controller.Panel.OPTIONS));
-        addComponent(GUIUtils.createButton("Exit"), e -> controller.shutdown());
+        this.setLayout(new BorderLayout());
+        this.add(GUIUtils.createLabel("Main Menu", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.PAGE_AXIS));
+        addComponent(GUIUtils.createButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS), centerPanel);
+        addComponent(GUIUtils.createButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER), centerPanel);
+        addComponent(GUIUtils.createButton("Options"), e -> controller.switchTo(Controller.Panel.OPTIONS), centerPanel);
+        addComponent(GUIUtils.createButton("Exit"), e -> controller.shutdown(), centerPanel);
+
+        this.add(centerPanel, BorderLayout.CENTER);
     }
 
-    private void addComponent(JComponent comp) {
-        comp.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(comp);
-    }
-
-    private void addComponent(JButton comp, ActionListener actionListener) {
+    private void addComponent(JButton comp, ActionListener actionListener, JPanel panel) {
         comp.setAlignmentX(Component.CENTER_ALIGNMENT);
         comp.addActionListener(actionListener);
-        this.add(comp);
+        panel.add(comp);
     }
 
     @Override

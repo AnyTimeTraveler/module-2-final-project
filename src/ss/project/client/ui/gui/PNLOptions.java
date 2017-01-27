@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 public class PNLOptions extends GUIPanel {
 
     private final Controller controller;
+    private JCheckBox fullScreenCheckbox;
 
     public PNLOptions(Controller controller) {
         super();
@@ -20,7 +21,8 @@ public class PNLOptions extends GUIPanel {
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addComponent(GUIUtils.createLabel("Options", GUIUtils.LabelType.TITLE));
-        addComponent(GUIUtils.createCheckBox("Fullscreen"), e -> swichFullscreen(((JCheckBox) e.getSource()).isSelected()));
+        fullScreenCheckbox = GUIUtils.createCheckBox("Fullscreen");
+        addComponent(fullScreenCheckbox, e -> swichFullscreen(((JCheckBox) e.getSource()).isSelected()));
         addComponent(GUIUtils.createButton("Back"), e -> controller.switchTo(Controller.Panel.MAIN_MENU));
     }
 
@@ -48,7 +50,7 @@ public class PNLOptions extends GUIPanel {
 
     @Override
     public void onEnter() {
-
+        fullScreenCheckbox.setSelected(Config.getInstance().Fullscreen);
     }
 
     @Override
