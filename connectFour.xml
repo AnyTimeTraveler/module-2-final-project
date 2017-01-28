@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project basedir="." default="deploy" name="Connect Four 3D">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <property name="program.version" value="0.1"/>
+
+    <property name="src.dir" value="src"/>
+    <property name="bin.dir" value="bin"/>
+    <property name="build.dir" value="out"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="final.jar" value="${bin.dir}/connectFour-${program.version}.jar"/>
+
+    <property name="main.class" value="ss.project.Main"/>
+
+    <path id="project.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <patternset id="myPattern">
+        <include name="**/*.class"/>
+    </patternset>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${bin.dir}"/>
+        <mkdir dir="${build.dir}"/>
+        <unjar dest="${build.dir}">
+            <fileset dir="${lib.dir}" includes="*.jar">
+                <include name="**/*.class"/>
+            </fileset>
+        </unjar>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${bin.dir}"/>
+    </target>
+
+    <target name="build" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${build.dir}" source="${source}" target="${target}">
+            <src path="${src.dir}"/>
+            <classpath refid="project.classpath"/>
+        </javac>
+    </target>
+
+    <target name="deploy" depends="build">
+        <delete file="${final.jar}"/>
+        <jar destfile="${final.jar}" basedir="${build.dir}" includes="**/*.class">
+            <manifest>
+                <attribute name="Main-Class" value="ss.project.Main"/>
+                <attribute name="Class-Path" value="out"/>
+                <attribute name="Permissions" value="all-permissions"/>
+                <attribute name="Codebase" value="https://github.com/Simon70/module-2-final-project"/>
+                <attribute name="Built-By" value="$Floris Weers and Simon Struck"/>
+                <attribute name="Implementation-Vendor" value="University of Twente"/>
+                <attribute name="Implementation-Title" value="ConnectFour3D"/>
+                <attribute name="Implementation-Version" value="1.0"/>
+            </manifest>
+        </jar>
+        <delete file="out"/>
+    </target>
+</project>
