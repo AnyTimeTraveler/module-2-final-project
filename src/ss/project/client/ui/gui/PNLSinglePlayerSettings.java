@@ -3,7 +3,7 @@ package ss.project.client.ui.gui;
 import lombok.extern.java.Log;
 import ss.project.client.Config;
 import ss.project.client.Controller;
-import ss.project.client.nameGenerator.NameGenerator;
+import ss.project.client.NameList;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 
 /**
@@ -20,7 +21,6 @@ import java.util.logging.Level;
  */
 @Log
 public class PNLSinglePlayerSettings extends GUIPanel {
-    NameGenerator nameGenerator = new NameGenerator();
     private JLabel headline;
     private JSpinner worldX;
     private JSpinner worldY;
@@ -137,7 +137,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
                 pp = playerPanels.get(i);
             } else {
                 pp = new PlayerPanel();
-                pp.playerNameField.setText(nameGenerator.generateName().getFirstName());
+                pp.playerNameField.setText(NameList.names[new Random().nextInt(NameList.names.length)]);
             }
             pp.setAlignmentX(Component.CENTER_ALIGNMENT);
             if (!playerPanels.contains(pp)) {
