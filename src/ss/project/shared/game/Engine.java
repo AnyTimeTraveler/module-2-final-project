@@ -77,7 +77,6 @@ public class Engine {
             if (this.getWorld().hasWon(coordinates, owner)) {
                 //Someone won!
                 finishGame(Protocol.WinReason.WINLENGTHACHIEVED, owner.getId());
-                System.out.println(owner.getName() + " won!");
             } else if (getWorld().isFull()) {
                 finishGame(Protocol.WinReason.BOARDISFULL, -1);
             }

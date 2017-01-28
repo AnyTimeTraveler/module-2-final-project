@@ -35,33 +35,38 @@ public class TUIGame implements TUIPanel, GameDisplay {
         System.out.println(printWorld(world));
     }
 
+    /**
+     * Print the world to string.
+     *
+     * @param world
+     * @return
+     */
     String printWorld(World world) {
         String result = "";
-        Vector3 size = world.getSize();
-        for (int z = 0; z < size.getZ(); z++) {
-            if (z > 0) {
-                result += "\n";
-            }
-            result += "z: " + z + "\n";
 
-            result += "   ";
-            for (int header = 0; header < size.getY(); header++) {
-                result += "Y ";
-            }
+        String lineDash = "";
+        String lineMark = "";
+        for (int y = 0; y < world.getSize().getY(); y++) {
+            lineDash = "";
+            lineMark = "";
+            for (int z = 0; z < world.getSize().getZ(); z++) {
+                for (int x = 0; x < world.getSize().getX(); x++) {
+                    lineDash += "----";
+                    Player owner = world.getOwner(new Vector3(x, y, z));
+                    lineMark += "| " + getPlayerCharacter(owner) + " ";
+                }
 
-            for (int x = 0; x < size.getX(); x++) {
-                result += "\n";
-
-                result += "X: ";
-                Player owner = world.getOwner(new Vector3(x, 0, z));
-                result += getPlayerCharacter(owner);
-
-                for (int y = 1; y < size.getY(); y++) {
-                    owner = world.getOwner(new Vector3(x, y, z));
-                    result += " " + getPlayerCharacter(owner);
+                if (z != world.getSize().getZ() - 1) {
+                    lineDash += "-   ";
+                    lineMark += "|   ";
                 }
             }
+            lineDash += "-";
+            lineMark += "|";
+            result += lineDash + "\n";
+            result += lineMark + "\n";
         }
+        result += lineDash;
         return result;
     }
 

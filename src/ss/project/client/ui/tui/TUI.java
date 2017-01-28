@@ -1,6 +1,7 @@
 package ss.project.client.ui.tui;
 
 
+import ss.project.client.Controller;
 import ss.project.client.ui.UIFrame;
 import ss.project.client.ui.UIPanel;
 
@@ -24,6 +25,7 @@ public class TUI implements UIFrame {
 
     @Override
     public void init() {
+        Controller.getController().switchTo(Controller.Panel.MAIN_MENU);
         run();
     }
 
