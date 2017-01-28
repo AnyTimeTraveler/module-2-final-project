@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public class FRMMain extends JFrame implements UIFrame {
     private JPanel mainPanel;
-    private JPanel chatPanel;
+    private GUIPanel chatPanel;
 
     public FRMMain() {
         super();
@@ -44,6 +44,16 @@ public class FRMMain extends JFrame implements UIFrame {
 
         JSplitPane jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, chatPanel);
         add(jSplitPane);
+    }
+
+    @Override
+    public void setChatEnabled(boolean enabled) {
+        chatPanel.setVisible(enabled);
+        if (enabled) {
+            chatPanel.onEnter();
+        } else {
+            chatPanel.onLeave();
+        }
     }
 
     /**

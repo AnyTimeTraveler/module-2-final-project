@@ -39,6 +39,11 @@ public class TUI implements UIFrame {
 
     }
 
+    @Override
+    public void setChatEnabled(boolean enabled) {
+
+    }
+
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (isRunning) {

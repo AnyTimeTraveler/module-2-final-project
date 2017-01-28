@@ -48,7 +48,6 @@ public class Controller {
      * TODO: update this value correctly.
      */
     @Getter
-    @Setter
     private boolean isConnected;
 
     private Controller() {
@@ -69,7 +68,7 @@ public class Controller {
      * Start the gui or tui. @param gui If true, show the gui. If false show the tui.
      */
     private void start(boolean gui) {
-        setConnected(false);
+
         EventQueue.invokeLater(() -> {
             if (gui) controller.frame = new FRMMain();
             else controller.frame = new TUI();
@@ -99,6 +98,8 @@ public class Controller {
             }
             controller.frame.init();
             controller.switchTo(Panel.MAIN_MENU);
+
+            setConnected(false);
         });
     }
 
@@ -211,6 +212,7 @@ public class Controller {
     public void joinServer(ServerInfo serverInfo) {
         System.out.println("Join " + serverInfo.toString());
         controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
+        //First join, then update the connected.
         setConnected(true);
     }
 
@@ -263,6 +265,15 @@ public class Controller {
                 Network network = ((ClientEngine) getEngine()).getNetwork();
                 network.sendMessage(Protocol.createMessage(Protocol.Client.SENDMESSAGE, ((ClientEngine) getEngine()).getPlayerID(), input));
             }
+        }
+    }
+
+    public void setConnected(boolean connected) {
+        this.isConnected = connected;
+        if (connected) {
+            frame.setChatEnabled(getCurrentServer().isChatSupport());
+        } else {
+            frame.setChatEnabled(false);
         }
     }
 

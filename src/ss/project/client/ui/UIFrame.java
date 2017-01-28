@@ -11,4 +11,6 @@ public interface UIFrame {
     void dispose();
 
     void setSize(int width, int height);
+
+    void setChatEnabled(boolean enabled);
 }
