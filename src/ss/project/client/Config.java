@@ -3,10 +3,7 @@ package ss.project.client;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ss.project.client.networking.Connection;
-import ss.project.shared.computerplayer.LinearComputerPlayer;
-import ss.project.shared.computerplayer.MinMaxComputerPlayer;
-import ss.project.shared.computerplayer.MinMaxComputerPlayer2;
-import ss.project.shared.computerplayer.RandomComputerPlayer;
+import ss.project.shared.computerplayer.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -46,6 +43,7 @@ public class Config {
         PlayerTypes.put("Linear AI", LinearComputerPlayer.class);
         PlayerTypes.put("Minmax AI", MinMaxComputerPlayer.class);
         PlayerTypes.put("Minmax AI 2", MinMaxComputerPlayer2.class);
+        PlayerTypes.put("Minmax alpha beta", MinMaxAlphaBetaComputerPlayer.class);
         PlayerTypes.put("Random AI", RandomComputerPlayer.class);
         KnownServers = new ArrayList<>();
         KnownServers.add(new Connection("Localhost", "127.0.0.1", 1234));

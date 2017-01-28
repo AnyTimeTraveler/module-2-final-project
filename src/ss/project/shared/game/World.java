@@ -196,6 +196,9 @@ public class World {
     //@ requires newCoordinates != null;
     //@ requires player != null;
     public boolean hasWon(Vector3 newCoordinates, Player player) {
+        if (!isOwner(newCoordinates, player)) {
+            return false;
+        }
         for (int x = newCoordinates.getX() - 1; x < newCoordinates.getX() + 2; x++) {
             for (int y = newCoordinates.getY() - 1; y < newCoordinates.getY() + 2; y++) {
                 for (int z = newCoordinates.getZ() - 1; z < newCoordinates.getZ() + 2; z++) {
