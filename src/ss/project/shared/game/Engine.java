@@ -144,6 +144,11 @@ public class Engine {
             Iterator<Map.Entry<Integer, Player>> iterator = players.entrySet().iterator();
             while (iterator.hasNext() && gameRunning) {
                 Map.Entry<Integer, Player> pair = iterator.next();
+
+                if (getUI() != null) {
+                    getUI().setCurrentPlayer(pair.getValue());
+                }
+
                 pair.getValue().doTurn(this);
             }
         }

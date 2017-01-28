@@ -27,6 +27,11 @@ public class RandomComputerPlayer extends ComputerPlayer {
         setNewGameItem(engine);
     }
 
+    @Override
+    public void setSmartness(int value) {
+        //Do nothing... I am stupid.
+    }
+
     private void setNewGameItem(Engine engine) {
         World world = engine.getWorld();
         while (true) {

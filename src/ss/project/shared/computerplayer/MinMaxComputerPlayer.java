@@ -1,5 +1,6 @@
 package ss.project.shared.computerplayer;
 
+import lombok.Getter;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
@@ -14,7 +15,8 @@ import java.util.concurrent.Future;
  * Created by fw on 16/01/2017.
  */
 public class MinMaxComputerPlayer extends ComputerPlayer {
-    private final int depth;
+    @Getter
+    private int depth;
     private Player opponent;
     private World worldCopy;
     private Future<Integer>[][] workers;
@@ -73,6 +75,11 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         }
     }
 
+    @Override
+    public void setSmartness(int value) {
+        this.depth = value;
+    }
+
     /**
      * Get the result of the calculation. Is not checked if actually right.
      *
@@ -85,7 +92,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     }
 
     private Vector2 getBestPosition(World world) {
-        System.out.println("Starting heavy part!");
+        //System.out.println("Starting heavy part!");
         int bestValue = Integer.MIN_VALUE;
         Vector2 result = Vector2.ZERO;
         for (int x = 0; x < world.getSize().getX(); x++) {
@@ -98,11 +105,10 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             }
         }
         try {
-            System.out.println("Waiting for threads to finish");
+            //System.out.println("Waiting for threads to finish");
             for (int x = 0; x < workers.length; x++) {
                 for (int y = 0; y < workers[x].length; y++) {
                     int value = workers[x][y].get();
-                    //System.out.println(getName() + " (" + x + "," + y + ") " + value);
                     if (value > bestValue) {
                         result = new Vector2(x, y);
                         bestValue = value;
@@ -110,12 +116,12 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
                     }
                 }
             }
-            System.out.println("Threads finished");
+            //System.out.println("Threads finished");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        System.out.println("Stopping heavy part!");
-        System.out.println("Final : " + getName() + " (" + result.getX() + "," + result.getY() + ") " + bestValue);
+        //System.out.println("Stopping heavy part!");
+        //System.out.println("Final : " + getName() + " (" + result.getX() + "," + result.getY() + ") " + bestValue);
         return result;
     }
 
@@ -132,22 +138,22 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             return 0;
         }
 
-        if ((maximize && !world.addGameItem(coordinates, this)) || (!maximize && !world.addGameItem(coordinates, opponent))) {
-            if (maximize) {
+        if (maximize) {
+            if (!world.addGameItem(coordinates, this)) {
                 return 0;
-            } else {
+            }
+        } else {
+            if (!world.addGameItem(coordinates, opponent)) {
                 return 0;
             }
         }
 
         if (maximize && world.hasWon(coordinates, this)) {
             world.removeGameItem(coordinates);
-            return depth * depth;
-            //return (int) Math.pow(10, depth);
+            return getHeuristicValue(depth);
         } else if (!maximize && world.hasWon(coordinates, opponent)) {
             world.removeGameItem(coordinates);
-            return -(depth * depth);
-            //return (int) Math.pow(-10, depth);
+            return -getHeuristicValue(depth);
         }
 
         int sum = 0;
@@ -159,5 +165,16 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         }
         world.removeGameItem(coordinates);
         return sum;
+    }
+
+    /**
+     * Get the value for winning.
+     *
+     * @param depth
+     * @return
+     */
+    protected int getHeuristicValue(int depth) {
+        return (int) Math.pow(10, depth);
+        //return depth * depth;
     }
 }
