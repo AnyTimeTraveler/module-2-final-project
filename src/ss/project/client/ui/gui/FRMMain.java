@@ -17,6 +17,8 @@ public class FRMMain extends JFrame implements UIFrame {
     @Getter
     private PNLChat chatPanel;
 
+    private JSplitPane splitPane;
+
     public FRMMain() {
         super();
     }
@@ -45,8 +47,10 @@ public class FRMMain extends JFrame implements UIFrame {
         mainPanel.setMinimumSize(new Dimension(600, 0));
         chatPanel = new PNLChat(Controller.getController());
 
-        JSplitPane jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, chatPanel);
-        add(jSplitPane);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, chatPanel);
+        splitPane.setContinuousLayout(true);
+        splitPane.setResizeWeight(1);
+        add(splitPane);
         setChatEnabled(false);
     }
 
@@ -58,6 +62,8 @@ public class FRMMain extends JFrame implements UIFrame {
         } else {
             chatPanel.onLeave();
         }
+        splitPane.revalidate();
+        splitPane.resetToPreferredSizes();
     }
 
     /**

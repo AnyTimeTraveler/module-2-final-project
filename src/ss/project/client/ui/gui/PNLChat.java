@@ -39,7 +39,8 @@ public class PNLChat extends GUIPanel {
 
     @Override
     public void onEnter() {
-
+        this.setPreferredSize(new Dimension(150, 0));
+        this.setMinimumSize(new Dimension(150, 0));
     }
 
     @Override
