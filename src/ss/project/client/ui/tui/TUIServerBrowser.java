@@ -58,6 +58,7 @@ public class TUIServerBrowser implements TUIPanel {
             }
             if (serverInfos.get(number).getStatus().equals(ServerInfo.Status.ONLINE)) {
                 Controller.getController().joinServer(serverInfos.get(number));
+                System.out.println("Joined server");
             } else {
                 System.out.println("This server can not be used!");
                 return;
@@ -67,5 +68,15 @@ public class TUIServerBrowser implements TUIPanel {
             System.out.println("Please type a number.");
             return;
         }
+    }
+
+    @Override
+    public void onEnter() {
+
+    }
+
+    @Override
+    public void onLeave() {
+
     }
 }

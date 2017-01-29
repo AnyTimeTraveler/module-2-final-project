@@ -13,4 +13,14 @@ public class TUILeaderboard implements TUIPanel {
     public void handleInput(String input) {
 
     }
+
+    @Override
+    public void onEnter() {
+
+    }
+
+    @Override
+    public void onLeave() {
+
+    }
 }

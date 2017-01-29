@@ -23,8 +23,6 @@ public class TUIGame implements TUIPanel, GameDisplay {
 
     @Override
     public void printScreen() {
-        Controller.getController().getEngine().setUI(this);
-
         System.out.println(ASCIIArt.getHeadline("Game", 120));
         if (humanPlayer != null) {
             System.out.println(ASCIIArt.getHeadline("Current turn: " + humanPlayer.toString(), 120));
@@ -103,6 +101,16 @@ public class TUIGame implements TUIPanel, GameDisplay {
                 System.out.println("<X> <Y>");
             }
         }
+    }
+
+    @Override
+    public void onEnter() {
+        Controller.getController().getEngine().setUI(this);
+    }
+
+    @Override
+    public void onLeave() {
+
     }
 
     @Override

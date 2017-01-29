@@ -20,4 +20,14 @@ public class TUIOptions implements TUIPanel {
             Controller.getController().switchTo(Controller.Panel.MAIN_MENU);
         }
     }
+
+    @Override
+    public void onEnter() {
+
+    }
+
+    @Override
+    public void onLeave() {
+
+    }
 }

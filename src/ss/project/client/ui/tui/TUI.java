@@ -19,7 +19,11 @@ public class TUI implements UIFrame {
     }
 
     public void switchTo(UIPanel panel) {
+        if (current != null) {
+            current.onLeave();
+        }
         current = (TUIPanel) panel;
+        current.onEnter();
     }
 
     @Override

@@ -138,6 +138,16 @@ public class TUISinglePlayerSettings implements TUIPanel {
         }
     }
 
+    @Override
+    public void onEnter() {
+
+    }
+
+    @Override
+    public void onLeave() {
+
+    }
+
     enum Progress {
         ENTERX("What's the X size of the world?"),
         ENTERY("What's the Y size of the world?"),

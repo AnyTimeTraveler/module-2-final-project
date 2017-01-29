@@ -9,4 +9,8 @@ public interface TUIPanel extends UIPanel {
     void printScreen();
 
     void handleInput(String input);
+
+    void onEnter();
+
+    void onLeave();
 }

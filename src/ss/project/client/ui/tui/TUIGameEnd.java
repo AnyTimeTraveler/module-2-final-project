@@ -28,4 +28,14 @@ public class TUIGameEnd implements TUIPanel {
                 break;
         }
     }
+
+    @Override
+    public void onEnter() {
+
+    }
+
+    @Override
+    public void onLeave() {
+
+    }
 }
