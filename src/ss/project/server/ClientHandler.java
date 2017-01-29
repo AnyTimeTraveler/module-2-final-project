@@ -80,6 +80,9 @@ public class ClientHandler extends Thread {
     }
 
     private void interpretLine(String line) {
+        if (line == null) {
+            return;
+        }
         String[] parts = line.split(" ");
         // determine if a game is running
         if (getPlayer().isInGame()) {

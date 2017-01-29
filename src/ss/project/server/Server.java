@@ -1,6 +1,7 @@
 package ss.project.server;
 
 import lombok.Getter;
+import ss.project.client.Controller;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.Vector3;
 import ss.project.shared.model.ServerConfig;
@@ -17,6 +18,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Server {
+    /**
+     * A singleton reference to the Server.
+     */
+    @Getter
+    private static Server instance;
+    /**
+     * A list of rooms of this server.
+     */
     private final List<Room> rooms;
     private String ip;
     @Getter
@@ -33,12 +42,32 @@ public class Server {
         ready = false;
         threads = new ArrayList<>();
         rooms = new ArrayList<>();
+        Controller.getController().setServer(true);
+        instance = this;
         createDefaultRoom();
     }
 
+    /**
+     * Create a default room with the simplest settings possible and add it to the list of rooms.
+     */
     private void createDefaultRoom() {
         defaultRoom = new Room(2, new Vector3(4, 4, 4), 4);
         rooms.add(defaultRoom);
+    }
+
+    /**
+     * Remove a list from the list of rooms of this server.
+     *
+     * @param room
+     */
+    public void removeRoom(Room room) {
+        synchronized (rooms) {
+            rooms.remove(room);
+            if (defaultRoom == room) {
+                defaultRoom = null;
+            }
+            createDefaultRoom();
+        }
     }
 
     public void run() {

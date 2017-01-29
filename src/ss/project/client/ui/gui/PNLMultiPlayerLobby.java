@@ -7,11 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by simon on 16.01.17.
  */
-public class PNLMultiPlayerLobby extends GUIPanel {
+public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
 
     private Controller controller;
     private JPanel roomsPanelOwner;
@@ -24,6 +26,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         super(true);
 
         this.controller = controller;
+
 
         roomPanels = new ArrayList<>();
 
@@ -39,7 +42,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         JButton backButton = new JButton("Disconnect");
         backButton.addActionListener(e -> {
             controller.getNetwork().shutdown();
-            controller.switchTo(Controller.Panel.SERVER_BRWOSER);
+            controller.switchTo(Controller.Panel.SERVER_BROWSER);
         });
         jPanel.add(backButton);
 
@@ -55,22 +58,34 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
     @Override
     public void onEnter() {
-        addRoomPanels(Controller.getController().getRooms());
+        controller.addObserver(this);
+        Controller.getController().refreshRoomList();
+        refreshRooms();
     }
 
     @Override
     public void onLeave() {
-
+        controller.deleteObserver(this);
     }
 
-    private void addRoomPanels(List<Room> rooms) {
+    private void refreshRooms() {
+        addRoomPanels(Controller.getController().getRooms());
+    }
+
+    /**
+     * Add the room panels to the screen and update all values.
+     * Has ot be synchronized, because new roomvalues in the Controller triggers an update.
+     *
+     * @param rooms
+     */
+    private synchronized void addRoomPanels(List<Room> rooms) {
         roomsPanelOwner.removeAll();
         if (rooms != null) {
             for (int i = 0; i < rooms.size(); i++) {
                 RoomPanel roomPanel;
                 if (roomPanels.size() > i) {
                     roomPanel = roomPanels.get(i);
-                    roomPanel.refreshValues();
+                    roomPanel.refreshValues(rooms.get(i));
                 } else {
                     roomPanel = new RoomPanel(rooms.get(i));
                 }
@@ -82,7 +97,16 @@ public class PNLMultiPlayerLobby extends GUIPanel {
             }
         }
         this.repaint();
-        roomsPanelOwner.revalidate();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        System.out.println("Observer: " + arg);
+        if (o instanceof Controller) {
+            if (arg.equals("UpdateRoom")) {
+                refreshRooms();
+            }
+        }
     }
 
     /**
@@ -125,13 +149,14 @@ public class PNLMultiPlayerLobby extends GUIPanel {
             joinButton.addActionListener(e -> joinRoom());
             this.add(joinButton, BorderLayout.EAST);
 
-            refreshValues();
+            refreshValues(room);
         }
 
         /**
          * Refresh all values shown on the screen from this room.
          */
-        public void refreshValues() {
+        public void refreshValues(Room room) {
+            this.room = room;
             roomID.setText("|" + room.getId() + "|");
             winLength.setText("Win length: " + room.getWinLength());
             playerAmount.setText("Players: " + room.getMaxPlayers());

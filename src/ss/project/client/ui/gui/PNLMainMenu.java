@@ -22,7 +22,7 @@ public class PNLMainMenu extends GUIPanel {
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.PAGE_AXIS));
         addComponent(GUIUtils.createButton("Single Player"), e -> controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS), centerPanel);
-        addComponent(GUIUtils.createButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER), centerPanel);
+        addComponent(GUIUtils.createButton("Multi Player"), e -> controller.switchTo(Controller.Panel.SERVER_BROWSER), centerPanel);
         addComponent(GUIUtils.createButton("Options"), e -> controller.switchTo(Controller.Panel.OPTIONS), centerPanel);
         addComponent(GUIUtils.createButton("Exit"), e -> controller.shutdown(), centerPanel);
 

@@ -54,6 +54,10 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         worldPanelConstraints = new GridBagConstraints();
         this.add(worldPanel, BorderLayout.CENTER);
 
+        JButton leaveButton = new JButton("Leave");
+        leaveButton.addActionListener(e -> controller.leaveRoom());
+        this.add(leaveButton, BorderLayout.SOUTH);
+
         animationTimer = new Timer(10, e -> doCanvasAnimations());
         animationTimer.stop();
     }

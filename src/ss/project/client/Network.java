@@ -131,14 +131,28 @@ public class Network extends Thread {
             engine.setTurn(Integer.parseInt(parts[1]));
         } else if (Protocol.Server.NOTIFYMOVE.equals(parts[0])) {
             engine.notifyMove(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+        } else if (Protocol.Server.NOTIFYEND.equals(parts[0])) {
+            int winReason = 0;
+            int playerid = 0;
+            try {
+                winReason = Integer.parseInt(parts[1]);
+                playerid = Integer.parseInt(parts[2]);
+            } catch (NumberFormatException e) {
+                //TODO: send right error message back.
+                return;
+            }
+            engine.notifyEnd(winReason, playerid);
+        } else if (Protocol.Server.SENDLISTROOMS.equals(parts[0])) {
+            try {
+                controller.setRooms(Room.parseRoomListString(line));
+            } catch (ProtocolException e) {
+                //TODO: send right error message back.
+                return;
+            }
         } else {
             System.err.println(line);
             throw new NotImplementedException();
         }
-
-//                    engine.setTurn(12);
-//                    engine.notifyMove(3, 2, 4);
-//                    engine.notifyEnd(3, 12);
     }
 
     /**

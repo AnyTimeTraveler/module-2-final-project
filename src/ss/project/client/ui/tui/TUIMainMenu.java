@@ -23,7 +23,7 @@ public class TUIMainMenu implements TUIPanel {
                 Controller.getController().switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS);
                 break;
             case "2":
-                Controller.getController().switchTo(Controller.Panel.SERVER_BRWOSER);
+                Controller.getController().switchTo(Controller.Panel.SERVER_BROWSER);
                 break;
             case "3":
                 Controller.getController().switchTo(Controller.Panel.OPTIONS);

@@ -1,8 +1,10 @@
 package ss.project.shared.game;
 
 import lombok.Getter;
+import lombok.Setter;
 import ss.project.client.Controller;
 import ss.project.client.ui.GameDisplay;
+import ss.project.server.Room;
 import ss.project.shared.Protocol;
 import ss.project.shared.model.GameParameters;
 
@@ -23,6 +25,11 @@ public class Engine {
      */
     @Getter
     private boolean gameRunning;
+    /**
+     * If this is a server, this is the room corresponding to this engine.
+     */
+    @Setter
+    private Room room;
 
     /**
      * Create a new world and assign players.
@@ -195,6 +202,9 @@ public class Engine {
         }
         gameRunning = false;
         winReason = reason;
+        if (Controller.getController().isServer() && room != null) {
+            room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYEND, reason.getId(), playerid));
+        }
         if (getUI() != null) {
             Controller.getController().switchTo(Controller.Panel.GAMEEND);
         }

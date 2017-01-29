@@ -166,6 +166,7 @@ public class Room implements Serializable {
             np.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.STARTGAME, args));
         }
         engine = new Engine(parameters, players);
+        engine.setRoom(this);
         engineThread = new Thread(() -> engine.startGame());
         engineThread.setDaemon(true);
         engineThread.start();
@@ -247,8 +248,24 @@ public class Room implements Serializable {
         return players.size() == maxPlayers;
     }
 
+    /**
+     * End the game with the specified reason. Will reset all players to the lobby.
+     *
+     * @param reason
+     * @param id
+     */
     public void endGame(Protocol.WinReason reason, int id) {
+        //We remove this room from the server.
+        Server.getInstance().removeRoom(this);
+
         engine.finishGame(reason, id);
         engineThread.interrupt();
+
+        //Reset every player to the lobby.
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).setCurrentRoom(null);
+            players.get(i).setInGame(false);
+        }
+        players.clear();
     }
 }

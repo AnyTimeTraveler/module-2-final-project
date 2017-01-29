@@ -20,11 +20,12 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * Created by simon on 21.01.17.
  */
-public class Controller {
+public class Controller extends Observable {
     private static final Object CHAT_LOCK = new Object();
     @Getter
     private static Controller controller;
@@ -56,6 +57,12 @@ public class Controller {
      */
     @Getter
     private boolean connected;
+    /**
+     * True if this is a server controller, false if it's a client.
+     */
+    @Getter
+    @Setter
+    private boolean server = false;
 
     private Controller() {
         try {
@@ -66,12 +73,23 @@ public class Controller {
         chatMessages = new ArrayList<>();
     }
 
+    /**
+     * Add a message to the chat and refresh the chat.
+     *
+     * @param message The chatmessage that needs to be shown.
+     */
     @Synchronized("CHAT_LOCK")
     public void addMessage(ChatMessage message) {
         chatMessages.add(message);
         updateChatMessages();
     }
 
+    /**
+     * Get a list of chatmessages.
+     *
+     * @param amount The amount of chatmessages.
+     * @return a list of 'amount' length if available.
+     */
     @Synchronized("CHAT_LOCK")
     public List<ChatMessage> getRecentChatMessages(int amount) {
         return chatMessages.subList(amount < chatMessages.size() ? chatMessages.size() - amount : 0, chatMessages.size());
@@ -93,7 +111,7 @@ public class Controller {
             Panel.MULTI_PLAYER_LOBBY.setPanel(new PNLMultiPlayerLobby(controller));
             Panel.MULTI_PLAYER_ROOM.setPanel(new PNLMultiPlayerRoom(controller));
             Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new PNLMultiPlayerRoomCreation(controller));
-            Panel.SERVER_BRWOSER.setPanel(new PNLServerBrowser(controller));
+            Panel.SERVER_BROWSER.setPanel(new PNLServerBrowser(controller));
             Panel.OPTIONS.setPanel(new PNLOptions(controller));
             Panel.LEADERBOARD.setPanel(new PNLLeaderboard(controller));
             Panel.GAMEEND.setPanel(new PNLGameEnd(controller));
@@ -104,7 +122,7 @@ public class Controller {
             Panel.MULTI_PLAYER_LOBBY.setPanel(new TUIMultiPlayerLobby());
             Panel.MULTI_PLAYER_ROOM.setPanel(new TUIMultiPlayerRoom());
             Panel.MULTI_PLAYER_ROOM_CREATION.setPanel(new TUIMultiPlayerRoomCreation());
-            Panel.SERVER_BRWOSER.setPanel(new TUIServerBrowser());
+            Panel.SERVER_BROWSER.setPanel(new TUIServerBrowser());
             Panel.OPTIONS.setPanel(new TUIOptions());
             Panel.LEADERBOARD.setPanel(new TUILeaderboard());
             Panel.GAMEEND.setPanel(new TUIGameEnd());
@@ -149,7 +167,15 @@ public class Controller {
     }
 
     /**
+     * Refresh the list of rooms.
+     */
+    public void refreshRoomList() {
+        network.sendMessage(Protocol.createMessage(Protocol.Client.GETROOMLIST));
+    }
+
+    /**
      * Get the list of rooms of the current server.
+     * If the server does not support rooms, we just send a list of 1 room.
      *
      * @return A list of rooms.
      */
@@ -169,18 +195,29 @@ public class Controller {
         return fakeRooms;
     }
 
+    /**
+     * Set the roomlist of the controller.
+     *
+     * @param rooms A list of rooms.
+     */
     public void setRooms(List<Room> rooms) {
         synchronized (roomsLock) {
             this.rooms = rooms;
         }
+        setChanged();
+        notifyObservers("UpdateRoom");
     }
 
     /**
      * Leave the current room we joined.
      */
     public void leaveRoom() {
-        network.sendMessage(Protocol.createMessage(Protocol.Client.LEAVEROOM));
-        controller.switchTo(Panel.MULTI_PLAYER_LOBBY);
+        if (isConnected()) {
+            network.sendMessage(Protocol.createMessage(Protocol.Client.LEAVEROOM));
+            controller.switchTo(Panel.MULTI_PLAYER_LOBBY);
+        } else {
+            controller.switchTo(Panel.SINGLE_PLAYER_SETTINGS);
+        }
     }
 
     /**
@@ -315,7 +352,7 @@ public class Controller {
     public enum Panel {
         MAIN_MENU,
         SINGLE_PLAYER_SETTINGS,
-        SERVER_BRWOSER,
+        SERVER_BROWSER,
         OPTIONS,
         MULTI_PLAYER_LOBBY,
         MULTI_PLAYER_ROOM,
