@@ -43,6 +43,14 @@ public class GUIUtils {
         return result;
     }
 
+    public static JTextField createTextField(String text) {
+        JTextField result = new JTextField(text);
+        result.setAlignmentX(Component.CENTER_ALIGNMENT);
+        result.setPreferredSize(new Dimension(100, 50));
+        result.setMaximumSize(new Dimension(150, 70));
+        return result;
+    }
+
     public static JCheckBox createCheckBox(String text) {
         JCheckBox result = new JCheckBox(text);
 

@@ -28,10 +28,6 @@ public class ClientConfig {
     @Expose
     public boolean Fullscreen;
     @Expose
-    public int FullscreenHeight;
-    @Expose
-    public int FullscreenWidth;
-    @Expose
     public List<Connection> KnownServers;
     @Expose
     public String PlayerName;
@@ -48,8 +44,6 @@ public class ClientConfig {
     private ClientConfig() {
         WindowTitle = "Connect Four 3D";
         Fullscreen = false;
-        FullscreenWidth = 1920;
-        FullscreenHeight = 1080;
         PlayerTypes = new HashMap<>();
         PlayerTypes.put("Human", HumanPlayer.class);
         PlayerTypes.put("Linear AI", LinearComputerPlayer.class);
