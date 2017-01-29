@@ -139,6 +139,22 @@ public class World {
     }
 
     /**
+     * Check if a move would be valid, but do not place anything.
+     *
+     * @param coordinates The coordinates the move should be placed.
+     * @return True if it's valid, false if not.
+     */
+    public boolean isValidMove(Vector2 coordinates) {
+        Vector3 coords3d = getWorldPosition(coordinates);
+        if (coords3d != null) {
+            if (worldPosition[coords3d.getX()][coords3d.getY()][coords3d.getZ()] == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Remove a gameItem from this board.
      *
      * @param coordinates Coordinates of the gameitem.

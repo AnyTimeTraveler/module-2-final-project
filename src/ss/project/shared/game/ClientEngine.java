@@ -49,7 +49,7 @@ public class ClientEngine extends Engine {
     public boolean addGameItem(Vector2 coordinates, Player owner) {
         if (owner.getId() == playerID && currentTurn == playerID) {
             //It's us, we should check whether it's valid.
-            if (super.addGameItem(coordinates, owner)) {
+            if (super.isValidMove(coordinates)) {
                 //It's valid, now send a message to the server.
                 network.sendMessage(Protocol.createMessage(Protocol.Client.MAKEMOVE, coordinates.getX(), coordinates.getY()));
                 return true;

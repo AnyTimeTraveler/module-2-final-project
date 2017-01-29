@@ -193,7 +193,6 @@ public class GameCanvas2D extends JPanel {
                 synchronized (owner.getWaiter()) {
                     owner.getWaiter().notify();
                 }
-                //owner.refresh();
             }
         }
     }

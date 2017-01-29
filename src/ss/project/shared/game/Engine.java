@@ -94,6 +94,16 @@ public class Engine {
     }
 
     /**
+     * Check if a move is valid, but do not place it.
+     *
+     * @param coordinates The coordinates the move will be checked.
+     * @return True if it's a valid move, false if not.
+     */
+    public boolean isValidMove(Vector2 coordinates) {
+        return getWorld().isValidMove(coordinates);
+    }
+
+    /**
      * returns the player if within range.
      *
      * @param id Index number of the player.

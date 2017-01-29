@@ -25,6 +25,8 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
     private Future<Integer>[][] workers;
     private ExecutorService executor;
 
+    private Vector2[] vector2Cache;
+
     /**
      * create a computer player with the specified AI.
      */
@@ -56,6 +58,19 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
             executor = Executors.newWorkStealingPool();
         }
         engine.getWorld().writeTo(worldCopy);
+
+        int newSize = worldCopy.getSize().getX() * worldCopy.getSize().getY();
+        //TODO: check if x and y are still OK. 5x4 is not the same as 4x5...
+        if (vector2Cache == null || vector2Cache.length != newSize) {
+            vector2Cache = new Vector2[newSize];
+            int index = 0;
+            for (int x = 0; x < worldCopy.getSize().getX(); x++) {
+                for (int y = 0; y < worldCopy.getSize().getY(); y++) {
+                    vector2Cache[index] = new Vector2(x, y);
+                    index++;
+                }
+            }
+        }
     }
 
     @Override
@@ -67,12 +82,10 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
         if (!engine.addGameItem(bestPos, this)) {
             System.out.println("Tried to place somewhere that was not possible ABORT ERROR ABORT!  " + bestPos);
             System.out.println("Try to fix it by finding the first possible place...");
-            for (int x = 0; x < worldCopy.getSize().getX(); x++) {
-                for (int y = 0; y < worldCopy.getSize().getY(); y++) {
-                    if (engine.addGameItem(new Vector2(x, y), this)) {
-                        System.out.println("Fixed it by placing it at: " + new Vector2(x, y).toString());
-                        return;
-                    }
+            for (int i = 0; i < vector2Cache.length; i++) {
+                if (engine.addGameItem(vector2Cache[i], this)) {
+                    System.out.println("Fixed it by placing it at: " + vector2Cache[i].toString());
+                    return;
                 }
             }
         }
@@ -97,24 +110,39 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
     private Vector2 getBestPosition(World world) {
         int bestValue = Integer.MIN_VALUE;
         Vector2 result = Vector2.ZERO;
-        for (int x = 0; x < world.getSize().getX(); x++) {
-            for (int y = 0; y < world.getSize().getY(); y++) {
-                World copy = new World(world.getSize(), world.getWinLength());
-                world.writeTo(copy);
-                int finalX = x;
-                int finalY = y;
-                copy.addGameItem(new Vector2(x, y), this);
-                workers[x][y] = executor.submit(() -> -getBestPosition(copy, new Vector2(finalX, finalY), depth, -9999, 9999, getOther(this)));
-            }
+//        for (int x = 0; x < world.getSize().getX(); x++) {
+//            for (int y = 0; y < world.getSize().getY(); y++) {
+//                World copy = new World(world.getSize(), world.getWinLength());
+//                world.writeTo(copy);
+//                int finalX = x;
+//                int finalY = y;
+//                copy.addGameItem(new Vector2(x, y), this);
+//                workers[x][y] = executor.submit(() -> -getBestPosition(copy, new Vector2(finalX, finalY), depth, -9999, 9999, getOther(this)));
+//            }
+//        }
+        for (int i = 0; i < vector2Cache.length; i++) {
+            World copy = new World(world.getSize(), world.getWinLength());
+            world.writeTo(copy);
+            Vector2 coords = vector2Cache[i];
+            copy.addGameItem(coords, this);
+            workers[coords.getX()][coords.getY()] = executor.submit(() -> -getBestPosition(copy, coords, depth, -9999, 9999, getOther(this)));
         }
         try {
-            for (int x = 0; x < workers.length; x++) {
-                for (int y = 0; y < workers[x].length; y++) {
-                    int value = workers[x][y].get();
-                    if (value >= bestValue) {
-                        result = new Vector2(x, y);
-                        bestValue = value;
-                    }
+//            for (int x = 0; x < workers.length; x++) {
+//                for (int y = 0; y < workers[x].length; y++) {
+//                    int value = workers[x][y].get();
+//                    if (value >= bestValue) {
+//                        result = new Vector2(x, y);
+//                        bestValue = value;
+//                    }
+//                }
+//            }
+            for (int i = 0; i < vector2Cache.length; i++) {
+                Vector2 coords = vector2Cache[i];
+                int value = workers[coords.getX()][coords.getY()].get();
+                if (value >= bestValue) {
+                    result = vector2Cache[i];
+                    bestValue = value;
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -143,22 +171,37 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
         int localAlpha = alpha;
         int localBeta = beta;
         int best = -9999;
-        for (int x = 0; x < world.getSize().getX(); x++) {
-            for (int y = 0; y < world.getSize().getY(); y++) {
-                Vector2 coord = new Vector2(x, y);
-                if (!world.addGameItem(coord, currentPlayer)) {
-                    continue;
-                }
+//        for (int x = 0; x < world.getSize().getX(); x++) {
+//            for (int y = 0; y < world.getSize().getY(); y++) {
+//                Vector2 coord = new Vector2(x, y);
+//                if (!world.addGameItem(coord, currentPlayer)) {
+//                    continue;
+//                }
+//
+//                int value = -getBestPosition(world, coord, depth - 1, -localBeta, -localAlpha, getOther(currentPlayer));
+//
+//                world.removeGameItem(coord);
+//
+//                best = Math.max(value, best);
+//                localAlpha = Math.max(localAlpha, value);
+//                if (localAlpha >= localBeta) {
+//                    break;
+//                }
+//            }
+//        }
+        for (int i = 0; i < vector2Cache.length; i++) {
+            if (!world.addGameItem(vector2Cache[i], currentPlayer)) {
+                continue;
+            }
 
-                int value = -getBestPosition(world, coord, depth - 1, -localBeta, -localAlpha, getOther(currentPlayer));
+            int value = -getBestPosition(world, vector2Cache[i], depth - 1, -localBeta, -localAlpha, getOther(currentPlayer));
 
-                world.removeGameItem(coord);
+            world.removeGameItem(vector2Cache[i]);
 
-                best = Math.max(value, best);
-                localAlpha = Math.max(localAlpha, value);
-                if (localAlpha >= localBeta) {
-                    break;
-                }
+            best = Math.max(value, best);
+            localAlpha = Math.max(localAlpha, value);
+            if (localAlpha >= localBeta) {
+                break;
             }
         }
         return best;

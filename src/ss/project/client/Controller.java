@@ -25,7 +25,7 @@ import java.util.List;
  * Created by simon on 21.01.17.
  */
 public class Controller {
-    private static final Object chatLock = new Object();
+    private static final Object CHAT_LOCK = new Object();
     @Getter
     private static Controller controller;
 
@@ -55,8 +55,7 @@ public class Controller {
      * TODO: update this value correctly.
      */
     @Getter
-    @Setter
-    private boolean isConnected;
+    private boolean connected;
 
     private Controller() {
         try {
@@ -67,13 +66,13 @@ public class Controller {
         chatMessages = new ArrayList<>();
     }
 
-    @Synchronized("chatLock")
+    @Synchronized("CHAT_LOCK")
     public void addMessage(ChatMessage message) {
         chatMessages.add(message);
         updateChatMessages();
     }
 
-    @Synchronized("chatLock")
+    @Synchronized("CHAT_LOCK")
     public List<ChatMessage> getRecentChatMessages(int amount) {
         return chatMessages.subList(amount < chatMessages.size() ? chatMessages.size() - amount : 0, chatMessages.size());
     }
@@ -163,10 +162,10 @@ public class Controller {
         List<Room> fakeRooms = new ArrayList<>();
         ServerInfo info = getCurrentServer();
         fakeRooms.add(new Room(0, info.getMaxPlayers(),
-                                      info.getMaxDimensionX(),
-                                      info.getMaxDimensionY(),
-                                      info.getMaxDimensionZ(),
-                                      info.getMaxWinLength()));
+                info.getMaxDimensionX(),
+                info.getMaxDimensionY(),
+                info.getMaxDimensionZ(),
+                info.getMaxWinLength()));
         return fakeRooms;
     }
 
@@ -292,7 +291,7 @@ public class Controller {
     }
 
     public void setConnected(boolean connected) {
-        this.isConnected = connected;
+        this.connected = connected;
         if (connected) {
             frame.setChatEnabled(getCurrentServer().isChatSupport());
         } else {
