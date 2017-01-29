@@ -122,7 +122,7 @@ public class ClientHandler extends Thread {
                         sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, player.getId()));
                         if (room.isFull()) {
                             room.startGame();
-                            sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "Room is full. Starting game...")));
+                            room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "Room is full. Starting game...")));
                         }
                     } catch (AlreadyJoinedException | RoomFullException e) {
                         // Notify about joinerror

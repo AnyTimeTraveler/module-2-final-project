@@ -101,7 +101,6 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("Observer: " + arg);
         if (o instanceof Controller) {
             if (arg.equals("UpdateRoom")) {
                 refreshRooms();
