@@ -70,8 +70,21 @@ public class World {
      * @return
      */
     public boolean isOwner(Vector3 coordinates, Player player) {
-        if (insideWorld(coordinates)) {
-            Player actualPlayer = worldPosition[coordinates.getX()][coordinates.getY()][coordinates.getZ()];
+        return isOwner(coordinates.getX(), coordinates.getY(), coordinates.getZ(), player);
+    }
+
+    /**
+     * Check if a player is the owner of the object at x,y,z
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param player
+     * @return False if the coordinates are not inside the world.
+     */
+    public boolean isOwner(int x, int y, int z, Player player) {
+        if (insideWorld(x, y, z)) {
+            Player actualPlayer = worldPosition[x][y][z];
             if (actualPlayer != null) {
                 return actualPlayer.equals(player);
             }
@@ -96,9 +109,21 @@ public class World {
      * @return True if the coordinates are inside the world range.
      */
     public boolean insideWorld(Vector3 coordinates) {
-        if (coordinates.getX() >= 0 && coordinates.getY() >= 0 && coordinates.getZ() >= 0 &&
-                coordinates.getX() < getSize().getX() && coordinates.getY() < getSize().getY() &&
-                coordinates.getZ() < getSize().getZ()) {
+        return insideWorld(coordinates.getX(), coordinates.getY(), coordinates.getZ());
+    }
+
+    /**
+     * Check if x,y,z are coordinates inside this world.
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
+    public boolean insideWorld(int x, int y, int z) {
+        if (x >= 0 && y >= 0 && z >= 0 &&
+                x < getSize().getX() && y < getSize().getY() &&
+                z < getSize().getZ()) {
             return true;
         } else {
             return false;
@@ -195,9 +220,7 @@ public class World {
     public boolean hasWon(Vector2 newCoordinates, Player player) {
         Vector3 coordinates = getHighestPosition(newCoordinates);
         if (coordinates != null) {
-            if (insideWorld(coordinates)) {
-                return hasWon(coordinates, player);
-            }
+            return hasWon(coordinates, player);
         }
         return false;
     }
@@ -212,6 +235,9 @@ public class World {
     //@ requires newCoordinates != null;
     //@ requires player != null;
     public boolean hasWon(Vector3 newCoordinates, Player player) {
+        int newX = newCoordinates.getX();
+        int newY = newCoordinates.getY();
+        int newZ = newCoordinates.getZ();
         if (!isOwner(newCoordinates, player)) {
             return false;
         }
@@ -223,8 +249,11 @@ public class World {
                     if (!vector.equals(newCoordinates)) {
                         //We found a neighbor that is owner by us as well! Continue this path.
                         Vector3 direction = newCoordinates.subtract(x, y, z);
-                        int count1 = hasWon(newCoordinates, player, direction, 1);
-                        int count2 = hasWon(newCoordinates, player, direction.inverse(), 0);
+                        int dirX = newX - x;
+                        int dirY = newY - y;
+                        int dirZ = newZ - z;
+                        int count1 = hasWon(newX, newY, newZ, player, dirX, dirY, dirZ, 1);
+                        int count2 = hasWon(newX, newY, newZ, player, -dirX, -dirY, -dirZ, 0);
                         if (count1 + count2 >= winLength) {
                             //we won!
                             return true;
@@ -239,11 +268,9 @@ public class World {
     /**
      * Keep checking in a certain direction if we have 4 on a row.
      *
-     * @param coordinates Coordinates of the base, we add direction to this.
-     * @param player      The player who might win.
-     * @param direction   The direction we're going.
-     * @param count       The amount of objects that are ours, if this equals 4 player
-     *                    has won!
+     * @param player The player who might win.
+     * @param count  The amount of objects that are ours, if this equals 4 player
+     *               has won!
      * @return The amount on a row.
      */
     //@ pure;
@@ -251,13 +278,15 @@ public class World {
     //@ requires player != null;
     //@ requires direction != null;
     //@ requires count >=0 ;
-    private int hasWon(Vector3 coordinates, Player player, Vector3 direction, int count) {
-        Vector3 newCoordinates = coordinates.add(direction);
-        if (isOwner(newCoordinates, player)) {
+    private int hasWon(int x, int y, int z, Player player, int dirX, int dirY, int dirZ, int count) {
+        int newX = x + dirX;
+        int newY = y + dirY;
+        int newZ = z + dirZ;
+        if (isOwner(newX, newY, newZ, player)) {
             //again we're the owner!
 
             //check the next coordinates!
-            return hasWon(newCoordinates, player, direction, count + 1);
+            return hasWon(newX, newY, newZ, player, dirX, dirY, dirZ, count + 1);
         }
         return count;
     }

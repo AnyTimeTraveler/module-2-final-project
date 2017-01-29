@@ -1,7 +1,6 @@
 package ss.project.shared.game;
 
 import org.junit.Before;
-import org.junit.Test;
 import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer2;
@@ -34,7 +33,7 @@ public class AITest {
         }
     }
 
-    @Test
+    // @Test
     public void testAllAI() throws Exception {
         for (int i = 0; i < players.size(); i++) {
             for (int j = i + 1; j < players.size(); j++) {
@@ -43,7 +42,7 @@ public class AITest {
         }
     }
 
-    @Test
+    // @Test
     public void minMaxChecker() {
         MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max", 6);
         minMaxComputerPlayer.setId(1);
