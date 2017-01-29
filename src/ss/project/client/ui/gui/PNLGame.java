@@ -70,6 +70,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         worldPanelConstraints.weightx = 0.5f;
         worldPanelConstraints.weighty = 0.5f;
         worldPanelConstraints.fill = GridBagConstraints.BOTH;
+        worldPanel.removeAll();
         int panelsOnOneRow = (int) Math.ceil(canvas2D.length / 2f);
         for (int z = 0; z < canvas2D.length; z++) {
             // Create a 2D graphics canvas.
