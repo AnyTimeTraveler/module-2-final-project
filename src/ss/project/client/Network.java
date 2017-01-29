@@ -99,8 +99,11 @@ public class Network extends Thread {
                     interpretLine(line);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-                shutdown();
+                //This is only an error if the network is not closed.
+                if (!closed) {
+                    e.printStackTrace();
+                    shutdown();
+                }
             }
         }
     }
