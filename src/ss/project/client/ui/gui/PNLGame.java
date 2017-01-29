@@ -33,6 +33,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     private GridBagConstraints worldPanelConstraints;
     private JLabel currentTurnLabel;
     private JPanel worldPanel;
+    private JButton leaveButton;
 
     private Timer animationTimer;
 
@@ -54,7 +55,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         worldPanelConstraints = new GridBagConstraints();
         this.add(worldPanel, BorderLayout.CENTER);
 
-        JButton leaveButton = new JButton("Leave");
+        leaveButton = new JButton("Leave");
         leaveButton.addActionListener(e -> controller.leaveRoom());
         this.add(leaveButton, BorderLayout.SOUTH);
 
@@ -82,6 +83,8 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         worldPanelConstraints.weighty = 0.5f;
 
         animationTimer.start();
+
+        leaveButton.setVisible(!Controller.getController().isConnected());
     }
 
     public HumanPlayer getCurrentPlayer() {
