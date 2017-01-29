@@ -2,8 +2,12 @@ package ss.project.shared.game;
 
 import lombok.Getter;
 import ss.project.client.Controller;
-import ss.project.client.networking.Network;
+import ss.project.client.HumanPlayer;
+import ss.project.client.Network;
 import ss.project.shared.Protocol;
+import ss.project.shared.model.GameParameters;
+
+import java.util.Collection;
 
 /**
  * Created by fw on 26/01/2017.
@@ -13,16 +17,17 @@ public class ClientEngine extends Engine {
     Network network;
     @Getter
     int playerID;
+    private int currentTurn;
 
     /**
      * Create a new world and assign players.
      *
-     * @param worldSize
-     * @param winLength
+     * @param gameParameters
      * @param players
+     * @param network
      */
-    public ClientEngine(Vector3 worldSize, int winLength, Player[] players, Network network, int playerID) {
-        super(worldSize, winLength, players);
+    public ClientEngine(GameParameters gameParameters, Collection<Player> players, Network network, int playerID) {
+        super(gameParameters, players);
         this.network = network;
         this.playerID = playerID;
     }
@@ -42,9 +47,8 @@ public class ClientEngine extends Engine {
      */
     @Override
     public boolean addGameItem(Vector2 coordinates, Player owner) {
-        if (owner.getId() == playerID) {
+        if (owner.getId() == playerID && currentTurn == playerID) {
             //It's us, we should check whether it's valid.
-
             if (super.addGameItem(coordinates, owner)) {
                 //It's valid, now send a message to the server.
                 network.sendMessage(Protocol.createMessage(Protocol.Client.MAKEMOVE, coordinates.getX(), coordinates.getY()));
@@ -112,6 +116,14 @@ public class ClientEngine extends Engine {
      * @param playerID
      */
     public void setTurn(int playerID) {
-        getUI().setCurrentPlayer(getPlayer(playerID));
+        Player player = getPlayer(playerID);
+        getUI().setCurrentPlayer(player);
+        currentTurn = playerID;
+        if (player instanceof HumanPlayer) {
+            Thread playerInputWaiter = new Thread(() -> player.doTurn(this));
+            playerInputWaiter.setName("PlayerInputWaiter");
+            playerInputWaiter.setDaemon(true);
+            playerInputWaiter.start();
+        }
     }
 }

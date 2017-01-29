@@ -2,12 +2,13 @@ package ss.project.shared.game;
 
 import org.junit.Before;
 import org.junit.Test;
-import ss.project.client.Config;
 import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer2;
+import ss.project.shared.model.ClientConfig;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class AITest {
     public void setUp() throws Exception {
         players = new ArrayList<>();
         int i = 0;
-        for (Class value : Config.getInstance().PlayerTypes.values()) {
+        for (Class value : ClientConfig.getInstance().PlayerTypes.values()) {
             if (!ComputerPlayer.class.isAssignableFrom(value)) {
                 continue;
             }
@@ -53,8 +54,7 @@ public class AITest {
     }
 
     private Player testAI(Player player1, Player player2) {
-        engine = new Engine(new Vector3(4, 4, 4), 4, new Player[]{
-                player1, player2});
+        engine = new Engine(new Vector3(4, 4, 4), 4, Arrays.asList(player1, player2));
         engine.startGame();
 
         return engine.getPlayer(engine.getWinner());

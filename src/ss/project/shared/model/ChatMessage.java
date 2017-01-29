@@ -1,12 +1,13 @@
-package ss.project.shared;
+package ss.project.shared.model;
 
 import lombok.Data;
+import ss.project.shared.Serializable;
 
 /**
  * Created by simon on 26.01.17.
  */
 @Data
-public class ChatMessage {
+public class ChatMessage implements Serializable {
     private String name;
     private String message;
 

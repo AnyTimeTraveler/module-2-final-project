@@ -1,7 +1,7 @@
 package ss.project.client.ui.tui;
 
 import ss.project.client.Controller;
-import ss.project.client.networking.ServerInfo;
+import ss.project.shared.model.ServerInfo;
 
 import java.util.List;
 

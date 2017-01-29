@@ -1,9 +1,9 @@
-package ss.project.client.networking;
+package ss.project.shared.model;
 
 import lombok.Data;
 import ss.project.shared.Protocol;
-import ss.project.shared.game.Vector3;
 
+import java.net.InetAddress;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -13,6 +13,7 @@ import java.util.Scanner;
 @Data
 public class ServerInfo {
     private Status status;
+    private Connection connection;
     private int maxPlayers;
     private boolean roomSupport;
     private int maxDimensionX;
@@ -37,8 +38,9 @@ public class ServerInfo {
      * @param maxWinLength  The length needed to win in a game.
      * @param chatSupport   If true, this server supports global chat.
      */
-    public ServerInfo(Status status, int maxPlayers, boolean roomSupport, int maxDimensionX, int maxDimensionY, int maxDimensionZ, int maxWinLength, boolean chatSupport) {
+    public ServerInfo(Status status, Connection connection, int maxPlayers, boolean roomSupport, int maxDimensionX, int maxDimensionY, int maxDimensionZ, int maxWinLength, boolean chatSupport) {
         this.status = status;
+        this.connection = connection;
         this.maxPlayers = maxPlayers;
         this.roomSupport = roomSupport;
         this.maxDimensionX = maxDimensionX;
@@ -51,18 +53,20 @@ public class ServerInfo {
     /**
      * Create a ServerInfo object from protocol string.
      *
-     * @param line The string from the protocol.
-     * @return A new ServerInfo object, created from the string.
+     * @param address     The string from the protocol.
+     * @param inetAddress
+     * @param port        @return A new ServerInfo object, created from the string.
      */
-    public static ServerInfo fromString(String line) {
+    public static ServerInfo fromString(String address, InetAddress inetAddress, int port) {
         try {
             ServerInfo serverInfo = new ServerInfo();
             serverInfo.status = Status.ONLINE;
-            Scanner sc = new Scanner(line);
-            if (line.split(" ")[0].equals(Protocol.Server.SERVERCAPABILITIES.getMessage())) {
+            Scanner sc = new Scanner(address);
+            if (address.split(" ")[0].equals(Protocol.Server.SERVERCAPABILITIES.getMessage())) {
                 sc.next();
             }
             serverInfo.maxPlayers = Integer.parseInt(sc.next());
+            serverInfo.connection = new Connection("Unnamed", inetAddress.getHostAddress(), port);
             serverInfo.roomSupport = sc.next().equals("1");
             serverInfo.maxDimensionX = Integer.parseInt(sc.next());
             serverInfo.maxDimensionY = Integer.parseInt(sc.next());
@@ -71,19 +75,9 @@ public class ServerInfo {
             serverInfo.chatSupport = sc.next().equals("1");
             return serverInfo;
         } catch (NumberFormatException | NoSuchElementException e) {
-            //TODO: instead of printing stacktrace, handle the error and send error code.
             e.printStackTrace();
+            return new ServerInfo();
         }
-        return new ServerInfo();
-    }
-
-    /**
-     * Get the world size of this server.
-     *
-     * @return A vector3 containing X,Y,Z.
-     */
-    public Vector3 getWorldSize() {
-        return new Vector3(maxDimensionX, maxDimensionY, maxDimensionZ);
     }
 
     /**

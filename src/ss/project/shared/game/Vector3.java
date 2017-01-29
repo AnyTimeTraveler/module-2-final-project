@@ -1,5 +1,8 @@
 package ss.project.shared.game;
 
+import lombok.Data;
+
+@Data
 public class Vector3 {
 
     /**
@@ -46,55 +49,6 @@ public class Vector3 {
         this.x = vector2.getX();
         this.y = vector2.getY();
         this.z = 0;
-    }
-
-    /**
-     * @return the x coordinate.
-     */
-    //@ pure;
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * @return the y coordinate.
-     */
-    //@ pure;
-    public int getY() {
-        return y;
-    }
-
-    /**
-     * @return the z coordinate.
-     */
-    //@ pure;
-    public int getZ() {
-        return z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Vector3 other = (Vector3) obj;
-        if (x != other.x) {
-            return false;
-        }
-        if (y != other.y) {
-            return false;
-        }
-        if (z != other.z) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -147,10 +101,5 @@ public class Vector3 {
      */
     public Vector3 add(int x, int y, int z) {
         return new Vector3(getX() + x, getY() + y, getZ() + z);
-    }
-
-    @Override
-    public String toString() {
-        return "Vector3 [x=" + x + ", y=" + y + ", z=" + z + "]";
     }
 }

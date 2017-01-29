@@ -1,7 +1,8 @@
-package ss.project.server;
+package ss.project.shared.model;
 
 import lombok.Data;
 import ss.project.shared.Protocol;
+import ss.project.shared.Serializable;
 import ss.project.shared.exceptions.IllegalParameterException;
 import ss.project.shared.exceptions.ParameterLengthsMismatchException;
 import ss.project.shared.exceptions.ProtocolException;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
  * Created by simon on 25.01.17.
  */
 @Data
-public class LeaderboardEntry {
+public class LeaderboardEntry implements Serializable {
     private String playerName;
     private int wins;
     private int draws;

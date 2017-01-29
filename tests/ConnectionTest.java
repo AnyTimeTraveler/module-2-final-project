@@ -1,6 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
-import ss.project.client.networking.Connection;
+import ss.project.shared.model.Connection;
 
 /**
  * Created by simon on 26.01.17.

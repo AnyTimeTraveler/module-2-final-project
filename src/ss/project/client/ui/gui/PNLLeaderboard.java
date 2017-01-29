@@ -1,7 +1,7 @@
 package ss.project.client.ui.gui;
 
 import ss.project.client.Controller;
-import ss.project.server.LeaderboardEntry;
+import ss.project.shared.model.LeaderboardEntry;
 
 import javax.swing.*;
 import java.awt.*;

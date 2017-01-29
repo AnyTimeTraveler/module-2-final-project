@@ -1,8 +1,6 @@
 package ss.project.shared;
 
 import lombok.Getter;
-import ss.project.server.LeaderboardEntry;
-import ss.project.server.Room;
 
 import java.util.HashMap;
 
@@ -12,9 +10,6 @@ import java.util.HashMap;
  */
 public class Protocol {
 
-    /**
-     *
-     */
     public static final HashMap<String, String> ERRORMAP;
     public static final HashMap<String, String> WINMAP;
     public static final HashMap<Integer, WinReason> WINREASONMAP;
@@ -72,10 +67,8 @@ public class Protocol {
             sb.append(' ');
             if (arg instanceof Boolean) {
                 sb.append((boolean) arg ? '1' : '0');
-            } else if (arg instanceof Room) {
-                sb.append(((Room) arg).serialize());
-            } else if (arg instanceof LeaderboardEntry) {
-                sb.append(((LeaderboardEntry) arg).serialize());
+            } else if (arg instanceof Serializable) {
+                sb.append(((Serializable) arg).serialize());
             } else {
                 sb.append(arg);
             }
@@ -107,7 +100,7 @@ public class Protocol {
         GETROOMLIST("getRoomList"),
         LEAVEROOM("leaveRoom"),
         MAKEMOVE("makeMove"),
-        SENDMESSAGE("sendMessage"),
+        SENDMESSAGE("broadcast"),
         REQUESTLEADERBOARD("requestLeaderboard"),
         SENDCAPABILITIES("sendCapabilities");
 
@@ -146,6 +139,10 @@ public class Protocol {
 
         Server(String message) {
             this.message = message;
+        }
+
+        public boolean equals(String other) {
+            return other.equalsIgnoreCase(message);
         }
     }
 

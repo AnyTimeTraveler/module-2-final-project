@@ -1,5 +1,6 @@
 package ss.project.client.ui.gui;
 
+import lombok.Getter;
 import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
 import ss.project.client.ui.GameDisplay;
@@ -26,6 +27,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
      */
     private int width, height;
     private Controller controller;
+    @Getter
     private Object waiter;
     private HumanPlayer currentPlayer;
     private GridBagConstraints worldPanelConstraints;
@@ -78,10 +80,6 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         animationTimer.start();
     }
 
-    public Object getWaiter() {
-        return this.waiter;
-    }
-
     public HumanPlayer getCurrentPlayer() {
         return this.currentPlayer;
     }
@@ -129,7 +127,6 @@ public class PNLGame extends GUIPanel implements GameDisplay {
 
     @Override
     public void startTurn(Object waiter, HumanPlayer humanPlayer) {
-        System.out.println("Start the turn... Show whose turn it is: " + humanPlayer.getName());
         setCurrentPlayer(humanPlayer);
         this.waiter = waiter;
         this.currentPlayer = humanPlayer;

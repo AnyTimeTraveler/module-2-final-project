@@ -1,7 +1,7 @@
 import org.junit.Assert;
 import org.junit.Test;
-import ss.project.shared.ChatMessage;
 import ss.project.shared.Protocol;
+import ss.project.shared.model.ChatMessage;
 
 /**
  * Created by simon on 27.01.17.

@@ -4,9 +4,10 @@ import lombok.Getter;
 import ss.project.client.Controller;
 import ss.project.client.ui.GameDisplay;
 import ss.project.shared.Protocol;
+import ss.project.shared.model.GameParameters;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class Engine {
@@ -30,11 +31,15 @@ public class Engine {
      */
     //@ ensures this.world != null;
     //@ ensures this.players.size() == players.length;
-    public Engine(Vector3 worldSize, int winLength, Player[] players) {
+    public Engine(Vector3 worldSize, int winLength, Collection<? extends Player> players) {
         this.world = new World(worldSize, winLength);
         for (Player player : players) {
             this.players.put(player.getId(), player);
         }
+    }
+
+    public Engine(GameParameters parameters, Collection<? extends Player> players) {
+        this(parameters.getWorldSize(), parameters.getWinLength(), players);
     }
 
     /**
@@ -77,6 +82,7 @@ public class Engine {
             if (this.getWorld().hasWon(coordinates, owner)) {
                 //Someone won!
                 finishGame(Protocol.WinReason.WINLENGTHACHIEVED, owner.getId());
+                System.out.println(owner.getName() + " won!");
             } else if (getWorld().isFull()) {
                 finishGame(Protocol.WinReason.BOARDISFULL, -1);
             }
@@ -130,25 +136,27 @@ public class Engine {
     /**
      * Start the gameDisplay and make every player do turns.
      */
+    //@ requires getPlayerCount() <= 0;
     //@ ensures gameRunning;
     public void startGame() {
         gameRunning = true;
 
         //Don't start the gameDisplay if there are no players.
-        if (getPlayerCount() <= 0) {
+        if (getPlayerCount() <= 1) {
             return;
         }
 
+        Collection<Player> turnSet = players.values();
         while (gameRunning) {
-            Iterator<Map.Entry<Integer, Player>> iterator = players.entrySet().iterator();
-            while (iterator.hasNext() && gameRunning) {
-                Map.Entry<Integer, Player> pair = iterator.next();
-
-                if (getUI() != null) {
-                    getUI().setCurrentPlayer(pair.getValue());
+            for (Player player : turnSet) {
+                if (gameRunning) {
+                    if (getUI() != null) {
+                        getUI().setCurrentPlayer(player);
+                    }
+                    player.doTurn(this);
+                } else {
+                    return;
                 }
-
-                pair.getValue().doTurn(this);
             }
         }
     }

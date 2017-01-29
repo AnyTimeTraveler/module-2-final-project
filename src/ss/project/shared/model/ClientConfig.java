@@ -1,9 +1,9 @@
-package ss.project.client;
+package ss.project.shared.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
-import ss.project.client.networking.Connection;
+import ss.project.client.HumanPlayer;
 import ss.project.shared.computerplayer.*;
 
 import java.io.*;
@@ -15,11 +15,11 @@ import java.util.List;
  * Created by simon on 01.12.16.
  */
 
-public class Config {
+public class ClientConfig {
 
     // Configfile name
     private static final String CONFIGFILE = "client-config.json";
-    private static Config instance;
+    private static ClientConfig instance;
 
     //Variables
     @Expose
@@ -43,8 +43,9 @@ public class Config {
     public int MaxWinLength;
     public boolean ChatSupport;
     public boolean AutoRefresh;
+    public int MaxChatMessages;
 
-    private Config() {
+    private ClientConfig() {
         WindowTitle = "Connect Four 3D";
         Fullscreen = false;
         FullscreenWidth = 1920;
@@ -67,9 +68,11 @@ public class Config {
         MaxWinLength = 4;
         ChatSupport = true;
         AutoRefresh = true;
+        MaxPlayers = 50;
+        MaxChatMessages = 50;
     }
 
-    public static Config getInstance() {
+    public static ClientConfig getInstance() {
         if (instance == null) {
             load();
         }
@@ -89,17 +92,17 @@ public class Config {
         load(new File(CONFIGFILE));
     }
 
-    private static Config fromDefaults() {
-        return new Config();
+    private static ClientConfig fromDefaults() {
+        return new ClientConfig();
     }
 
-    private static Config fromFile(File configFile) {
+    private static ClientConfig fromFile(File configFile) {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
-            return gson.fromJson(reader, Config.class);
+            return gson.fromJson(reader, ClientConfig.class);
         } catch (FileNotFoundException e) {
-            System.out.println("Config file not found!");
+            System.out.println("ClientConfig file not found!");
             return null;
         }
     }

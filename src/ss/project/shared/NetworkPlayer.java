@@ -1,28 +1,28 @@
-package ss.project.server;
+package ss.project.shared;
 
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
-import ss.project.shared.Protocol;
+import ss.project.server.ClientHandler;
+import ss.project.server.Room;
 import ss.project.shared.exceptions.InvalidInputException;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
+import ss.project.shared.model.Color;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-public class NetworkPlayer extends Player {
+public class NetworkPlayer extends Player implements Serializable {
 
 
     /**
      * DO NOT USE THIS DIRECTLY!
      */
     private static int nextId;
-    private final Object moveLock;
-    @Getter
-    private int id;
+    private final Object moveLock = new Object();
     @Getter
     private ClientHandler clientHandler;
     @Getter
@@ -50,18 +50,31 @@ public class NetworkPlayer extends Player {
     private Vector2 move;
     @Getter
     private boolean expectingMove;
+    @Getter
+    private Color color;
 
     public NetworkPlayer(ClientHandler clientHandler) throws IOException {
         super();
-        this.id = getNextId();
+        setId(getNextId());
         this.clientHandler = clientHandler;
         inGame = false;
-        moveLock = new Object();
+        color = Color.getRandomColor();
+    }
+
+    public NetworkPlayer(int id, String name, Color color) {
+        setId(id);
+        setName(name);
+        this.color = color;
     }
 
     @Synchronized
     private static int getNextId() {
         return nextId++;
+    }
+
+    public static NetworkPlayer fromString(String line) {
+        String[] params = line.split(Protocol.PIPE_SYMBOL);
+        return new NetworkPlayer(Integer.parseInt(params[0]), params[1], Color.fromString(params[2]));
     }
 
     @Override
@@ -74,15 +87,23 @@ public class NetworkPlayer extends Player {
                 moveLock.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                // TODO: Undecided
+                return;
             }
         }
-        engine.getWorld().addGameItem(move, this);
-
+        if (engine.getWorld().addGameItem(move, this)) {
+            currentRoom.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMOVE, getId(), move.getX(), move.getY()));
+            if (engine.getWorld().hasWon(new Vector2(move.getX(), move.getY()), this)) {
+                currentRoom.endGame(Protocol.WinReason.WINLENGTHACHIEVED, getId());
+            }
+        } else {
+            clientHandler.sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 5));
+            sendMoveNotification();
+            doTurn(engine);
+        }
     }
 
     private void sendMoveNotification() {
-        currentRoom.sendMessage(Protocol.createMessage(Protocol.Client.MAKEMOVE, id));
+        currentRoom.broadcast(Protocol.createMessage(Protocol.Server.TURNOFPLAYER, getId()));
     }
 
     /**
@@ -128,5 +149,11 @@ public class NetworkPlayer extends Player {
             this.move = new Vector2(x, y);
             moveLock.notify();
         }
+        expectingMove = false;
+    }
+
+    @Override
+    public String serialize() {
+        return String.join("|", String.valueOf(getId()), getName(), getColor().serialize());
     }
 }

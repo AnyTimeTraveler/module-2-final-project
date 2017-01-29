@@ -1,12 +1,12 @@
 package ss.project.client.ui.tui;
 
-import ss.project.client.Config;
 import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
 import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
+import ss.project.shared.model.ClientConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +40,8 @@ public class TUISinglePlayerSettings implements TUIPanel {
             System.out.println(ASCIIArt.getChoiceText(currentPlayerText, 120));
 
             int i = 0;
-            playerTypes = new String[Config.getInstance().PlayerTypes.size()];
-            for (String key : Config.getInstance().PlayerTypes.keySet()) {
+            playerTypes = new String[ClientConfig.getInstance().PlayerTypes.size()];
+            for (String key : ClientConfig.getInstance().PlayerTypes.keySet()) {
                 System.out.println(ASCIIArt.getChoiceItem(i, key, 120));
                 playerTypes[i] = key;
                 i++;
@@ -95,7 +95,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
                         //NAME COMPUTERTYPE SMARTNESS
                         try {
                             int playerType = Integer.parseInt(parts[1]);
-                            Player player = (Player) Config.getInstance().PlayerTypes.get(playerTypes[playerType]).newInstance();
+                            Player player = (Player) ClientConfig.getInstance().PlayerTypes.get(playerTypes[playerType]).newInstance();
                             player.setName(parts[0]);
                             player.setId(players.size());
                             if (player instanceof ComputerPlayer && parts.length > 2) {
@@ -126,7 +126,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
                     return;
                 }
                 //We're done in this screen, start the game.
-                Engine engine = new Engine(new Vector3(x, y, z), winlength, players.toArray(new Player[players.size()]));
+                Engine engine = new Engine(new Vector3(x, y, z), winlength, players);
                 Controller.getController().setEngine(engine);
                 Controller.getController().switchTo(Controller.Panel.GAME);
                 Controller.getController().startGame();

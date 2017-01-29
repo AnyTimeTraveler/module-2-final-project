@@ -1,12 +1,12 @@
 import org.junit.Assert;
 import org.junit.Test;
-import ss.project.client.Config;
 import ss.project.client.Controller;
-import ss.project.client.networking.Connection;
-import ss.project.client.networking.Network;
-import ss.project.client.networking.ServerInfo;
-import ss.project.server.NetworkPlayer;
+import ss.project.client.Network;
 import ss.project.server.Server;
+import ss.project.shared.NetworkPlayer;
+import ss.project.shared.model.ClientConfig;
+import ss.project.shared.model.Connection;
+import ss.project.shared.model.ServerInfo;
 
 import java.io.IOException;
 import java.util.Random;
@@ -49,12 +49,12 @@ public class NetworkTest {
         while (np.getMaxPlayers() == 0) {
             Thread.sleep(10);
         }
-        Assert.assertEquals(Config.getInstance().RoomSupport, np.isRoomSupport());
-        Assert.assertEquals(Config.getInstance().MaxDimensionX, np.getMaxDimensionX());
-        Assert.assertEquals(Config.getInstance().MaxDimensionY, np.getMaxDimensionY());
-        Assert.assertEquals(Config.getInstance().MaxDimensionZ, np.getMaxDimensionZ());
-        Assert.assertEquals(Config.getInstance().MaxWinLength, np.getMaxWinLength());
-        Assert.assertEquals(Config.getInstance().ChatSupport, np.isChatSupport());
-        Assert.assertEquals(Config.getInstance().AutoRefresh, np.isAutoRefresh());
+        Assert.assertEquals(ClientConfig.getInstance().RoomSupport, np.isRoomSupport());
+        Assert.assertEquals(ClientConfig.getInstance().MaxDimensionX, np.getMaxDimensionX());
+        Assert.assertEquals(ClientConfig.getInstance().MaxDimensionY, np.getMaxDimensionY());
+        Assert.assertEquals(ClientConfig.getInstance().MaxDimensionZ, np.getMaxDimensionZ());
+        Assert.assertEquals(ClientConfig.getInstance().MaxWinLength, np.getMaxWinLength());
+        Assert.assertEquals(ClientConfig.getInstance().ChatSupport, np.isChatSupport());
+        Assert.assertEquals(ClientConfig.getInstance().AutoRefresh, np.isAutoRefresh());
     }
 }

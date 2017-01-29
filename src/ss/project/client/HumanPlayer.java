@@ -3,7 +3,6 @@ package ss.project.client;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
@@ -12,7 +11,6 @@ import ss.project.shared.game.Vector3;
 
 import javax.swing.*;
 
-@Log
 public class HumanPlayer extends Player {
     Object waiter = new Object();
     @Getter
@@ -37,7 +35,6 @@ public class HumanPlayer extends Player {
 
     @Override
     public void doTurn(Engine engine) {
-        log.info("do turn");
         hintTimer = new Timer(5000, e -> doHint(engine));
         hintTimer.start();
 

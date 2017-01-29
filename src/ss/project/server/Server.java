@@ -1,7 +1,9 @@
 package ss.project.server;
 
+import lombok.Getter;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.Vector3;
+import ss.project.shared.model.ServerConfig;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.util.regex.Pattern;
 public class Server {
     private final List<Room> rooms;
     private String ip;
+    @Getter
     private int port;
     private List<ClientHandler> threads;
     private boolean closed;
@@ -33,13 +36,6 @@ public class Server {
         createDefaultRoom();
     }
 
-    public static void main(String[] args) {
-
-        Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
-//        server.determineWifiAddress();
-        server.run();
-    }
-
     private void createDefaultRoom() {
         defaultRoom = new Room(2, new Vector3(4, 4, 4), 4);
         rooms.add(defaultRoom);
@@ -51,11 +47,9 @@ public class Server {
             ServerSocket serverSocket = new ServerSocket(port, 255, InetAddress.getByName(ip));
             System.out.println("Now listening on: " + ip + ":" + port);
             while (!closed) {
-                System.out.println("Waiting for incoming connections...");
                 ready = true;
                 Socket client = serverSocket.accept();
                 ready = false;
-                System.out.println("Connection accepted!");
                 addHandler(new ClientHandler(this, client));
             }
         } catch (IOException e) {
@@ -105,7 +99,7 @@ public class Server {
         synchronized (rooms) {
             Room[] roomCopy = new Room[rooms.size()];
             rooms.toArray(roomCopy);
-            return Protocol.createMessage(Protocol.Server.SENDLISTROOMS, roomCopy);
+            return Protocol.createMessage(Protocol.Server.SENDLISTROOMS, (Object[]) roomCopy);
         }
     }
 

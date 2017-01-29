@@ -7,6 +7,8 @@ import ss.project.shared.Protocol;
 import ss.project.shared.computerplayer.LinearComputerPlayer;
 import ss.project.shared.computerplayer.RandomComputerPlayer;
 
+import java.util.Arrays;
+
 /**
  * Created by fw on 27/01/2017.
  */
@@ -21,8 +23,7 @@ public class EngineTest {
         linear.setId(4);
         random = new RandomComputerPlayer("random");
         random.setId(7);
-        engine = new Engine(new Vector3(4, 4, 4), 4, new Player[]{
-                linear, random});
+        engine = new Engine(new Vector3(4, 4, 4), 4, Arrays.asList(linear, random));
     }
 
     @Test

@@ -1,4 +1,4 @@
-package ss.project.client.networking;
+package ss.project.shared.model;
 
 import com.google.gson.annotations.Expose;
 import lombok.Data;

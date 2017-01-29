@@ -82,7 +82,7 @@ public class GameCanvas2D extends JPanel {
         this.width = width;
         this.height = height;
         this.setPreferredSize(new Dimension(width, height));
-        this.addMouseListener(new MouseListen());
+        this.addMouseListener(new MouseListener());
     }
 
     @Override
@@ -184,7 +184,7 @@ public class GameCanvas2D extends JPanel {
         return new Vector2(xCoord, yCoord);
     }
 
-    private class MouseListen extends MouseAdapter {
+    private class MouseListener extends MouseAdapter {
         public void mousePressed(MouseEvent e) {
             System.out.println(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
 

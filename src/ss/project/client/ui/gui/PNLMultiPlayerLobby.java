@@ -6,6 +6,7 @@ import ss.project.server.Room;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by simon on 16.01.17.
@@ -14,7 +15,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
     private Controller controller;
     private JPanel roomsPanelOwner;
-    private java.util.List<RoomPanel> roomPanels;
+    private List<RoomPanel> roomPanels;
 
     private int roomPanelHeight = 75;
     private int spaceBetweenText = 10;
@@ -35,8 +36,11 @@ public class PNLMultiPlayerLobby extends GUIPanel {
         this.add(roomsPanelOwner, BorderLayout.CENTER);
 
         JPanel jPanel = new JPanel();
-        JButton backButton = new JButton("Back");
-        backButton.addActionListener(e -> controller.switchTo(Controller.Panel.SERVER_BRWOSER));
+        JButton backButton = new JButton("Disconnect");
+        backButton.addActionListener(e -> {
+            controller.getNetwork().shutdown();
+            controller.switchTo(Controller.Panel.SERVER_BRWOSER);
+        });
         jPanel.add(backButton);
 
         JButton leaderBoardButton = new JButton("Leaderboard");
@@ -59,7 +63,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
 
     }
 
-    private void addRoomPanels(java.util.List<Room> rooms) {
+    private void addRoomPanels(List<Room> rooms) {
         roomsPanelOwner.removeAll();
         if (rooms != null) {
             for (int i = 0; i < rooms.size(); i++) {
@@ -118,9 +122,7 @@ public class PNLMultiPlayerLobby extends GUIPanel {
             this.add(jPanel, BorderLayout.CENTER);
 
             JButton joinButton = new JButton("Join");
-            joinButton.addActionListener(e -> {
-                joinRoom();
-            });
+            joinButton.addActionListener(e -> joinRoom());
             this.add(joinButton, BorderLayout.EAST);
 
             refreshValues();

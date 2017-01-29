@@ -1,8 +1,10 @@
 package ss.project.client.ui.gui;
 
-import ss.project.client.Config;
+import lombok.Getter;
+import ss.project.client.Controller;
 import ss.project.client.ui.UIFrame;
 import ss.project.client.ui.UIPanel;
+import ss.project.shared.model.ClientConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +14,8 @@ import java.awt.*;
  */
 public class FRMMain extends JFrame implements UIFrame {
     private JPanel mainPanel;
-    private GUIPanel chatPanel;
+    @Getter
+    private PNLChat chatPanel;
 
     public FRMMain() {
         super();
@@ -24,9 +27,9 @@ public class FRMMain extends JFrame implements UIFrame {
      */
     public void init() {
         this.setName("Main Frame");
-        if (Config.getInstance().Fullscreen) {
+        if (ClientConfig.getInstance().Fullscreen) {
             this.setLocation(0, 0);
-            this.setSize(new Dimension(Config.getInstance().FullscreenWidth, Config.getInstance().FullscreenHeight));
+            this.setSize(new Dimension(ClientConfig.getInstance().FullscreenWidth, ClientConfig.getInstance().FullscreenHeight));
             this.setUndecorated(true);
             this.setAlwaysOnTop(true);
             this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -34,16 +37,17 @@ public class FRMMain extends JFrame implements UIFrame {
             this.setSize(new Dimension(1200, 800));
         }
         this.requestFocus();
-        this.setTitle(Config.getInstance().WindowTitle);
+        this.setTitle(ClientConfig.getInstance().WindowTitle);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
 
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setMinimumSize(new Dimension(600, 0));
-        chatPanel = new PNLChat();
+        chatPanel = new PNLChat(Controller.getController());
 
         JSplitPane jSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainPanel, chatPanel);
         add(jSplitPane);
+        setChatEnabled(false);
     }
 
     @Override

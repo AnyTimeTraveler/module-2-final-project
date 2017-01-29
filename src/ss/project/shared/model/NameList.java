@@ -1,4 +1,4 @@
-package ss.project.client;
+package ss.project.shared.model;
 
 /**
  * Created by simon on 28.01.17.

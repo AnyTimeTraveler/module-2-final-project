@@ -1,4 +1,4 @@
-package ss.project.server;
+package ss.project.shared.model;
 
 
 /**
@@ -31,7 +31,7 @@ public class ServerConfig {
     public List<LeaderboardEntry> Leaderboard;
 
     private ServerConfig() {
-        Host = "130.89.232.205";
+        Host = "130.89.234.214";
         Port = 1234;
         MaxPlayers = 2;
         RoomSupport = true;
@@ -73,7 +73,7 @@ public class ServerConfig {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
             return gson.fromJson(reader, ServerConfig.class);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("ClientConfig file not found!");
             return null;
         }
     }

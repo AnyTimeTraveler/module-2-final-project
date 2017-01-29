@@ -1,12 +1,16 @@
 package ss.project.server;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Synchronized;
+import ss.project.shared.NetworkPlayer;
 import ss.project.shared.Protocol;
+import ss.project.shared.Serializable;
 import ss.project.shared.exceptions.*;
 import ss.project.shared.game.Engine;
-import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
+import ss.project.shared.model.ChatMessage;
+import ss.project.shared.model.GameParameters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,12 +24,13 @@ import java.util.stream.Collectors;
  * Created by fw on 21/01/2017.
  */
 @EqualsAndHashCode
-public class Room {
+public class Room implements Serializable {
 
     /**
      * DO NOT USE THIS DIRECTLY!
      */
     private static int nextId;
+    @Getter
     private Engine engine;
     private Thread engineThread;
     private int maxPlayers;
@@ -34,11 +39,7 @@ public class Room {
      * Current joined players.
      */
     private List<NetworkPlayer> players;
-    /**
-     * Length needed to win a game.
-     */
-    private int winLength;
-    private Vector3 worldSize;
+    private GameParameters parameters;
 
     /**
      * Create a room and give it a specified ID. Only do this if you already know the ID.
@@ -53,8 +54,7 @@ public class Room {
     public Room(int id, int maxPlayers, int sizeX, int sizeY, int sizeZ, int winLength) {
         this.id = id;
         this.maxPlayers = maxPlayers;
-        this.worldSize = new Vector3(sizeX, sizeY, sizeZ);
-        this.winLength = winLength;
+        this.parameters = new GameParameters(sizeX, sizeY, sizeZ, winLength);
         players = new ArrayList<>();
     }
 
@@ -71,8 +71,7 @@ public class Room {
     public Room(int maxPlayers, int sizeX, int sizeY, int sizeZ, int winLength) {
         id = getNextId();
         this.maxPlayers = maxPlayers;
-        this.worldSize = new Vector3(sizeX, sizeY, sizeZ);
-        this.winLength = winLength;
+        this.parameters = new GameParameters(sizeX, sizeY, sizeZ, winLength);
         players = new ArrayList<>();
     }
 
@@ -153,18 +152,20 @@ public class Room {
         }
         players.add(player);
         player.setCurrentRoom(this);
-        if (isFull()) {
-            startGame();
-        }
+        broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " joined the room.")));
     }
 
-    private void startGame() {
-        for (NetworkPlayer np : players) {
-            np.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, np.getId()));
+    void startGame() {
+        Object[] args = new Object[players.size() + 1];
+        args[0] = parameters;
+        for (int i = 0; i < players.size(); i++) {
+            args[i + 1] = players.get(i);
         }
-        Player[] players = new Player[this.players.size()];
-        this.players.toArray(players);
-        engine = new Engine(worldSize, winLength, players);
+        for (NetworkPlayer np : players) {
+            np.setInGame(true);
+            np.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.STARTGAME, args));
+        }
+        engine = new Engine(parameters, players);
         engineThread = new Thread(() -> engine.startGame());
         engineThread.setDaemon(true);
         engineThread.start();
@@ -182,6 +183,8 @@ public class Room {
         }
         players.remove(player);
         player.setCurrentRoom(null);
+        broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
+        player.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
     }
 
     /**
@@ -199,7 +202,7 @@ public class Room {
      * @return
      */
     public int getWinLength() {
-        return winLength;
+        return parameters.getWinLength();
     }
 
     /**
@@ -217,30 +220,35 @@ public class Room {
      * @return
      */
     public Vector3 getWorldSize() {
-        return worldSize;
+        return parameters.getWorldSize();
     }
 
     public String serialize() {
         return String.join("|",
                 String.valueOf(id),
                 String.valueOf(maxPlayers),
-                String.valueOf(worldSize.getX()),
-                String.valueOf(worldSize.getY()),
-                String.valueOf(worldSize.getZ()),
-                String.valueOf(winLength));
+                String.valueOf(parameters.getSizeX()),
+                String.valueOf(parameters.getSizeY()),
+                String.valueOf(parameters.getSizeZ()),
+                String.valueOf(parameters.getWinLength()));
     }
 
     public int getCurrentPlayers() {
         return players.size();
     }
 
-    public void sendMessage(String message) {
+    public void broadcast(String message) {
         for (NetworkPlayer p : players) {
-            p.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, message));
+            p.getClientHandler().sendMessage(message);
         }
     }
 
     public boolean isFull() {
         return players.size() == maxPlayers;
+    }
+
+    public void endGame(Protocol.WinReason reason, int id) {
+        engine.finishGame(reason, id);
+        engineThread.interrupt();
     }
 }

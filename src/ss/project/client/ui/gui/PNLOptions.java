@@ -1,7 +1,7 @@
 package ss.project.client.ui.gui;
 
-import ss.project.client.Config;
 import ss.project.client.Controller;
+import ss.project.shared.model.ClientConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,13 +45,13 @@ public class PNLOptions extends GUIPanel {
     }
 
     private void swichFullscreen(boolean isFullscreen) {
-        Config.getInstance().Fullscreen = isFullscreen;
+        ClientConfig.getInstance().Fullscreen = isFullscreen;
         controller.restartFrame();
     }
 
     @Override
     public void onEnter() {
-        fullScreenCheckbox.setSelected(Config.getInstance().Fullscreen);
+        fullScreenCheckbox.setSelected(ClientConfig.getInstance().Fullscreen);
     }
 
     @Override

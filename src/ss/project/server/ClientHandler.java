@@ -1,9 +1,12 @@
 package ss.project.server;
 
+import ss.project.shared.NetworkPlayer;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.AlreadyJoinedException;
 import ss.project.shared.exceptions.NotInRoomException;
 import ss.project.shared.exceptions.RoomFullException;
+import ss.project.shared.model.ChatMessage;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.net.Socket;
@@ -33,9 +36,10 @@ public class ClientHandler extends Thread {
             sendMessage(server.getCapabilitiesMessage());
             line = in.readLine();
             if (line == null) {
-                closed = true;
+                shutdown();
                 return;
             }
+            System.out.println(line);
             player.setCapabilitiesFromString(line);
 
             this.setName("ClientHandler: " + player.getName());
@@ -49,19 +53,29 @@ public class ClientHandler extends Thread {
                     e.printStackTrace();
                 }
             }
+            sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "Welcome!")));
+            sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "There are currently " + server.getClientHandlers().size() + " People online.")));
+            sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "For help type \"/help\".")));
         } catch (IOException e) {
             e.printStackTrace();
-            closed = true;
+            shutdown();
+            return;
         }
 
         try {
             while (!closed) {
                 line = in.readLine();
+                if (line == null) {
+                    if (player.getCurrentRoom() != null) {
+                        player.getCurrentRoom().endGame(Protocol.WinReason.PLAYERDISCONNECTED, player.getId());
+                    }
+                    shutdown();
+                }
                 interpretLine(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            closed = true;
+            shutdown();
         }
     }
 
@@ -77,8 +91,7 @@ public class ClientHandler extends Thread {
                     sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 4));
                 }
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
-                // Redirect it to the room
-                player.getCurrentRoom().sendMessage(line.substring(line.indexOf(' ') + 1));
+                player.getCurrentRoom().broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
             } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
                 // Can't leave if the game has started
                 sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 6));
@@ -94,24 +107,29 @@ public class ClientHandler extends Thread {
             } else if (Protocol.Client.JOINROOM.equals(parts[0])) {
                 try {
                     int roomId = Integer.parseInt(parts[1]);
-                    Room toJoin = server.getRoomByID(roomId);
-                    if (toJoin == null) {
+                    Room room = server.getRoomByID(roomId);
+                    if (room == null) {
                         // room not available
                         sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 2));
                         return;
                     }
                     try {
-                        toJoin.join(player);
+                        room.join(player);
                         // reply with id-assignment
-                        sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, toJoin.getId()));
+                        sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, player.getId()));
+                        if (room.isFull()) {
+                            room.startGame();
+                            sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "Room is full. Starting game...")));
+                        }
                     } catch (AlreadyJoinedException | RoomFullException e) {
                         // Notify about joinerror
                         sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 3));
                         e.printStackTrace();
                     }
                 } catch (NumberFormatException e) {
-                    // Just log it for now.
+                    // Unexpected arguments
                     e.printStackTrace();
+                    sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 4));
                 }
             } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
                 if (player.getCurrentRoom() == null) {
@@ -127,18 +145,24 @@ public class ClientHandler extends Thread {
             } else if (Protocol.Client.REQUESTLEADERBOARD.equals(parts[0])) {
                 // send Leaderboard
                 sendMessage(server.getLeaderboardMessage());
+            } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
+                server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
+            } else {
+                System.out.println(line);
+                throw new NotImplementedException();
             }
         }
     }
 
     public void sendMessage(String msg) {
+        System.out.println(Thread.currentThread().getName() + "\nSent message: " + msg);
         try {
             out.write(msg);
             out.newLine();
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            closed = true;
+            shutdown();
         }
     }
 
