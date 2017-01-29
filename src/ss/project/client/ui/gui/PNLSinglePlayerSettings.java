@@ -164,6 +164,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
         private final JTextField playerNameField;
         private final JComboBox<String> playerType;
+        private final JSpinner computerSmartness;
 
         private PlayerPanel() {
             super();
@@ -177,15 +178,57 @@ public class PNLSinglePlayerSettings extends GUIPanel {
             for (String key : Config.getInstance().PlayerTypes.keySet()) {
                 playerType.addItem(key);
             }
+            playerType.addActionListener(e -> updateSmartness());
             this.add(playerType);
+            computerSmartness = GUIUtils.createSpinner(6, 1, 100);
+            computerSmartness.setVisible(false);
+            this.add(computerSmartness);
         }
 
+        /**
+         * The playertype has changed, check if this is a computer. If so, show the smartness spinner.
+         */
+        private void updateSmartness() {
+            Class smthing = Config.getInstance().PlayerTypes.get(getPlayerType());
+            if (ComputerPlayer.class.isAssignableFrom(smthing)) {
+                computerSmartness.setVisible(true);
+            } else {
+                computerSmartness.setVisible(false);
+            }
+        }
+
+        /**
+         * Get the name of the namefield.
+         *
+         * @return
+         */
         public String getName() {
             return playerNameField.getText();
         }
 
+        /**
+         * Get the player type of this player. (Human, MinMax etc.)
+         *
+         * @return
+         */
         public String getPlayerType() {
             return (String) playerType.getSelectedItem();
+        }
+
+        /**
+         * @return True if the player is of type computerplayer. And thus has a smartness to set.
+         */
+        public boolean isComputerPlayer() {
+            return computerSmartness.isVisible();
+        }
+
+        /**
+         * Get the smartness of the computerplayer.
+         *
+         * @return
+         */
+        public int getComputerSmartness() {
+            return (int) computerSmartness.getValue();
         }
     }
 
@@ -208,6 +251,9 @@ public class PNLSinglePlayerSettings extends GUIPanel {
                     players[i] = (Player) Config.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
                     players[i].setName(playerPanels.get(i).getName());
                     players[i].setId(i);
+                    if (playerPanels.get(i).isComputerPlayer()) {
+                        ((ComputerPlayer) players[i]).setSmartness(playerPanels.get(i).getComputerSmartness());
+                    }
                 }
 
                 Vector3 worldSize = new Vector3(worldSizeX, worldSizeY, worldSizeZ);

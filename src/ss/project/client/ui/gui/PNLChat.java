@@ -4,11 +4,13 @@ import ss.project.client.Controller;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created by fw on 27/01/2017.
  */
 public class PNLChat extends GUIPanel {
+    java.util.List<JLabel> chatMessages;
     JTextField inputField;
 
     public PNLChat() {
@@ -18,6 +20,8 @@ public class PNLChat extends GUIPanel {
         inputField = new HintTextField("Chat message...");
         inputField.addActionListener(e -> doInput(inputField.getText()));
         this.add(inputField, BorderLayout.SOUTH);
+
+        chatMessages = new ArrayList<>();
     }
 
     private void doInput(String input) {
@@ -36,4 +40,6 @@ public class PNLChat extends GUIPanel {
     public void onLeave() {
 
     }
+
+
 }

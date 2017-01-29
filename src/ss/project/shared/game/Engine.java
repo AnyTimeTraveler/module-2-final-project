@@ -77,7 +77,6 @@ public class Engine {
             if (this.getWorld().hasWon(coordinates, owner)) {
                 //Someone won!
                 finishGame(Protocol.WinReason.WINLENGTHACHIEVED, owner.getId());
-                System.out.println(owner.getName() + " won!");
             } else if (getWorld().isFull()) {
                 finishGame(Protocol.WinReason.BOARDISFULL, -1);
             }
@@ -144,6 +143,11 @@ public class Engine {
             Iterator<Map.Entry<Integer, Player>> iterator = players.entrySet().iterator();
             while (iterator.hasNext() && gameRunning) {
                 Map.Entry<Integer, Player> pair = iterator.next();
+
+                if (getUI() != null) {
+                    getUI().setCurrentPlayer(pair.getValue());
+                }
+
                 pair.getValue().doTurn(this);
             }
         }

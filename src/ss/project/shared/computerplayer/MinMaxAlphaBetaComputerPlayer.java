@@ -6,6 +6,7 @@ import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.World;
 
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,7 +15,9 @@ import java.util.concurrent.Future;
 /**
  * Created by fw on 16/01/2017.
  */
-public class MinMaxComputerPlayer extends ComputerPlayer {
+public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
+    Random random = new Random();
+
     @Getter
     private int depth;
     private Player opponent;
@@ -25,21 +28,21 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     /**
      * create a computer player with the specified AI.
      */
-    public MinMaxComputerPlayer(int depth) {
+    public MinMaxAlphaBetaComputerPlayer(int depth) {
         super();
         System.out.println("Initialized");
         this.depth = depth;
     }
 
-    public MinMaxComputerPlayer(String name, int depth) {
+    public MinMaxAlphaBetaComputerPlayer(String name, int depth) {
         super(name);
         System.out.println("Initialized");
         this.depth = depth;
     }
 
-    public MinMaxComputerPlayer() {
+    public MinMaxAlphaBetaComputerPlayer() {
         super();
-        this.depth = 6;
+        this.depth = 7;
     }
 
     private void initialize(Engine engine) {
@@ -92,7 +95,6 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     }
 
     private Vector2 getBestPosition(World world) {
-        //System.out.println("Starting heavy part!");
         int bestValue = Integer.MIN_VALUE;
         Vector2 result = Vector2.ZERO;
         for (int x = 0; x < world.getSize().getX(); x++) {
@@ -101,27 +103,23 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
                 world.writeTo(copy);
                 int finalX = x;
                 int finalY = y;
-                workers[x][y] = executor.submit(() -> getBestPosition(copy, new Vector2(finalX, finalY), depth, true));
+                copy.addGameItem(new Vector2(x, y), this);
+                workers[x][y] = executor.submit(() -> -getBestPosition(copy, new Vector2(finalX, finalY), depth, -9999, 9999, getOther(this)));
             }
         }
         try {
-            //System.out.println("Waiting for threads to finish");
             for (int x = 0; x < workers.length; x++) {
                 for (int y = 0; y < workers[x].length; y++) {
                     int value = workers[x][y].get();
-                    if (value > bestValue) {
+                    if (value >= bestValue) {
                         result = new Vector2(x, y);
                         bestValue = value;
-
                     }
                 }
             }
-            //System.out.println("Threads finished");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        //System.out.println("Stopping heavy part!");
-        //System.out.println("Final : " + getName() + " (" + result.getX() + "," + result.getY() + ") " + bestValue);
         return result;
     }
 
@@ -129,52 +127,48 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
      * @param world       The world we add and remove stuff from.
      * @param coordinates
      * @param depth       The amount of nodes we get into.
-     * @param maximize    If true we try to maximize the points the player would get.
-     *                    If set to false we try to get the least amount of points.
      * @return The amount of points.
      */
-    private int getBestPosition(World world, Vector2 coordinates, int depth, boolean maximize) {
+    private int getBestPosition(World world, Vector2 coordinates, int depth, int alpha, int beta, Player currentPlayer) {
+        if (world.hasWon(coordinates, currentPlayer)) {
+            return 9999;
+        } else if (world.hasWon(coordinates, getOther(currentPlayer))) {
+            return -9999;
+        }
+
         if (depth == 0) {
-            return 0;
+            return random.nextInt(4) - 2;
         }
 
-        if (maximize) {
-            if (!world.addGameItem(coordinates, this)) {
-                return 0;
-            }
-        } else {
-            if (!world.addGameItem(coordinates, opponent)) {
-                return 0;
-            }
-        }
-
-        if (maximize && world.hasWon(coordinates, this)) {
-            world.removeGameItem(coordinates);
-            return getHeuristicValue(depth);
-        } else if (!maximize && world.hasWon(coordinates, opponent)) {
-            world.removeGameItem(coordinates);
-            return -getHeuristicValue(depth);
-        }
-
-        int sum = 0;
+        int localAlpha = alpha;
+        int localBeta = beta;
+        int best = -9999;
         for (int x = 0; x < world.getSize().getX(); x++) {
             for (int y = 0; y < world.getSize().getY(); y++) {
-                int value = getBestPosition(world, new Vector2(x, y), depth - 1, !maximize);
-                sum += value;
+                Vector2 coord = new Vector2(x, y);
+                if (!world.addGameItem(coord, currentPlayer)) {
+                    continue;
+                }
+
+                int value = -getBestPosition(world, coord, depth - 1, -localBeta, -localAlpha, getOther(currentPlayer));
+
+                world.removeGameItem(coord);
+
+                best = Math.max(value, best);
+                localAlpha = Math.max(localAlpha, value);
+                if (localAlpha >= localBeta) {
+                    break;
+                }
             }
         }
-        world.removeGameItem(coordinates);
-        return sum;
+        return best;
     }
 
-    /**
-     * Get the value for winning.
-     *
-     * @param depth
-     * @return
-     */
-    protected int getHeuristicValue(int depth) {
-        return (int) Math.pow(10, depth);
-        //return depth * depth;
+    private Player getOther(Player player) {
+        if (player.equals(opponent)) {
+            return this;
+        } else {
+            return opponent;
+        }
     }
 }

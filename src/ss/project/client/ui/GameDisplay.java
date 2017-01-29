@@ -15,5 +15,5 @@ public interface GameDisplay {
 
     void removeHint(int x, int y, int z);
 
-    public void setCurrentPlayer(Player player);
+    void setCurrentPlayer(Player player);
 }

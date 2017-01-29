@@ -20,4 +20,6 @@ public abstract class ComputerPlayer extends Player {
     }
 
     public abstract void doTurn(Engine engine);
+
+    public abstract void setSmartness(int value);
 }

@@ -3,6 +3,7 @@ package ss.project.client.ui.tui;
 import ss.project.client.Config;
 import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
+import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector3;
@@ -91,14 +92,19 @@ public class TUISinglePlayerSettings implements TUIPanel {
                 } else {
                     String[] parts = input.split(" ");
                     if (parts.length > 1) {
-                        //NAME COMPUTERTYPE
+                        //NAME COMPUTERTYPE SMARTNESS
                         try {
                             int playerType = Integer.parseInt(parts[1]);
                             Player player = (Player) Config.getInstance().PlayerTypes.get(playerTypes[playerType]).newInstance();
                             player.setName(parts[0]);
+                            player.setId(players.size());
+                            if (player instanceof ComputerPlayer && parts.length > 2) {
+                                int smartness = Integer.parseInt(parts[2]);
+                                ((ComputerPlayer) player).setSmartness(smartness);
+                            }
                             players.add(player);
                         } catch (NumberFormatException e) {
-                            System.out.println("First type the name, followed by a space, followed by a number representing the playertype.");
+                            System.out.println("First type the name, followed by a space, followed by a number representing the playertype and optionally the smartness.");
                             return;
                         } catch (IllegalAccessException | InstantiationException e) {
                             e.printStackTrace();
@@ -106,6 +112,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
                     } else {
                         //NAME
                         Player player = new HumanPlayer(parts[0]);
+                        player.setId(players.size());
                         players.add(player);
                     }
                 }
@@ -123,6 +130,9 @@ public class TUISinglePlayerSettings implements TUIPanel {
                 Controller.getController().setEngine(engine);
                 Controller.getController().switchTo(Controller.Panel.GAME);
                 Controller.getController().startGame();
+
+                progress = Progress.ENTERX;
+
                 break;
             }
         }
@@ -132,7 +142,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
         ENTERX("What's the X size of the world?"),
         ENTERY("What's the Y size of the world?"),
         ENTERZ("What's the Z size of the world?"),
-        ADDPLAYER("Add players. Type 'done' if ready with adding. <NAME> <NUMBER>"),
+        ADDPLAYER("Add players. Type 'done' if ready with adding. <NAME> <NUMBER> <SMARTNESS>"),
         SETWINLENGTH("What's the required length to win?");
 
         private String question;
