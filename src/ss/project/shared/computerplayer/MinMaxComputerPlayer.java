@@ -92,7 +92,6 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     }
 
     private Vector2 getBestPosition(World world) {
-        //System.out.println("Starting heavy part!");
         int bestValue = Integer.MIN_VALUE;
         Vector2 result = Vector2.ZERO;
         for (int x = 0; x < world.getSize().getX(); x++) {
@@ -105,7 +104,6 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             }
         }
         try {
-            //System.out.println("Waiting for threads to finish");
             for (int x = 0; x < workers.length; x++) {
                 for (int y = 0; y < workers[x].length; y++) {
                     int value = workers[x][y].get();
@@ -116,12 +114,9 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
                     }
                 }
             }
-            //System.out.println("Threads finished");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        //System.out.println("Stopping heavy part!");
-        //System.out.println("Final : " + getName() + " (" + result.getX() + "," + result.getY() + ") " + bestValue);
         return result;
     }
 

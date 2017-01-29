@@ -68,7 +68,9 @@ public class HumanPlayer extends Player {
     private void doHint(Engine engine) {
         synchronized (hintSync) {
             hintPos = engine.getWorld().getWorldPosition(hintPlayer.getMove(engine));
-            engine.getUI().showHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
+            if (hintPos != null) {
+                engine.getUI().showHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
+            }
             hintTimer.stop();
         }
     }
