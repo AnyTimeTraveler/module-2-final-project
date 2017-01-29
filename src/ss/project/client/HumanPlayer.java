@@ -12,6 +12,7 @@ import ss.project.shared.game.Vector3;
 import javax.swing.*;
 
 public class HumanPlayer extends Player {
+    private final Object hintSync = new Object();
     Object waiter = new Object();
     @Getter
     @Setter
@@ -48,7 +49,9 @@ public class HumanPlayer extends Player {
 
             //We placed something!
             if (hintPos != null) {
-                engine.getUI().removeHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
+                synchronized (hintSync) {
+                    engine.getUI().removeHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
+                }
             }
 
             if (!engine.addGameItem(selectedCoordinates, this)) {
@@ -63,9 +66,10 @@ public class HumanPlayer extends Player {
     }
 
     private void doHint(Engine engine) {
-        hintPos = engine.getWorld().getWorldPosition(hintPlayer.getMove(engine));
-        engine.getUI().showHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
-        //engine.getUI().showHint(3, 3, 3);
-        hintTimer.stop();
+        synchronized (hintSync) {
+            hintPos = engine.getWorld().getWorldPosition(hintPlayer.getMove(engine));
+            engine.getUI().showHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
+            hintTimer.stop();
+        }
     }
 }
