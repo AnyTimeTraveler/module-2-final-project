@@ -29,9 +29,10 @@ public class ServerConfig {
     public int MaxWinLength;
     public boolean ChatSupport;
     public List<LeaderboardEntry> Leaderboard;
+    public int TimeoutInSeconds;
 
     private ServerConfig() {
-        Host = "130.89.234.214";
+        Host = "127.0.0.1";
         Port = 1234;
         MaxPlayers = 2;
         RoomSupport = true;
@@ -41,6 +42,7 @@ public class ServerConfig {
         MaxWinLength = 4;
         ChatSupport = true;
         Leaderboard = new ArrayList<>();
+        TimeoutInSeconds = 20;
     }
 
     public static ServerConfig getInstance() {

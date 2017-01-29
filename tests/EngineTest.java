@@ -1,11 +1,13 @@
-package ss.project.shared.game;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ss.project.shared.Protocol;
 import ss.project.shared.computerplayer.LinearComputerPlayer;
 import ss.project.shared.computerplayer.RandomComputerPlayer;
+import ss.project.shared.game.Engine;
+import ss.project.shared.game.Player;
+import ss.project.shared.game.Vector2;
+import ss.project.shared.game.Vector3;
 
 import java.util.Arrays;
 

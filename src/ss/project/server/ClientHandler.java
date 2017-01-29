@@ -4,6 +4,7 @@ import ss.project.shared.NetworkPlayer;
 import ss.project.shared.Protocol;
 import ss.project.shared.exceptions.AlreadyJoinedException;
 import ss.project.shared.exceptions.NotInRoomException;
+import ss.project.shared.exceptions.ProtocolException;
 import ss.project.shared.exceptions.RoomFullException;
 import ss.project.shared.model.ChatMessage;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -91,29 +92,34 @@ public class ClientHandler extends Thread {
                     player.setMove(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
                 } else {
                     // Unexpected command
-                    sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 4));
+                    sendError(4);
                 }
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
                 player.getCurrentRoom().broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
             } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
                 // Can't leave if the game has started
-                sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 6));
+                sendError(6);
             } else {
                 // Unexpected command
-                sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 4));
+                sendError(4);
             }
         } else {
             if (Protocol.Client.GETROOMLIST.equals(parts[0])) {
                 sendMessage(server.getRoomListString());
             } else if (Protocol.Client.CREATEROOM.equals(parts[0])) {
-                // TODO: Implement once the new protocol is out.
+                try {
+                    server.addRoom(Room.fromString(line));
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+
+                }
             } else if (Protocol.Client.JOINROOM.equals(parts[0])) {
                 try {
                     int roomId = Integer.parseInt(parts[1]);
                     Room room = server.getRoomByID(roomId);
                     if (room == null) {
                         // room not available
-                        sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 2));
+                        sendError(2);
                         return;
                     }
                     try {
@@ -126,24 +132,24 @@ public class ClientHandler extends Thread {
                         }
                     } catch (AlreadyJoinedException | RoomFullException e) {
                         // Notify about joinerror
-                        sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 3));
+                        sendError(3);
                         e.printStackTrace();
                     }
                 } catch (NumberFormatException e) {
                     // Unexpected arguments
                     e.printStackTrace();
-                    sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 4));
+                    sendError(4);
                 }
             } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
                 if (player.getCurrentRoom() == null) {
                     // Can't leave if not in a room
-                    sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 6));
+                    sendError(6);
                 }
                 try {
                     player.getCurrentRoom().leave(player);
                 } catch (NotInRoomException e) {
                     // Can't leave room due to error
-                    sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 6));
+                    sendError(6);
                 }
             } else if (Protocol.Client.REQUESTLEADERBOARD.equals(parts[0])) {
                 // send Leaderboard
@@ -157,6 +163,10 @@ public class ClientHandler extends Thread {
                 throw new NotImplementedException();
             }
         }
+    }
+
+    private void sendError(int errorcode) {
+        sendMessage(Protocol.createMessage(Protocol.Server.ERROR, errorcode));
     }
 
     public void sendMessage(String msg) {

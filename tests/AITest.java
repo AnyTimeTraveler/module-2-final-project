@@ -1,9 +1,10 @@
-package ss.project.shared.game;
-
 import org.junit.Before;
 import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer2;
+import ss.project.shared.game.Engine;
+import ss.project.shared.game.Player;
+import ss.project.shared.game.Vector3;
 import ss.project.shared.model.ClientConfig;
 
 import java.util.ArrayList;

@@ -13,12 +13,12 @@ import javax.swing.*;
 
 public class HumanPlayer extends Player {
     private final Object hintSync = new Object();
-    Object waiter = new Object();
+    private final Object waiter = new Object();
     @Getter
     @Setter
-    Vector2 selectedCoordinates;
-    MinMaxComputerPlayer hintPlayer = new MinMaxComputerPlayer(4);
-    Vector3 hintPos;
+    private Vector2 selectedCoordinates;
+    private MinMaxComputerPlayer hintPlayer = new MinMaxComputerPlayer(4);
+    private Vector3 hintPos;
     private Timer hintTimer;
 
     public HumanPlayer(String name, int id) {

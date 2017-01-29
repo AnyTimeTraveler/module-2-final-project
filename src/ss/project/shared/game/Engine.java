@@ -7,10 +7,9 @@ import ss.project.client.ui.GameDisplay;
 import ss.project.server.Room;
 import ss.project.shared.Protocol;
 import ss.project.shared.model.GameParameters;
+import ss.project.shared.model.ServerConfig;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Engine {
     @Getter
@@ -156,6 +155,7 @@ public class Engine {
     //@ requires getPlayerCount() <= 0;
     //@ ensures gameRunning;
     public void startGame() {
+        boolean isServer = (getUI() == null);
         gameRunning = true;
 
         //Don't start the gameDisplay if there are no players.
@@ -163,6 +163,13 @@ public class Engine {
             return;
         }
 
+        Timer timeoutTimer = new Timer();
+        TimerTask timeoutTask = new TimerTask() {
+            @Override
+            public void run() {
+                finishGame(Protocol.WinReason.GAMETIMEOUT, -1);
+            }
+        };
         Collection<Player> turnSet = players.values();
         while (gameRunning) {
             for (Player player : turnSet) {
@@ -170,12 +177,17 @@ public class Engine {
                     if (getUI() != null) {
                         getUI().setCurrentPlayer(player);
                     }
+                    if (isServer) {
+                        timeoutTimer.schedule(timeoutTask, ServerConfig.getInstance().TimeoutInSeconds * 1000);
+                    }
                     player.doTurn(this);
+                    timeoutTimer.cancel();
                 } else {
                     return;
                 }
             }
         }
+        timeoutTimer.cancel();
     }
 
     /**
@@ -184,29 +196,16 @@ public class Engine {
     //@ ensures (reason.equals(WINLENGTHACHIEVED) || reason.equals(PLAYERDISCONNECTED)) ==> getWinner() == playerid;
     //@ ensures getWinReason().equals(reason);
     public void finishGame(Protocol.WinReason reason, int playerid) {
-        switch (reason) {
-            case WINLENGTHACHIEVED: {
-                this.winner = playerid;
-                break;
-            }
-            case BOARDISFULL: {
-                break;
-            }
-            case PLAYERDISCONNECTED: {
-                this.winner = playerid;
-                break;
-            }
-            case GAMETIMEOUT: {
-                break;
-            }
+        if (reason.equals(Protocol.WinReason.WINLENGTHACHIEVED) || reason.equals(Protocol.WinReason.PLAYERDISCONNECTED)) {
+            winner = playerid;
         }
         gameRunning = false;
         winReason = reason;
-        if (Controller.getController().isServer() && room != null) {
-            room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYEND, reason.getId(), playerid));
-        }
+
         if (getUI() != null) {
             Controller.getController().switchTo(Controller.Panel.GAMEEND);
+        } else {
+            room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYEND, reason.getId(), playerid));
         }
     }
 }

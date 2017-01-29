@@ -93,7 +93,7 @@ public class ClientEngine extends Engine {
                 break;
             }
             case GAMETIMEOUT: {
-                System.out.println("What to do now...? Game has timeout...");
+                System.out.println("Someone took too long to do their turn.");
                 break;
             }
             case PLAYERDISCONNECTED: {

@@ -1,21 +1,16 @@
 package ss.project.server;
 
 import lombok.Getter;
-import ss.project.client.Controller;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.Vector3;
 import ss.project.shared.model.ServerConfig;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Server {
     /**
@@ -42,7 +37,6 @@ public class Server {
         ready = false;
         threads = new ArrayList<>();
         rooms = new ArrayList<>();
-        Controller.getController().setServer(true);
         instance = this;
         createDefaultRoom();
     }
@@ -147,43 +141,19 @@ public class Server {
         return Protocol.createMessage(Protocol.Server.SENDLEADERBOARD, ServerConfig.getInstance().Leaderboard);
     }
 
-    private String determineWifiAddress() {
-        System.out.println(System.getProperty("os.name"));
-        Runtime ifconfig = Runtime.getRuntime();
-        Process p;
-        try {
-            if (System.getProperty("os.name").contains("win")) {
-                p = ifconfig.exec("ipconfig");
-            } else {
-                p = ifconfig.exec("ifconfig");
-            }
-            p.waitFor();
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            sb.append(br.readLine());
-            while (br.ready()) {
-                sb.append('\n');
-                sb.append(br.readLine());
-            }
-
-            String output = sb.toString();
-            System.out.println(output);
-
-            int w = output.indexOf("wlo1");
-            Pattern re = Pattern.compile(".+wlo1.+inet addr:([0-9|\\.]+).+");
-            Matcher m = re.matcher(output);
-            return m.group(1);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public Room getDefaultRoom() {
         if (defaultRoom == null || defaultRoom.isFull()) {
             createDefaultRoom();
         }
         return defaultRoom;
+    }
+
+    public void addRoom(Room room) {
+        rooms.add(room);
+        for (ClientHandler client : threads) {
+            if (client.getPlayer().getCurrentRoom() == null && client.getPlayer().isAutoRefresh()) {
+                client.sendMessage(getRoomListString());
+            }
+        }
     }
 }

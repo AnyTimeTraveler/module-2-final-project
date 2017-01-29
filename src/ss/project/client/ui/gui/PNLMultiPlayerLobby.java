@@ -40,10 +40,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
 
         JPanel jPanel = new JPanel();
         JButton backButton = new JButton("Disconnect");
-        backButton.addActionListener(e -> {
-            controller.getNetwork().shutdown();
-            controller.switchTo(Controller.Panel.SERVER_BROWSER);
-        });
+        backButton.addActionListener(e -> controller.getNetwork().shutdown());
         jPanel.add(backButton);
 
         JButton leaderBoardButton = new JButton("Leaderboard");

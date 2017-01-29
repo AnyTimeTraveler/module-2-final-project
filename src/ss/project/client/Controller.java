@@ -57,12 +57,10 @@ public class Controller extends Observable {
      */
     @Getter
     private boolean connected;
+
     /**
      * True if this is a server controller, false if it's a client.
      */
-    @Getter
-    @Setter
-    private boolean server = false;
 
     private Controller() {
         try {
@@ -188,10 +186,10 @@ public class Controller extends Observable {
         List<Room> fakeRooms = new ArrayList<>();
         ServerInfo info = getCurrentServer();
         fakeRooms.add(new Room(0, info.getMaxPlayers(),
-                info.getMaxDimensionX(),
-                info.getMaxDimensionY(),
-                info.getMaxDimensionZ(),
-                info.getMaxWinLength()));
+                                      info.getMaxDimensionX(),
+                                      info.getMaxDimensionY(),
+                                      info.getMaxDimensionZ(),
+                                      info.getMaxWinLength()));
         return fakeRooms;
     }
 
@@ -327,11 +325,13 @@ public class Controller extends Observable {
     }
 
     public void setConnected(boolean connected) {
-        this.connected = connected;
-        if (connected) {
-            frame.setConnected(getCurrentServer().isChatSupport());
-        } else {
-            frame.setConnected(false);
+        if (this.connected != connected) {
+            this.connected = connected;
+            if (connected) {
+                frame.setConnected(getCurrentServer().isChatSupport());
+            } else {
+                frame.setConnected(false);
+            }
         }
     }
 

@@ -96,6 +96,9 @@ public class Network extends Thread {
 
                 while (!closed) {
                     line = in.readLine();
+                    if (line == null) {
+                        shutdown();
+                    }
                     interpretLine(line);
                 }
             } catch (IOException e) {
@@ -135,22 +138,17 @@ public class Network extends Thread {
         } else if (Protocol.Server.NOTIFYMOVE.equals(parts[0])) {
             engine.notifyMove(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
         } else if (Protocol.Server.NOTIFYEND.equals(parts[0])) {
-            int winReason = 0;
-            int playerid = 0;
             try {
-                winReason = Integer.parseInt(parts[1]);
-                playerid = Integer.parseInt(parts[2]);
+                engine.notifyEnd(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
             } catch (NumberFormatException e) {
-                //TODO: send right error message back.
-                return;
+                sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 4));
             }
-            engine.notifyEnd(winReason, playerid);
         } else if (Protocol.Server.SENDLISTROOMS.equals(parts[0])) {
             try {
                 controller.setRooms(Room.parseRoomListString(line));
             } catch (ProtocolException e) {
+                e.printStackTrace();
                 //TODO: send right error message back.
-                return;
             }
         } else {
             System.err.println(line);

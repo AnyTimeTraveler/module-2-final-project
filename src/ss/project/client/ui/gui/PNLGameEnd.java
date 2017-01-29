@@ -49,7 +49,7 @@ public class PNLGameEnd extends GUIPanel {
                 break;
             }
             case GAMETIMEOUT: {
-                informationLabel.setText("Lost connection... :(");
+                informationLabel.setText("Someone took too long to do their turn.");
                 break;
             }
         }
