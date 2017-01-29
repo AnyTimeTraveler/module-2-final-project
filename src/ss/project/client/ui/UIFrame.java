@@ -12,5 +12,5 @@ public interface UIFrame {
 
     void setSize(int width, int height);
 
-    void setChatEnabled(boolean enabled);
+    void setConnected(boolean enabled);
 }

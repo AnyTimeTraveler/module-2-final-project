@@ -16,6 +16,7 @@ public class FRMMain extends JFrame implements UIFrame {
     private JPanel mainPanel;
     @Getter
     private PNLChat chatPanel;
+    private GUIPanel currentPanel;
 
     private JSplitPane splitPane;
 
@@ -51,16 +52,17 @@ public class FRMMain extends JFrame implements UIFrame {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(1);
         add(splitPane);
-        setChatEnabled(false);
+        setConnected(false);
     }
 
     @Override
-    public void setChatEnabled(boolean enabled) {
+    public void setConnected(boolean enabled) {
         chatPanel.setVisible(enabled);
         if (enabled) {
             chatPanel.onEnter();
         } else {
             chatPanel.onLeave();
+            switchTo(Controller.Panel.SERVER_BROWSER.getPanel());
         }
         splitPane.revalidate();
         splitPane.resetToPreferredSizes();
@@ -79,6 +81,7 @@ public class FRMMain extends JFrame implements UIFrame {
         }
         mainPanel.add((GUIPanel) panel, BorderLayout.CENTER);
         ((GUIPanel) panel).onEnter();
+        currentPanel = (GUIPanel) panel;
         mainPanel.revalidate();
         mainPanel.repaint();
     }

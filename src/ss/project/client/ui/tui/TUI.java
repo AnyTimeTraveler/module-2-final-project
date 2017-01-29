@@ -39,7 +39,7 @@ public class TUI implements UIFrame {
     }
 
     @Override
-    public void setChatEnabled(boolean enabled) {
+    public void setConnected(boolean enabled) {
 
     }
 

@@ -282,7 +282,6 @@ public class Controller extends Observable {
                 //TODO: Display error message
             }
         }
-
     }
 
     /**
@@ -330,9 +329,9 @@ public class Controller extends Observable {
     public void setConnected(boolean connected) {
         this.connected = connected;
         if (connected) {
-            frame.setChatEnabled(getCurrentServer().isChatSupport());
+            frame.setConnected(getCurrentServer().isChatSupport());
         } else {
-            frame.setChatEnabled(false);
+            frame.setConnected(false);
         }
     }
 

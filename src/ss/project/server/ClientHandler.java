@@ -150,6 +150,8 @@ public class ClientHandler extends Thread {
                 sendMessage(server.getLeaderboardMessage());
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
                 server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
+            } else if (Protocol.Server.ERROR.equals(parts[0])) {
+
             } else {
                 System.out.println(line);
                 throw new NotImplementedException();
