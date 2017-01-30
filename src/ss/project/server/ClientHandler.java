@@ -15,12 +15,33 @@ import java.net.Socket;
 public class ClientHandler extends Thread {
     private Socket socket;
     private Server server;
+    /**
+     * Used to recieve things from the client.
+     */
     private BufferedReader in;
+    /**
+     * Used to send things to the client.
+     */
     private BufferedWriter out;
+    /**
+     * If true this clientHandler does not read input anymore.
+     */
     private boolean closed;
+    /**
+     * The network player associated with this clienthandler.
+     * Will be used in the commands from the protocol.
+     */
     private NetworkPlayer player;
 
+    /**
+     * Create a new ClientHandler and initialize it.
+     *
+     * @param server
+     * @param socket
+     * @throws IOException
+     */
     //@ requires server != null && socket != null;
+    //@ ensures getPlayer() != null;
     public ClientHandler(Server server, Socket socket) throws IOException {
         this.socket = socket;
         this.server = server;
@@ -31,6 +52,21 @@ public class ClientHandler extends Thread {
         this.setName("ClientHandler: Unknown Player");
     }
 
+    /**
+     * First do the basic routine:
+     * <p>
+     * this -- capabilities --> client
+     * <p>
+     * client -- capabilities --> this
+     * <p>
+     * if roomsupport: this --rooms--> client
+     * <p>
+     * else: make the player join the default room.
+     * <p>
+     * this -- default welcome messages --> client
+     * <p>
+     * read incoming messages from client until closed.
+     */
     public void run() {
         String line;
         try {
@@ -80,6 +116,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Read an incoming line with the format of the protocol.
+     *
+     * @param line
+     */
     private void interpretLine(String line) {
         if (line == null) {
             return;
