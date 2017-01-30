@@ -186,10 +186,10 @@ public class Controller extends Observable {
         List<Room> fakeRooms = new ArrayList<>();
         ServerInfo info = getCurrentServer();
         fakeRooms.add(new Room(0, info.getMaxPlayers(),
-                                      info.getMaxDimensionX(),
-                                      info.getMaxDimensionY(),
-                                      info.getMaxDimensionZ(),
-                                      info.getMaxWinLength()));
+                info.getMaxDimensionX(),
+                info.getMaxDimensionY(),
+                info.getMaxDimensionZ(),
+                info.getMaxWinLength()));
         return fakeRooms;
     }
 
@@ -224,7 +224,7 @@ public class Controller extends Observable {
      * @param room
      */
     public void createRoom(Room room) {
-        network.sendMessage(Protocol.createMessage(Protocol.Client.CREATEROOM, room));
+        network.sendMessage(Protocol.createMessage(Protocol.Client.CREATEROOM, room.serialize()));
     }
 
     /**
@@ -272,14 +272,24 @@ public class Controller extends Observable {
             try {
                 int port = Integer.parseInt(data[1]);
                 if (Connection.validIP(data[0])) {
-                    ClientConfig.getInstance().KnownServers.add(new Connection("Added server", data[0], port));
-                    ClientConfig.getInstance().toFile();
+                    addServer(data[0], port);
                 }
             } catch (NumberFormatException e) {
                 //Input was wrong.
                 //TODO: Display error message
             }
         }
+    }
+
+    /**
+     * Add a server to the list of servers.
+     *
+     * @param ip
+     * @param port
+     */
+    public void addServer(String ip, int port) {
+        ClientConfig.getInstance().KnownServers.add(new Connection("Added server", ip, port));
+        ClientConfig.getInstance().toFile();
     }
 
     /**

@@ -99,6 +99,7 @@ public class Room implements Serializable {
     }
 
     public static Room fromString(String line) throws ProtocolException {
+        //TODO: remove the first part of the command (text).
         // split room by it's parameters
         String[] roomParams = line.split(Protocol.PIPE_SYMBOL);
         // check if the amount of parameters matches

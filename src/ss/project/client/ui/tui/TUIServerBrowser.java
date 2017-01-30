@@ -22,6 +22,7 @@ public class TUIServerBrowser implements TUIPanel {
         for (int i = 0; i < serverInfos.size(); i++) {
             System.out.println(ASCIIArt.getChoiceItem(i, getServerInfo(serverInfos.get(i)), 120));
         }
+        System.out.println("Type 'add <IPADDRESS> <PORT>' to add a server.");
         System.out.println(ASCIIArt.getChoiceItem(serverInfos.size(), "Back", 120));
     }
 
@@ -45,6 +46,21 @@ public class TUIServerBrowser implements TUIPanel {
 
     @Override
     public void handleInput(String input) {
+        String[] parts = input.split(" ");
+        if (parts[0].equalsIgnoreCase("add")) {
+            if (parts.length < 3) {
+                System.out.println("Type 'add <IPADDRESS> <PORT>' to add a server.");
+                return;
+            }
+            try {
+                int port = Integer.parseInt(parts[2]);
+                Controller.getController().addServer(parts[1], port);
+                return;
+            } catch (NumberFormatException e) {
+                System.out.println("The port should be a number!");
+                return;
+            }
+        }
         try {
             int number = Integer.parseInt(input);
             if (number < 0 || number > serverInfos.size()) {
