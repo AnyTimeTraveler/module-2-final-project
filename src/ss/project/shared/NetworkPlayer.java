@@ -20,39 +20,79 @@ public class NetworkPlayer extends Player implements Serializable {
 
     /**
      * DO NOT USE THIS DIRECTLY!
+     * Use getNextid().
      */
     private static int nextId;
     private final Object moveLock = new Object();
     @Getter
     private ClientHandler clientHandler;
+    /**
+     * The max players this networkplayer can handle.
+     */
     @Getter
     private int maxPlayers;
+    /**
+     * If true, this client can handle rooms.
+     */
     @Getter
     private boolean roomSupport;
+    /**
+     * The max X size of the world this client can handle.
+     */
     @Getter
     private int maxDimensionX;
+    /**
+     * The max Y size of the world this client can handle.
+     */
     @Getter
     private int maxDimensionY;
+    /**
+     * The max Z size of the world this client can handle.
+     */
     @Getter
     private int maxDimensionZ;
+    /**
+     * The maximum win length this client can handle.
+     */
     @Getter
     private int maxWinLength;
+    /**
+     * If true this client has chat support.
+     */
     @Getter
     private boolean chatSupport;
+    /**
+     * This client wants to be notified when the room list changes on the server.
+     */
     @Getter
     private boolean autoRefresh;
+    /**
+     * The current room this networkplayer is in.
+     */
     @Setter
     @Getter
     private Room currentRoom;
+    /**
+     * If true, this networkplayer is playing a game right now.
+     */
     @Setter
     @Getter
     private boolean inGame;
     private Vector2 move;
     @Getter
     private boolean expectingMove;
+    /**
+     * The color of this networkplayer.
+     */
     @Getter
     private Color color;
 
+    /**
+     * Create a networkplayer from a clienthandler.
+     *
+     * @param clientHandler
+     * @throws IOException
+     */
     public NetworkPlayer(ClientHandler clientHandler) throws IOException {
         super();
         setId(getNextId());
@@ -61,22 +101,47 @@ public class NetworkPlayer extends Player implements Serializable {
         color = Color.getRandomColor();
     }
 
+    /**
+     * Create a new networkplayer with a specified ID, name and color.
+     *
+     * @param id
+     * @param name
+     * @param color
+     */
     public NetworkPlayer(int id, String name, Color color) {
         setId(id);
         setName(name);
         this.color = color;
     }
 
+    /**
+     * Get the next ID that is unique.
+     *
+     * @return
+     */
     @Synchronized
     private static int getNextId() {
         return nextId++;
     }
 
+    /**
+     * Create a networkPlayer from a string line followed from protocol.
+     *
+     * @param line
+     * @return
+     */
     public static NetworkPlayer fromString(String line) {
         String[] params = line.split(Protocol.PIPE_SYMBOL);
         return new NetworkPlayer(Integer.parseInt(params[0]), params[1], Color.fromString(params[2]));
     }
 
+    /**
+     * Called everytime this player should set a gameitem.
+     * In this case the networkplayer waits from input from a client, verifies it and
+     * sends it to all clients.
+     *
+     * @param engine
+     */
     @Override
     public void doTurn(Engine engine) {
         move = null;
@@ -129,6 +194,12 @@ public class NetworkPlayer extends Player implements Serializable {
         }
     }
 
+    /**
+     * Set the capabilities of this networkplayer from a string from the protocol.
+     *
+     * @param message
+     * @throws NumberFormatException If an integer is expected, but found something inconvertable to numbers.
+     */
     public void setCapabilitiesFromString(String message) throws NumberFormatException {
         Scanner sc = new Scanner(message);
         if (message.split(" ")[0].equals(Protocol.Client.SENDCAPABILITIES.getMessage())) {

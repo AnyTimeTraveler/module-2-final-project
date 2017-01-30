@@ -2,6 +2,12 @@ package ss.project.shared.game;
 
 import lombok.Data;
 
+/**
+ * A data class used to pass and calculate with vectors or coordinates.
+ * All fields are final, which means no reusing of vectors.
+ *
+ * @see Vector2
+ */
 @Data
 public class Vector3 {
 
@@ -42,6 +48,11 @@ public class Vector3 {
         this.z = z;
     }
 
+    /**
+     * Create a Vector3 from a vector2 with z = 0.
+     *
+     * @param vector2 The x and y of the vector3.
+     */
     //@ ensures getX()==vector2.getX();
     //@ ensures getY()==vector2.getY();
     //@ ensures getZ()==0;

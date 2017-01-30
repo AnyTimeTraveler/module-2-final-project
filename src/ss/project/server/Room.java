@@ -27,18 +27,35 @@ import java.util.stream.Collectors;
 public class Room implements Serializable {
 
     /**
-     * DO NOT USE THIS DIRECTLY!
+     * Do not use this directly.
+     *
+     * @see Room#getNextId()
      */
     private static int nextId;
+    /**
+     * A reference to the engine responsible for the game.
+     */
     @Getter
     private Engine engine;
+    /**
+     * The thread the engine is running on.
+     */
     private Thread engineThread;
+    /**
+     * The max amount of players that can join this room.
+     */
     private int maxPlayers;
+    /**
+     * The unique id of this room.
+     */
     private int id;
     /**
      * Current joined players.
      */
     private List<NetworkPlayer> players;
+    /**
+     * The GameParameters of this room.
+     */
     private GameParameters parameters;
 
     /**
@@ -82,6 +99,7 @@ public class Room implements Serializable {
      * @param maxPlayers The amount of players that can join this room.
      * @param worldSize  The x-dimension of the world of this room.
      * @param winLength  The length needed to win a game.
+     * @see Room#Room(int, int, int, int, int, int)
      */
     public Room(int id, int maxPlayers, Vector3 worldSize, int winLength) {
         this(id, maxPlayers, worldSize.getX(), worldSize.getY(), worldSize.getZ(), winLength);
@@ -98,6 +116,13 @@ public class Room implements Serializable {
         this(maxPlayers, worldSize.getX(), worldSize.getY(), worldSize.getZ(), winLength);
     }
 
+    /**
+     * Create a room from a string from the protocol.
+     *
+     * @param line
+     * @return A new room.
+     * @throws ProtocolException If the input is not in the correct format.
+     */
     public static Room fromString(String line) throws ProtocolException {
         //TODO: remove the first part of the command (text).
         // split room by it's parameters
@@ -118,11 +143,23 @@ public class Room implements Serializable {
         }
     }
 
+    /**
+     * Get the next unique id for rooms.
+     *
+     * @return A unique id.
+     */
     @Synchronized
     private static int getNextId() {
         return nextId++;
     }
 
+    /**
+     * Create a list of rooms from a string in protocol format.
+     *
+     * @param line
+     * @return A new list of rooms.
+     * @throws ProtocolException The line is not in the correct format.
+     */
     public static List<Room> parseRoomListString(String line) throws ProtocolException {
         Scanner sc = new Scanner(line);
         // test for invalid message
@@ -138,6 +175,7 @@ public class Room implements Serializable {
 
     /**
      * Join this room.
+     * Will also send a message to all players that a player joined the room.
      *
      * @param player Player that wants to join this room.
      * @throws AlreadyJoinedException This player had already joined this room.
@@ -156,6 +194,12 @@ public class Room implements Serializable {
         broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " joined the room.")));
     }
 
+    /**
+     * Start the game in this room.
+     * Creates an engine and starts it at its own thread.
+     * Will set all players' state to in-game.
+     * Will notify all players the game has started.
+     */
     void startGame() {
         Object[] args = new Object[players.size() + 1];
         args[0] = parameters;
@@ -236,7 +280,7 @@ public class Room implements Serializable {
     /**
      * Get the size of this world.
      *
-     * @return
+     * @return A new vector3.
      */
     public Vector3 getWorldSize() {
         return parameters.getWorldSize();
@@ -252,18 +296,35 @@ public class Room implements Serializable {
                 String.valueOf(parameters.getWinLength()));
     }
 
+    /**
+     * Get the current amount of players in this room.
+     *
+     * @return
+     */
     public int getCurrentPlayers() {
         return players.size();
     }
 
+    /**
+     * Send a message to all clients of this room.
+     *
+     * @param message A message with protocol format.
+     * @see Protocol#createMessage(Protocol.Client, Object...)
+     * @see Protocol#createMessage(Protocol.Server, Object...)
+     */
     public void broadcast(String message) {
         for (NetworkPlayer p : players) {
             p.getClientHandler().sendMessage(message);
         }
     }
 
+    /**
+     * Checks if the amount of players in this room is equal to the max amount of players in this room.
+     *
+     * @return True if the room is full, False otherwise.
+     */
     public boolean isFull() {
-        return players.size() == maxPlayers;
+        return players.size() >= maxPlayers;
     }
 
     /**

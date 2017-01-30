@@ -1,5 +1,11 @@
 package ss.project.shared.game;
 
+/**
+ * A data class used to pass and calculate with vectors or coordinates.
+ * All fields are final, which means no reusing of vectors.
+ *
+ * @see Vector3
+ */
 public class Vector2 {
 
     /**

@@ -11,13 +11,35 @@ import ss.project.shared.model.ServerConfig;
 
 import java.util.*;
 
+/**
+ * The main class responsible for the game in both singleplayer and on the server.
+ *
+ * @see Engine#startGame()
+ */
 public class Engine {
+    /**
+     * The reason the game has finished.
+     *
+     * @see Protocol#WINREASONMAP
+     */
     @Getter
     protected Protocol.WinReason winReason;
+    /**
+     * The id of the player who won, or lost connection.
+     */
     @Getter
     protected int winner;
+    /**
+     * A reference to the world of this engine.
+     */
     private World world;
+    /**
+     * A map of players with reference to their ids.
+     */
     private Map<Integer, Player> players = new HashMap<>();
+    /**
+     * The UI of the game, null if nothing is set.
+     */
     private GameDisplay gameDisplay;
     /**
      * True while the gameDisplay is running.
@@ -33,7 +55,9 @@ public class Engine {
     /**
      * Create a new world and assign players.
      *
-     * @param worldSize
+     * @param worldSize The size of the world.
+     * @param winLength The length required to win in this game.
+     * @param players   The players of this game.
      */
     //@ ensures this.world != null;
     //@ ensures this.players.size() == players.length;
@@ -44,12 +68,19 @@ public class Engine {
         }
     }
 
+    /**
+     * Creates an engine with parameters from the protocol.
+     *
+     * @param parameters
+     * @param players    A collection of players that will be assigned to this engine.
+     * @see Engine#Engine(Vector3, int, Collection)
+     */
     public Engine(GameParameters parameters, Collection<? extends Player> players) {
         this(parameters.getWorldSize(), parameters.getWinLength(), players);
     }
 
     /**
-     * @return world of this gameDisplay.
+     * @return world of this engine.
      */
     //@ pure;
     public World getWorld() {
@@ -57,9 +88,9 @@ public class Engine {
     }
 
     /**
-     * Get the MainWindow of this engine.
+     * Get the gameUI of this engine.
      *
-     * @return
+     * @return null if no UI was assigned in the first place.
      */
     //@ pure;
     public GameDisplay getUI() {
@@ -67,9 +98,10 @@ public class Engine {
     }
 
     /**
-     * Set the MainWindow of this engine.
+     * Set the gameUI of this engine.
+     * If set, will be updated everytime a move is made.
      *
-     * @param gameDisplay
+     * @param gameDisplay The UI.
      */
     //@ requires gameDisplay != null;
     //@ ensures getUI().equals(gameDisplay);
@@ -78,8 +110,14 @@ public class Engine {
     }
 
     /**
-     * @param coordinates
-     * @param owner
+     * Add a game item to the game at specified coordinates and owner.
+     * This will check whether it's a legal move.
+     * The game will be finished if this move made the player win.
+     * The game will be finished if the board is full.
+     * This will update the UI if assigned.
+     *
+     * @param coordinates Coordinates of the move.
+     * @param owner       Owner of the move.
      * @return True if it's a legit move. False if not.
      */
     public boolean addGameItem(Vector2 coordinates, Player owner) {
@@ -112,7 +150,7 @@ public class Engine {
     /**
      * returns the player if within range.
      *
-     * @param id Index number of the player.
+     * @param id Id of the player.
      * @return Null if ID not in range, else the player object.
      */
     //@ pure;
@@ -151,6 +189,7 @@ public class Engine {
 
     /**
      * Start the gameDisplay and make every player do turns.
+     * If it's the server it will also check for timeout.
      */
     //@ requires getPlayerCount() <= 0;
     //@ ensures gameRunning;
@@ -191,7 +230,10 @@ public class Engine {
     }
 
     /**
-     * @param reason
+     * Finish a game with a specified reason. This will stop the game, set the winreason
+     * the winner and send a message to the whole room.
+     *
+     * @param reason The reason this game is finished. See the protocol.
      */
     //@ ensures (reason.equals(WINLENGTHACHIEVED) || reason.equals(PLAYERDISCONNECTED)) ==> getWinner() == playerid;
     //@ ensures getWinReason().equals(reason);
