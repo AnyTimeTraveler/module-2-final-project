@@ -75,7 +75,7 @@ public class ClientHandler extends Thread {
                 interpretLine(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             shutdown();
         }
     }
@@ -176,7 +176,7 @@ public class ClientHandler extends Thread {
             out.newLine();
             out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             shutdown();
         }
     }
@@ -188,6 +188,9 @@ public class ClientHandler extends Thread {
     }
 
     public void shutdown() {
+        if (player.getCurrentRoom() != null) {
+            player.getCurrentRoom().lostConnection(player);
+        }
         try {
             socket.close();
         } catch (IOException e) {

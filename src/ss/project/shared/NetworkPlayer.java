@@ -86,7 +86,8 @@ public class NetworkPlayer extends Player implements Serializable {
             try {
                 moveLock.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                //The game stopped for an unexpected reason (a player disconnects).
                 return;
             }
         }

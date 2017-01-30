@@ -190,6 +190,23 @@ public class Room implements Serializable {
     }
 
     /**
+     * Notify the room that this player has lost connection and stop the game.
+     *
+     * @param networkPlayer
+     */
+    public void lostConnection(NetworkPlayer networkPlayer) {
+        if (networkPlayer.isInGame()) {
+            try {
+                leave(networkPlayer);
+            } catch (NotInRoomException e) {
+                e.printStackTrace();
+            }
+            //Stop the game.
+            endGame(Protocol.WinReason.PLAYERDISCONNECTED, networkPlayer.getId());
+        }
+    }
+
+    /**
      * Get the id of this room.
      *
      * @return an integer representing the id of this room.
