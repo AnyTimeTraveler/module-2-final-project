@@ -5,6 +5,16 @@ import ss.project.server.Server;
 import ss.project.shared.model.ServerConfig;
 
 /**
+ * The class that starts the application and reads arguments.
+ * <p>
+ * First argument: 'client' or 'server'.
+ * 'client': start a client.
+ * 'server': start a server and automatically start waiting for connections.
+ * <p>
+ * Second argument: 'gui' or 'tui'.
+ * 'gui': start the JFrame and show the gui.
+ * 'tui': start the tui.
+ * <p>
  * Created by simon on 28.01.17.
  */
 public class Main {
@@ -28,6 +38,9 @@ public class Main {
         }
     }
 
+    /**
+     * Print a help message to the console to show how to start the application.
+     */
     private static void printUsage() {
         System.out.println("Usage:");
         System.out.print("java -jar ");

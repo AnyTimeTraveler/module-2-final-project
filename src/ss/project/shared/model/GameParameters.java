@@ -7,7 +7,7 @@ import ss.project.shared.game.Vector3;
 
 
 /**
- * A data class used to easily convert protocol data into engine data.
+ * A model class used to easily convert protocol data into engine data.
  * <p>
  * Created by simon on 28.01.17.
  */

@@ -12,6 +12,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A model class that contains all fields that need to be saved and loaded for the server.
+ *
+ * @see ClientConfig
+ */
 public class ServerConfig {
 
     // Configfile name
@@ -19,18 +24,55 @@ public class ServerConfig {
     private static ServerConfig instance;
 
     //Variables
+    /**
+     * The ipv4 address of the host.
+     */
     public String Host;
+    /**
+     * The port number of the host
+     */
     public int Port;
+    /**
+     * The maximum amount of players this server can handle.
+     */
     public int MaxPlayers;
+    /**
+     * If true this server has room support and client can create and join rooms.
+     * If false clients will automatically join the first room.
+     */
     public boolean RoomSupport;
+    /**
+     * The maximum X size of the world this server can manage.
+     */
     public int MaxDimensionX;
+    /**
+     * The maximum Y size of the world this server can manage.
+     */
     public int MaxDimensionY;
+    /**
+     * The maximum Z size of the world this server can manage.
+     */
     public int MaxDimensionZ;
+    /**
+     * The maximum winlength this server can handle.
+     */
     public int MaxWinLength;
+    /**
+     * If true chat message can be send and recieved to/from this server.
+     */
     public boolean ChatSupport;
+    /**
+     * The leaderboard of this server.
+     */
     public List<LeaderboardEntry> Leaderboard;
+    /**
+     * The time in seconds before a player is considered disconnected.
+     */
     public int TimeoutInSeconds;
 
+    /**
+     * Set the default values for all fields.
+     */
     private ServerConfig() {
         Host = "127.0.0.1";
         Port = 1234;
