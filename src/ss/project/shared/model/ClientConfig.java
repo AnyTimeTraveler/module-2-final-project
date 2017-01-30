@@ -40,6 +40,8 @@ public class ClientConfig {
     public boolean ChatSupport;
     public boolean AutoRefresh;
     public int MaxChatMessages;
+    public String playerType;
+    public int playerSmartness;
 
     private ClientConfig() {
         WindowTitle = "Connect Four 3D";
@@ -64,6 +66,8 @@ public class ClientConfig {
         AutoRefresh = true;
         MaxPlayers = 50;
         MaxChatMessages = 50;
+        playerType = "Human";
+        playerSmartness = 6;
     }
 
     public static ClientConfig getInstance() {

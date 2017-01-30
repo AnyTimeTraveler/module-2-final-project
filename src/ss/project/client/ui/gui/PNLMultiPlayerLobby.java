@@ -2,6 +2,8 @@ package ss.project.client.ui.gui;
 
 import ss.project.client.Controller;
 import ss.project.server.Room;
+import ss.project.shared.computerplayer.ComputerPlayer;
+import ss.project.shared.model.ClientConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,10 +17,11 @@ import java.util.Observer;
  */
 public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
 
+    private final JComboBox<String> playerType;
+    private final JSpinner computerSmartness;
     private Controller controller;
     private JPanel roomsPanelOwner;
     private List<RoomPanel> roomPanels;
-
     private int roomPanelHeight = 75;
     private int spaceBetweenText = 10;
 
@@ -32,7 +35,20 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
 
         this.setLayout(new BorderLayout());
 
-        this.add(GUIUtils.createLabel("Lobby", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(GUIUtils.createLabel("Lobby", GUIUtils.LabelType.TITLE), BorderLayout.CENTER);
+        JPanel topRightPanel = new JPanel();
+        playerType = new JComboBox<>();
+        for (String key : ClientConfig.getInstance().PlayerTypes.keySet()) {
+            playerType.addItem(key);
+        }
+        playerType.addActionListener(e -> updateSmartness());
+        topRightPanel.add(playerType);
+        computerSmartness = GUIUtils.createSpinner(6, 1, 100);
+        computerSmartness.setVisible(false);
+        topRightPanel.add(computerSmartness);
+        topPanel.add(topRightPanel, BorderLayout.EAST);
+        add(topPanel, BorderLayout.NORTH);
 
         roomsPanelOwner = new JPanel();
         roomsPanelOwner.setLayout(new BoxLayout(roomsPanelOwner, BoxLayout.Y_AXIS));
@@ -106,6 +122,35 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
     }
 
     /**
+     * The playertype has changed, check if this is a computer. If so, show the smartness spinner.
+     */
+    private void updateSmartness() {
+        Class smthing = ClientConfig.getInstance().PlayerTypes.get(getPlayerType());
+        if (ComputerPlayer.class.isAssignableFrom(smthing)) {
+            computerSmartness.setVisible(true);
+        } else {
+            computerSmartness.setVisible(false);
+        }
+    }
+
+    /**
+     * Get the player type of this player. (Human, MinMax etc.)
+     *
+     * @return
+     */
+    public String getPlayerType() {
+        return (String) playerType.getSelectedItem();
+    }
+
+    /**
+     * Save the playertype the user has choosen and save the smartness.
+     */
+    private void savePlayerType() {
+        ClientConfig.getInstance().playerType = getPlayerType();
+        ClientConfig.getInstance().playerSmartness = (int) computerSmartness.getValue();
+    }
+
+    /**
      * A panel showing information about a lobby.
      */
     private class RoomPanel extends JPanel {
@@ -172,6 +217,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
          * Join this room.
          */
         public void joinRoom() {
+            savePlayerType();
             controller.joinRoom(getRoom());
         }
     }

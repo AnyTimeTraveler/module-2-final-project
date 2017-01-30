@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Network extends Thread {
-    private final HumanPlayer humanPlayer;
+    private Player humanPlayer;
     private Controller controller;
     private Socket socket;
     private BufferedReader in;
@@ -39,7 +39,21 @@ public class Network extends Thread {
         ready = false;
         inGame = false;
         this.setName("ServerInputReader");
-        humanPlayer = new HumanPlayer();
+        //humanPlayer = new HumanPlayer();
+        //createPlayer();
+    }
+
+    private void createPlayer() {
+        Class playerType = ClientConfig.getInstance().PlayerTypes.get(ClientConfig.getInstance().playerType);
+        if (playerType != null) {
+            try {
+                humanPlayer = (Player) playerType.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                humanPlayer = new HumanPlayer();
+            }
+        } else {
+            humanPlayer = new HumanPlayer();
+        }
     }
 
     public ServerInfo ping() {
@@ -111,11 +125,18 @@ public class Network extends Thread {
         }
     }
 
+    private Player getHumanPlayer() {
+        if (humanPlayer == null) {
+            createPlayer();
+        }
+        return humanPlayer;
+    }
+
     private void interpretLine(String line) {
         String[] parts = line.split(" ");
         if (Protocol.Server.ASSIGNID.equals(parts[0])) {
-            humanPlayer.setId(Integer.parseInt(parts[1]));
-            humanPlayer.setName(ClientConfig.getInstance().PlayerName);
+            getHumanPlayer().setId(Integer.parseInt(parts[1]));
+            getHumanPlayer().setName(ClientConfig.getInstance().PlayerName);
             controller.switchTo(Controller.Panel.MULTI_PLAYER_ROOM);
         } else if (Protocol.Server.NOTIFYMESSAGE.equals(parts[0])) {
             controller.addMessage(ChatMessage.fromString(line));
@@ -123,13 +144,13 @@ public class Network extends Thread {
             List<Player> players = new ArrayList<>();
             for (int i = 2; i < parts.length; i++) {
                 NetworkPlayer np = NetworkPlayer.fromString(parts[i]);
-                if (np.getId() == humanPlayer.getId()) {
-                    players.add(humanPlayer);
+                if (np.getId() == getHumanPlayer().getId()) {
+                    players.add(getHumanPlayer());
                 } else {
                     players.add(np);
                 }
             }
-            engine = new ClientEngine(GameParameters.fromString(parts[1]), players, this, humanPlayer.getId());
+            engine = new ClientEngine(GameParameters.fromString(parts[1]), players, this, getHumanPlayer().getId());
             controller.setEngine(engine);
             controller.startGame();
             controller.switchTo(Controller.Panel.GAME);
