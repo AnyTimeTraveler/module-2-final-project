@@ -39,8 +39,6 @@ public class Network extends Thread {
         ready = false;
         inGame = false;
         this.setName("ServerInputReader");
-        //humanPlayer = new HumanPlayer();
-        //createPlayer();
     }
 
     private void createPlayer() {

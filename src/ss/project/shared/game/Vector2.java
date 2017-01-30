@@ -6,6 +6,10 @@ package ss.project.shared.game;
  *
  * @see Vector3
  */
+
+import lombok.Data;
+
+@Data
 public class Vector2 {
 
     /**
@@ -32,20 +36,6 @@ public class Vector2 {
     public Vector2(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    /**
-     * @return the x coordinate.
-     */
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * @return the y coordinate.
-     */
-    public int getY() {
-        return y;
     }
 
     @Override
