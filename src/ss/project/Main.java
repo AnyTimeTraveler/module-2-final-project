@@ -3,8 +3,6 @@ package ss.project;
 import ss.project.client.Controller;
 import ss.project.client.Network;
 import ss.project.server.Server;
-import ss.project.shared.computerplayer.ComputerPlayer;
-import ss.project.shared.computerplayer.MinMaxAlphaBetaComputerPlayer;
 import ss.project.shared.model.Connection;
 import ss.project.shared.model.ServerConfig;
 
@@ -52,11 +50,10 @@ public class Main {
                         Thread.sleep(100);
                     }
                 }
-                ComputerPlayer thisPlayer = new MinMaxAlphaBetaComputerPlayer();
                 Thread client = new Thread(() -> Controller.getController().start(true));
                 client.setName("ClientMain");
                 client.start();
-                Controller.getController().joinServer(new Network(new Connection("Test", "localhost", 1234)).ping(), thisPlayer);
+                Controller.getController().joinServer(new Network(new Connection("Test", "localhost", 1234)).ping());
                 while (!Controller.getController().isConnected()) {
                     Thread.sleep(100);
                 }

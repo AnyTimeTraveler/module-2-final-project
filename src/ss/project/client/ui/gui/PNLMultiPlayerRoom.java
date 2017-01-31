@@ -11,12 +11,12 @@ import java.awt.*;
 public class PNLMultiPlayerRoom extends GUIPanel {
     private final JLabel headline;
     private final Controller controller;
-    Timer timer;
-    JLabel waitingLabel;
+    private Timer timer;
+    private JLabel waitingLabel;
     /**
      * Used for the waiting animation.
      */
-    int waitingState;
+    private int waitingState;
 
     public PNLMultiPlayerRoom(Controller controller) {
         this.controller = controller;
