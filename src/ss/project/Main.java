@@ -7,6 +7,7 @@ import ss.project.shared.model.Connection;
 import ss.project.shared.model.ServerConfig;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * The class that starts the application and reads arguments.
@@ -24,8 +25,19 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         if (args.length == 0) {
-            printUsage();
-            return;
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Type: [server|client|both|debug]");
+            String type;
+            do {
+                type = sc.nextLine();
+                switch (type.toLowerCase()) {
+                    case "server":
+                    case "client":
+                    case "both":
+                    case "debug":
+                        break;
+                }
+            } while (true);
         }
         if (args[0].equalsIgnoreCase("server")) {
             Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
@@ -43,7 +55,7 @@ public class Main {
             try {
                 Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
                 if (args.length > 1) {
-                    Thread serverThread = new Thread(() -> server.run());
+                    Thread serverThread = new Thread(server::run);
                     serverThread.setName("ServerMain");
                     serverThread.start();
                     while (!server.isReady()) {
