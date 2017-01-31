@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 public class Room implements Serializable {
 
+    private static final Object playersLock = new Object();
     /**
      * Do not use this directly.
      *
@@ -123,23 +124,37 @@ public class Room implements Serializable {
      * @return A new room.
      * @throws ProtocolException If the input is not in the correct format.
      */
-    public static Room fromString(String line) throws ProtocolException {
-        //TODO: remove the first part of the command (text).
-        // split room by it's parameters
-        String[] roomParams = line.split(Protocol.PIPE_SYMBOL);
-        // check if the amount of parameters matches
-        if (roomParams.length != Protocol.ROOM_PARAMETERS) {
-            throw new ParameterLengthsMismatchException(Protocol.ROOM_PARAMETERS, roomParams.length);
-        }
-        try {
-            // convert all strings to integers
-            int[] integers = Arrays.stream(roomParams).mapToInt(Integer::parseInt).toArray();
-            // create a room with the given parameters
-            return new Room(integers[0], integers[1], integers[2], integers[3], integers[4], integers[5]);
-        } catch (NumberFormatException e) {
-            IllegalParameterException illegalParameterException = new IllegalParameterException("Could not convert arguments to numbers: " + Arrays.stream(roomParams).collect(Collectors.joining(", ")));
-            illegalParameterException.setStackTrace(e.getStackTrace());
-            throw illegalParameterException;
+    public static Room fromString(String line, String splitRegex) throws ProtocolException {
+        if (splitRegex.equals(Protocol.PIPE_SYMBOL)) {
+            // split room by it's parameters
+            String[] roomParams = line.split(splitRegex);
+            // check if the amount of parameters matches
+            if (roomParams.length != Protocol.ROOM_PARAMETERS) {
+                throw new ParameterLengthsMismatchException(Protocol.ROOM_PARAMETERS, roomParams.length);
+            }
+            try {
+                // convert all strings to integers
+                int[] integers = Arrays.stream(roomParams).mapToInt(Integer::parseInt).toArray();
+                // create a room with the given parameters
+                return new Room(integers[0], integers[1], integers[2], integers[3], integers[4], integers[5]);
+            } catch (NumberFormatException e) {
+                IllegalParameterException illegalParameterException = new IllegalParameterException("Could not convert arguments to numbers: " + Arrays.stream(roomParams).collect(Collectors.joining(", ")));
+                illegalParameterException.setStackTrace(e.getStackTrace());
+                throw illegalParameterException;
+            }
+        } else {
+            String[] roomParams = line.split(splitRegex);
+            if (roomParams.length != Protocol.ROOM_PARAMETERS) {
+                throw new ParameterLengthsMismatchException(Protocol.ROOM_PARAMETERS, roomParams.length);
+            }
+            try {
+                // create a room with the given parameters
+                return new Room(Integer.parseInt(roomParams[1]), Integer.parseInt(roomParams[2]), Integer.parseInt(roomParams[3]), Integer.parseInt(roomParams[4]), Integer.parseInt(roomParams[5]));
+            } catch (NumberFormatException e) {
+                IllegalParameterException illegalParameterException = new IllegalParameterException("Could not convert arguments to numbers: " + Arrays.stream(roomParams).collect(Collectors.joining(", ")));
+                illegalParameterException.setStackTrace(e.getStackTrace());
+                throw illegalParameterException;
+            }
         }
     }
 
@@ -168,7 +183,7 @@ public class Room implements Serializable {
         }
         List<Room> rooms = new ArrayList<>();
         while (sc.hasNext()) {
-            rooms.add(Room.fromString(sc.next()));
+            rooms.add(Room.fromString(sc.next(), Protocol.PIPE_SYMBOL));
         }
         return rooms;
     }
@@ -182,14 +197,16 @@ public class Room implements Serializable {
      * @throws RoomFullException      This room is full.
      */
     public void join(NetworkPlayer player) throws AlreadyJoinedException, RoomFullException {
-        if (players.contains(player)) {
-            //Already joined.
-            throw new AlreadyJoinedException(player);
+        synchronized (playersLock) {
+            if (players.contains(player)) {
+                //Already joined.
+                throw new AlreadyJoinedException(player);
+            }
+            if (players.size() >= maxPlayers) {
+                throw new RoomFullException(this);
+            }
+            players.add(player);
         }
-        if (players.size() >= maxPlayers) {
-            throw new RoomFullException(this);
-        }
-        players.add(player);
         player.setCurrentRoom(this);
         broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " joined the room.")));
     }
@@ -201,16 +218,18 @@ public class Room implements Serializable {
      * Will notify all players the game has started.
      */
     void startGame() {
-        Object[] args = new Object[players.size() + 1];
-        args[0] = parameters;
-        for (int i = 0; i < players.size(); i++) {
-            args[i + 1] = players.get(i);
+        synchronized (playersLock) {
+            Object[] args = new Object[players.size() + 1];
+            args[0] = parameters;
+            for (int i = 0; i < players.size(); i++) {
+                args[i + 1] = players.get(i);
+            }
+            for (NetworkPlayer np : players) {
+                np.setInGame(true);
+                np.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.STARTGAME, args));
+            }
+            engine = new Engine(parameters, players);
         }
-        for (NetworkPlayer np : players) {
-            np.setInGame(true);
-            np.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.STARTGAME, args));
-        }
-        engine = new Engine(parameters, players);
         engine.setRoom(this);
         engineThread = new Thread(() -> engine.startGame());
         engineThread.setDaemon(true);
@@ -296,6 +315,15 @@ public class Room implements Serializable {
                 String.valueOf(parameters.getWinLength()));
     }
 
+    public String serializeCreation() {
+        return String.join(Protocol.SPACE_SYMBOL,
+                String.valueOf(maxPlayers),
+                String.valueOf(parameters.getSizeX()),
+                String.valueOf(parameters.getSizeY()),
+                String.valueOf(parameters.getSizeZ()),
+                String.valueOf(parameters.getWinLength()));
+    }
+
     /**
      * Get the current amount of players in this room.
      *
@@ -312,6 +340,7 @@ public class Room implements Serializable {
      * @see Protocol#createMessage(Protocol.Client, Object...)
      * @see Protocol#createMessage(Protocol.Server, Object...)
      */
+    @Synchronized("playersLock")
     public void broadcast(String message) {
         for (NetworkPlayer p : players) {
             p.getClientHandler().sendMessage(message);
@@ -339,12 +368,13 @@ public class Room implements Serializable {
 
         engine.finishGame(reason, id);
         engineThread.interrupt();
-
-        //Reset every player to the lobby.
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).setCurrentRoom(null);
-            players.get(i).setInGame(false);
+        synchronized (playersLock) {
+            //Reset every player to the lobby.
+            for (int i = 0; i < players.size(); i++) {
+                players.get(i).setCurrentRoom(null);
+                players.get(i).setInGame(false);
+            }
+            players.clear();
         }
-        players.clear();
     }
 }

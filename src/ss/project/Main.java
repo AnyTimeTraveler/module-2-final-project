@@ -1,8 +1,14 @@
 package ss.project;
 
 import ss.project.client.Controller;
+import ss.project.client.Network;
 import ss.project.server.Server;
+import ss.project.shared.computerplayer.ComputerPlayer;
+import ss.project.shared.computerplayer.MinMaxAlphaBetaComputerPlayer;
+import ss.project.shared.model.Connection;
 import ss.project.shared.model.ServerConfig;
+
+import java.io.IOException;
 
 /**
  * The class that starts the application and reads arguments.
@@ -35,6 +41,29 @@ public class Main {
             Thread server = new Thread(() -> new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port).run());
             server.setName("ServerMain");
             server.start();
+        } else if (args[0].equalsIgnoreCase("debug")) {
+            try {
+                Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
+                if (args.length > 1) {
+                    Thread serverThread = new Thread(() -> server.run());
+                    serverThread.setName("ServerMain");
+                    serverThread.start();
+                    while (!server.isReady()) {
+                        Thread.sleep(100);
+                    }
+                }
+                ComputerPlayer thisPlayer = new MinMaxAlphaBetaComputerPlayer();
+                Thread client = new Thread(() -> Controller.getController().start(true));
+                client.setName("ClientMain");
+                client.start();
+                Controller.getController().joinServer(new Network(new Connection("Test", "localhost", 1234)).ping(), thisPlayer);
+                while (!Controller.getController().isConnected()) {
+                    Thread.sleep(100);
+                }
+                Controller.getController().joinRoom(Controller.getController().getRooms().get(0));
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

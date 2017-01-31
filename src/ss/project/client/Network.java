@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Network extends Thread {
-    private Player humanPlayer;
+    private Player ownedPlayer;
     private Controller controller;
     private Socket socket;
     private BufferedReader in;
@@ -27,31 +27,22 @@ public class Network extends Thread {
     @Getter
     private boolean ready;
     private ClientEngine engine;
-    private boolean inGame;
 
-    public Network(Controller controller, Connection connection)
+    public Network(Connection connection)
             throws IOException {
-        this.controller = controller;
+        this.controller = Controller.getController();
         socket = new Socket(connection.getAddress(), connection.getPort());
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         closed = false;
         ready = false;
-        inGame = false;
         this.setName("ServerInputReader");
+        ownedPlayer = new HumanPlayer();
     }
 
-    private void createPlayer() {
-        Class playerType = ClientConfig.getInstance().PlayerTypes.get(ClientConfig.getInstance().playerType);
-        if (playerType != null) {
-            try {
-                humanPlayer = (Player) playerType.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                humanPlayer = new HumanPlayer();
-            }
-        } else {
-            humanPlayer = new HumanPlayer();
-        }
+    public Network(Connection connection, Player player) throws IOException {
+        this(connection);
+        ownedPlayer = player;
     }
 
     public ServerInfo ping() {
@@ -95,14 +86,17 @@ public class Network extends Thread {
 
                 // await list of rooms
                 line = in.readLine();
-                try {
-                    controller.setRooms(Room.parseRoomListString(line));
-                } catch (ProtocolException e) {
-                    controller.showError("Expected Rooms", e.getStackTrace());
-                    // Unhandled, yet.
-                    e.printStackTrace();
-                    // Badly handled
-                    return;
+                if (serverInfo.isRoomSupport()) {
+                    try {
+                        controller.setRooms(Room.parseRoomListString(line));
+                    } catch (ProtocolException e) {
+                        controller.showError("Expected Rooms", e.getStackTrace());
+                        // Unhandled, yet.
+                        e.printStackTrace();
+                        // Badly handled
+                        sendError(4);
+                        return;
+                    }
                 }
                 ready = true;
 
@@ -123,18 +117,11 @@ public class Network extends Thread {
         }
     }
 
-    private Player getHumanPlayer() {
-        if (humanPlayer == null) {
-            createPlayer();
-        }
-        return humanPlayer;
-    }
-
     private void interpretLine(String line) {
         String[] parts = line.split(" ");
         if (Protocol.Server.ASSIGNID.equals(parts[0])) {
-            getHumanPlayer().setId(Integer.parseInt(parts[1]));
-            getHumanPlayer().setName(ClientConfig.getInstance().PlayerName);
+            ownedPlayer.setId(Integer.parseInt(parts[1]));
+            ownedPlayer.setName(ClientConfig.getInstance().PlayerName);
             controller.switchTo(Controller.Panel.MULTI_PLAYER_ROOM);
         } else if (Protocol.Server.NOTIFYMESSAGE.equals(parts[0])) {
             controller.addMessage(ChatMessage.fromString(line));
@@ -142,13 +129,13 @@ public class Network extends Thread {
             List<Player> players = new ArrayList<>();
             for (int i = 2; i < parts.length; i++) {
                 NetworkPlayer np = NetworkPlayer.fromString(parts[i]);
-                if (np.getId() == getHumanPlayer().getId()) {
-                    players.add(getHumanPlayer());
+                if (np.getId() == ownedPlayer.getId()) {
+                    players.add(ownedPlayer);
                 } else {
                     players.add(np);
                 }
             }
-            engine = new ClientEngine(GameParameters.fromString(parts[1]), players, this, getHumanPlayer().getId());
+            engine = new ClientEngine(GameParameters.fromString(parts[1]), players, this, ownedPlayer.getId());
             controller.setEngine(engine);
             controller.startGame();
             controller.switchTo(Controller.Panel.GAME);
@@ -167,8 +154,21 @@ public class Network extends Thread {
                 controller.setRooms(Room.parseRoomListString(line));
             } catch (ProtocolException e) {
                 e.printStackTrace();
-                //TODO: send right error message back.
+
             }
+        } else if (Protocol.Server.SENDLEADERBOARD.equals(parts[0])) {
+            try {
+                List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
+                for (int i = 0; i < parts.length - 1; i++) {
+                    leaderboardEntries.add(LeaderboardEntry.fromString(parts[i + 1]));
+                }
+                controller.setLeaderBoard(leaderboardEntries);
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+        } else if (Protocol.Server.ROOMCREATED.equals(parts[0])) {
+            controller.refreshRoomList();
+            controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
         } else {
             System.err.println(line);
             throw new NotImplementedException();
@@ -206,4 +206,9 @@ public class Network extends Thread {
     private String getCapabilityString(int maxPlayers, String name, boolean roomSupport, int maxX, int maxY, int maxZ, int winLength, boolean chat, boolean autoRefresh) {
         return Protocol.createMessage(Protocol.Client.SENDCAPABILITIES, maxPlayers, name, roomSupport, maxX, maxY, maxZ, winLength, chat, autoRefresh);
     }
+
+    private void sendError(int errorcode) {
+        sendMessage(Protocol.createMessage(Protocol.Server.ERROR, errorcode));
+    }
+
 }

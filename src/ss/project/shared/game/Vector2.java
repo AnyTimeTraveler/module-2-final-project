@@ -88,8 +88,4 @@ public class Vector2 {
         return new Vector2(getX() + vector2.getX(), getY() + vector2.getY());
     }
 
-    @Override
-    public String toString() {
-        return "Vector2 [x=" + x + ", y=" + y + "]";
-    }
 }

@@ -49,7 +49,9 @@ public class ClientHandler extends Thread {
         this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         closed = false;
         player = new NetworkPlayer(this);
-        this.setName("ClientHandler: Unknown Player");
+        this.setName("ClientHandler: Unknown Player\n" +
+                             "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
+                             "\nRemote: " + socket.getRemoteSocketAddress());
     }
 
     /**
@@ -107,8 +109,9 @@ public class ClientHandler extends Thread {
                         player.getCurrentRoom().endGame(Protocol.WinReason.PLAYERDISCONNECTED, player.getId());
                     }
                     shutdown();
+                } else {
+                    interpretLine(line);
                 }
-                interpretLine(line);
             }
         } catch (IOException e) {
             //e.printStackTrace();
@@ -149,7 +152,9 @@ public class ClientHandler extends Thread {
                 sendMessage(server.getRoomListString());
             } else if (Protocol.Client.CREATEROOM.equals(parts[0])) {
                 try {
-                    server.addRoom(Room.fromString(line));
+                    Room room = Room.fromString(line, Protocol.SPACE_SYMBOL);
+                    server.addRoom(room);
+                    sendMessage(Protocol.createMessage(Protocol.Server.ROOMCREATED, room.getId()));
                 } catch (ProtocolException e) {
                     e.printStackTrace();
 
@@ -197,8 +202,6 @@ public class ClientHandler extends Thread {
                 sendMessage(server.getLeaderboardMessage());
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
                 server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
-            } else if (Protocol.Server.ERROR.equals(parts[0])) {
-
             } else {
                 System.out.println(line);
                 throw new NotImplementedException();

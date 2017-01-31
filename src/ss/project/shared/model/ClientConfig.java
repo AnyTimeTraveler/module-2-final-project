@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import ss.project.client.HumanPlayer;
 import ss.project.shared.computerplayer.*;
+import ss.project.shared.game.Player;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class ClientConfig {
     /**
      * A map that contains all possible playerTypes the player can use.
      */
-    public HashMap<String, Class> PlayerTypes;
+    public HashMap<String, Class<? extends Player>> PlayerTypes;
     /**
      * If true, the frame will be shown in full screen.
      * If false in windowed mode.
@@ -121,12 +122,12 @@ public class ClientConfig {
         KnownServers = new ArrayList<>();
         KnownServers.add(new Connection("Localhost", "127.0.0.1", 1234));
         PlayerName = "Simon";
-        MaxPlayers = 10;
+        MaxPlayers = Integer.MAX_VALUE;
         RoomSupport = true;
-        MaxDimensionX = 4;
-        MaxDimensionY = 4;
-        MaxDimensionZ = 4;
-        MaxWinLength = 4;
+        MaxDimensionX = Integer.MAX_VALUE;
+        MaxDimensionY = Integer.MAX_VALUE;
+        MaxDimensionZ = Integer.MAX_VALUE;
+        MaxWinLength = Integer.MAX_VALUE;
         ChatSupport = true;
         AutoRefresh = true;
         MaxPlayers = 50;

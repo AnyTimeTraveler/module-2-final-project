@@ -15,6 +15,7 @@ public class Protocol {
     public static final HashMap<Integer, WinReason> WINREASONMAP;
     public static final int ROOM_PARAMETERS = 6;
     public static final String PIPE_SYMBOL = "\\|";
+    public static final String SPACE_SYMBOL = " ";
 
     static {
         ERRORMAP = new HashMap<>();

@@ -5,6 +5,7 @@ import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
 import ss.project.client.Network;
 import ss.project.shared.Protocol;
+import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.model.GameParameters;
 
 import java.util.Collection;
@@ -119,7 +120,7 @@ public class ClientEngine extends Engine {
         Player player = getPlayer(playerID);
         getUI().setCurrentPlayer(player);
         currentTurn = playerID;
-        if (player instanceof HumanPlayer) {
+        if (player instanceof HumanPlayer || player instanceof ComputerPlayer) {
             Thread playerInputWaiter = new Thread(() -> player.doTurn(this));
             playerInputWaiter.setName("PlayerInputWaiter");
             playerInputWaiter.setDaemon(true);

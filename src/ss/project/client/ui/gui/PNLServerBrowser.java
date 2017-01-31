@@ -6,7 +6,6 @@ import ss.project.shared.model.ServerInfo;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,29 +15,24 @@ public class PNLServerBrowser extends GUIPanel {
 
     private Controller controller;
     private JPanel serversListPanel;
-    private List<ServerPanel> serverPanels;
 
     private int roomPanelHeight = 75;
     private int spaceBetweenText = 10;
 
     public PNLServerBrowser(Controller controller) {
         super(true);
-
         this.controller = controller;
 
-        serverPanels = new ArrayList<>();
-
         this.setLayout(new BorderLayout());
-
         this.add(GUIUtils.createLabel("Servers", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
 
         serversListPanel = new JPanel();
         serversListPanel.setLayout(new BoxLayout(serversListPanel, BoxLayout.Y_AXIS));
         this.add(serversListPanel, BorderLayout.CENTER);
 
-        JPanel jPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
         JButton backButton = new JButton("Back");
-        jPanel.add(backButton);
+        buttonPanel.add(backButton);
         backButton.addActionListener(e -> controller.switchTo(Controller.Panel.MAIN_MENU));
         JButton addButton = new JButton("Add");
         addButton.addActionListener(e -> {
@@ -46,14 +40,14 @@ public class PNLServerBrowser extends GUIPanel {
             controller.addServer(JOptionPane.showInputDialog(this, "IP:PORT"));
             onEnter();
         });
-        jPanel.add(addButton);
+        buttonPanel.add(addButton);
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(e -> {
             onLeave();
             onEnter();
         });
-        jPanel.add(refreshButton);
-        this.add(jPanel, BorderLayout.SOUTH);
+        buttonPanel.add(refreshButton);
+        this.add(buttonPanel, BorderLayout.SOUTH);
     }
 
     @Override

@@ -57,4 +57,11 @@ public class GameParameters implements Serializable {
     public Vector3 getWorldSize() {
         return new Vector3(sizeX, sizeY, sizeZ);
     }
+
+    public boolean isCompatibleTo(GameParameters other) {
+        return sizeX <= other.sizeX &&
+                       sizeY <= other.sizeY &&
+                       sizeZ <= other.sizeZ &&
+                       winLength <= other.winLength;
+    }
 }

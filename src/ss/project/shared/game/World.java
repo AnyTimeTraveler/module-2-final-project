@@ -247,8 +247,7 @@ public class World {
                     Vector3 vector = new Vector3(x, y, z);
                     //Don't check zero, because that's ourself.
                     if (!vector.equals(newCoordinates)) {
-                        //We found a neighbor that is owner by us as well! Continue this path.
-                        Vector3 direction = newCoordinates.subtract(x, y, z);
+                        //We found a neighbor that is owned by us as well! Continue this path.
                         int dirX = newX - x;
                         int dirY = newY - y;
                         int dirZ = newZ - z;

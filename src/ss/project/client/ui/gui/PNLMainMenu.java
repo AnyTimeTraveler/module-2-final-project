@@ -11,11 +11,8 @@ import java.awt.event.ActionListener;
  */
 public class PNLMainMenu extends GUIPanel {
 
-    private Controller controller;
-
     public PNLMainMenu(Controller controller) {
         super();
-        this.controller = controller;
 
         this.setLayout(new BorderLayout());
         this.add(GUIUtils.createLabel("Main Menu", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);

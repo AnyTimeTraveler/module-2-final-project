@@ -62,8 +62,7 @@ import java.util.Map;
  */
 public class GameCanvas2D extends JPanel {
 
-    Image backbuffer;    // Backbuffer image
-    Engine engine;        // PNLGame board
+    private Engine engine;        // PNLGame board
 
     private int width = 350;
     private int height = 350;
@@ -142,24 +141,6 @@ public class GameCanvas2D extends JPanel {
         float green = (color1.getGreen() * value) / 255;
         float blue = (color1.getBlue() * value) / 255;
         float alpha = (color1.getAlpha()) / 255;
-
-        return new Color(red, green, blue, alpha);
-    }
-
-    private Color multiplyAlpha(Color color1, float value) {
-        float red = (color1.getRed()) / 255;
-        float green = (color1.getGreen()) / 255;
-        float blue = (color1.getBlue()) / 255;
-        float alpha = (color1.getAlpha() * value) / 255;
-
-        return new Color(red, green, blue, alpha);
-    }
-
-    private Color combineColor(Color color1, Color color2) {
-        float red = (color1.getRed() * color2.getRed()) / 255;
-        float green = (color1.getGreen() * color2.getGreen()) / 255;
-        float blue = (color1.getBlue() * color2.getBlue()) / 255;
-        float alpha = (color1.getAlpha() * color2.getAlpha()) / 255;
 
         return new Color(red, green, blue, alpha);
     }

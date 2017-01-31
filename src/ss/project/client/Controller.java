@@ -10,10 +10,8 @@ import ss.project.client.ui.tui.*;
 import ss.project.server.Room;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.Engine;
-import ss.project.shared.model.ChatMessage;
-import ss.project.shared.model.ClientConfig;
-import ss.project.shared.model.Connection;
-import ss.project.shared.model.ServerInfo;
+import ss.project.shared.game.Player;
+import ss.project.shared.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +55,7 @@ public class Controller extends Observable {
      */
     @Getter
     private boolean connected;
+    private List<LeaderboardEntry> leaderBoard;
 
     /**
      * True if this is a server controller, false if it's a client.
@@ -224,7 +223,7 @@ public class Controller extends Observable {
      * @param room
      */
     public void createRoom(Room room) {
-        network.sendMessage(Protocol.createMessage(Protocol.Client.CREATEROOM, room.serialize()));
+        network.sendMessage(Protocol.createMessage(Protocol.Client.CREATEROOM, room.serializeCreation()));
     }
 
     /**
@@ -242,13 +241,17 @@ public class Controller extends Observable {
      * @param serverInfo
      */
     public void joinServer(ServerInfo serverInfo) {
+        joinServer(serverInfo, new HumanPlayer());
+    }
+
+    public void joinServer(ServerInfo serverInfo, Player ownedPlayer) {
         addMessage(new ChatMessage("Game", "Connecting..."));
         updateChatMessages();
         try {
             if (network != null) {
                 network.shutdown();
             }
-            network = new Network(this, serverInfo.getConnection());
+            network = new Network(serverInfo.getConnection(), ownedPlayer);
             network.start();
             // Exchanging data with server
             while (!network.isReady()) {
@@ -350,12 +353,16 @@ public class Controller extends Observable {
         List<ServerInfo> serverInfos = new ArrayList<>();
         for (Connection connection : connections) {
             try {
-                serverInfos.add(new Network(getController(), connection).ping());
+                serverInfos.add(new Network(connection).ping());
             } catch (IOException e) {
                 serverInfos.add(new ServerInfo(ServerInfo.Status.OFFLINE, connection, 0, false, 0, 0, 0, 0, false));
             }
         }
         return serverInfos;
+    }
+
+    public void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
+        this.leaderBoard = leaderBoard;
     }
 
     public enum Panel {

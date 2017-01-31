@@ -1,6 +1,5 @@
 import org.junit.Assert;
 import org.junit.Test;
-import ss.project.client.Controller;
 import ss.project.client.Network;
 import ss.project.server.Server;
 import ss.project.shared.NetworkPlayer;
@@ -24,7 +23,7 @@ public class NetworkTest {
         while (!server.isReady()) {
             Thread.sleep(10);
         }
-        Network client = new Network(Controller.getController(), new Connection("Simon", "127.0.0.1", server.getPort()));
+        Network client = new Network(new Connection("Simon", "127.0.0.1", server.getPort()));
         Assert.assertEquals(ServerInfo.Status.ONLINE, client.ping().getStatus());
     }
 
@@ -36,7 +35,7 @@ public class NetworkTest {
         while (!server.isReady()) {
             Thread.sleep(10);
         }
-        Network client = new Network(Controller.getController(), new Connection("Simon", "127.0.0.1", server.getPort()));
+        Network client = new Network(new Connection("Simon", "127.0.0.1", server.getPort()));
         client.start();
         while (!client.isReady()) {
             Thread.sleep(10);

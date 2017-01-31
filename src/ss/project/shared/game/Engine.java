@@ -7,7 +7,6 @@ import ss.project.client.ui.GameDisplay;
 import ss.project.server.Room;
 import ss.project.shared.Protocol;
 import ss.project.shared.model.GameParameters;
-import ss.project.shared.model.ServerConfig;
 
 import java.util.*;
 
@@ -216,9 +215,9 @@ public class Engine {
                     if (getUI() != null) {
                         getUI().setCurrentPlayer(player);
                     }
-                    if (isServer) {
-                        timeoutTimer.schedule(timeoutTask, ServerConfig.getInstance().TimeoutInSeconds * 1000);
-                    }
+//                    if (isServer) {
+//                        timeoutTimer.schedule(timeoutTask, ServerConfig.getInstance().TimeoutInSeconds * 1000);
+//                    }
                     player.doTurn(this);
                     timeoutTimer.cancel();
                 } else {

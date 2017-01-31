@@ -63,43 +63,12 @@ public class Vector3 {
     }
 
     /**
-     * Subtract the argument from this vector3.
-     *
-     * @param vector3
-     * @return
-     */
-    public Vector3 subtract(Vector3 vector3) {
-        return new Vector3(getX() - vector3.getX(), getY() - vector3.getY(), getZ() - vector3.getZ());
-    }
-
-    /**
-     * Substract x,y,z from this vector3.
-     *
-     * @param x the x axis.
-     * @param y the y axis.
-     * @param z the z axis.
-     * @return
-     */
-    public Vector3 subtract(int x, int y, int z) {
-        return new Vector3(getX() - x, getY() - y, getZ() - z);
-    }
-
-    /**
      * Add a vector2 to a vector3 (vector3 = vector2 = vector2)
      *
      * @return
      */
     public Vector3 add(Vector3 vector3) {
         return new Vector3(getX() + vector3.getX(), getY() + vector3.getY(), getZ() + vector3.getZ());
-    }
-
-    /**
-     * Return the inverse of the vector3.
-     *
-     * @return
-     */
-    public Vector3 inverse() {
-        return new Vector3(-getX(), -getY(), -getZ());
     }
 
     /**

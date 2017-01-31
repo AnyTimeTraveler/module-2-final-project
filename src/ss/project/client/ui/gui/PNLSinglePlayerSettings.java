@@ -23,7 +23,6 @@ import java.util.logging.Level;
  */
 @Log
 public class PNLSinglePlayerSettings extends GUIPanel {
-    private JLabel headline;
     private JSpinner worldX;
     private JSpinner worldY;
     private JSpinner worldZ;
@@ -32,8 +31,6 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     private java.util.List<PlayerPanel> playerPanels = new ArrayList<>();
     private Controller controller;
     private GridBagConstraints gridBagConstraints;
-    private int x = 0;
-    private int y = 0;
     /**
      * Panel that is responsible for the player list.
      */
@@ -54,8 +51,8 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 1;
-        gridBagConstraints.gridwidth = gridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = gridBagConstraints.HORIZONTAL;
+        gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 
         add(GUIUtils.createLabel("Single Player", GUIUtils.LabelType.TITLE), gridBagConstraints);
 
@@ -95,9 +92,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         gridBagConstraints.gridheight = 1;
         gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
 
-        /**
-         * Create the panel with a list of players.
-         */
+        //Create the panel with a list of players.
         playerPanel = new JPanel();
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
         this.add(addPlayerPanes(2), gridBagConstraints);
@@ -122,8 +117,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
     }
 
     private JSpinner createSpinner(int value, int min, int max) {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, min, max, 1));
-        return spinner;
+        return new JSpinner(new SpinnerNumberModel(value, min, max, 1));
     }
 
     private JLabel createLabel(String text) {
@@ -247,10 +241,10 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
                 List<Player> players = new ArrayList<>();
                 for (int i = 0; i < playerCount; i++) {
-                    Class playerType = ClientConfig.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType());
-                    Player player = (Player) playerType.newInstance();
+                    Class<? extends Player> playerType = ClientConfig.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType());
+                    Player player = playerType.newInstance();
                     player.setName(playerPanels.get(i).getName());
-                    player = (Player) ClientConfig.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
+                    player = ClientConfig.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
                     player.setName(playerPanels.get(i).getName());
                     player.setId(i);
                     if (playerPanels.get(i).isComputerPlayer()) {
