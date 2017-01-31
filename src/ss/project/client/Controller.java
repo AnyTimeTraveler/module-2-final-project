@@ -318,7 +318,7 @@ public class Controller extends Observable {
     }
 
     public void sendChatMessage(String message) {
-        if (isConnected()) {
+        if (isConnected() && getCurrentServer().isChatSupport()) {
             network.sendMessage(Protocol.createMessage(Protocol.Client.SENDMESSAGE, message));
         } else {
             addMessage(new ChatMessage("Game", "That didn't go anywhere, since you aren't connected to any server at the moment."));

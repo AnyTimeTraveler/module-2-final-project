@@ -2,6 +2,7 @@ package ss.project.client.ui.gui;
 
 import ss.project.client.Controller;
 import ss.project.server.Room;
+import ss.project.shared.model.ServerInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,7 +92,24 @@ public class PNLMultiPlayerRoomCreation extends GUIPanel {
 
     @Override
     public void onEnter() {
+        ServerInfo server = Controller.getController().getCurrentServer();
+        if (!Controller.getController().isConnected()) {
+            return;
+        }
+        SpinnerNumberModel spinnerNumberModel = (SpinnerNumberModel) amountOfPlayers.getModel();
+        spinnerNumberModel.setMaximum(server.getMaxPlayers());
 
+        SpinnerNumberModel spinnerNumberModel1 = (SpinnerNumberModel) worldX.getModel();
+        spinnerNumberModel1.setMaximum(server.getMaxDimensionX());
+
+        SpinnerNumberModel spinnerNumberModel2 = (SpinnerNumberModel) worldY.getModel();
+        spinnerNumberModel2.setMaximum(server.getMaxDimensionY());
+
+        SpinnerNumberModel spinnerNumberModel3 = (SpinnerNumberModel) worldZ.getModel();
+        spinnerNumberModel3.setMaximum(server.getMaxDimensionZ());
+
+        SpinnerNumberModel spinnerNumberModel4 = (SpinnerNumberModel) winLength.getModel();
+        spinnerNumberModel4.setMaximum(server.getMaxWinLength());
     }
 
     @Override
