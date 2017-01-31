@@ -1,3 +1,5 @@
+package ss.project.tests;
+
 import org.junit.Before;
 import org.junit.Test;
 import ss.project.shared.game.Engine;

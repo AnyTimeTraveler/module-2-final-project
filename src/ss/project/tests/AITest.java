@@ -1,3 +1,5 @@
+package ss.project.tests;
+
 import org.junit.Before;
 import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer;

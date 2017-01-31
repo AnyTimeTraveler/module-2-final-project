@@ -1,3 +1,5 @@
+package ss.project.tests;
+
 import org.junit.Assert;
 import org.junit.Test;
 import ss.project.client.Network;
