@@ -63,6 +63,9 @@ public class PNLLeaderboard extends GUIPanel implements Observer {
         }
     }
 
+    /**
+     * An item on the scoreboard.
+     */
     class ScoreBoardItem extends JPanel {
         private ScoreBoardItem(LeaderboardEntry leaderboardEntry) {
             JLabel label = new JLabel(leaderboardEntry.getPlayerName() + " wins/losses/draws" + leaderboardEntry.getWins() + "/" + leaderboardEntry.getLosses() + "/" + leaderboardEntry.getDraws());
