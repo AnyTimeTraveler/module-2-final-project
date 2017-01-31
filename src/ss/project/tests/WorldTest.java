@@ -261,7 +261,7 @@ public class WorldTest {
         world.addGameItem(new Vector2(1, 1), dummy);
         world.addGameItem(new Vector2(3, 3), dummy2);
         World newWorld = world.deepCopy();
-        Assert.assertTrue(world.isOwner(new Vector3(1, 1, 0), dummy));
-        Assert.assertTrue(world.isOwner(new Vector3(3, 3, 0), dummy2));
+        Assert.assertTrue(newWorld.isOwner(new Vector3(1, 1, 0), dummy));
+        Assert.assertTrue(newWorld.isOwner(new Vector3(3, 3, 0), dummy2));
     }
 }

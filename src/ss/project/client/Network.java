@@ -8,7 +8,6 @@ import ss.project.shared.exceptions.ProtocolException;
 import ss.project.shared.game.ClientEngine;
 import ss.project.shared.game.Player;
 import ss.project.shared.model.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.net.Socket;
@@ -188,7 +187,6 @@ public class Network extends Thread {
             controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
         } else {
             System.err.println(line);
-            throw new NotImplementedException();
         }
     }
 
