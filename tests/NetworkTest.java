@@ -27,7 +27,6 @@ public class NetworkTest {
         Assert.assertEquals(ServerInfo.Status.ONLINE, client.ping().getStatus());
     }
 
-    @Test
     public void testClientCapabilities() throws InterruptedException, IOException {
         Server server = new Server("127.0.0.1", 1024 + new Random().nextInt(6000));
         Thread serverThread = new Thread(server::run);

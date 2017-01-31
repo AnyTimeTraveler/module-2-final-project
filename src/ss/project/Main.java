@@ -68,7 +68,10 @@ public class Main {
         } else if (args[0].equalsIgnoreCase("client")) {
             runClient(args.length < 2 || !args[1].equals("tui"));
         } else if (args[0].equalsIgnoreCase("both")) {
-            Thread client = new Thread(() -> Controller.getController().start(true));
+            Thread client = new Thread(() -> {
+                Controller.getController().start(true);
+                Controller.getController().doUI();
+            });
             client.setName("ClientMain");
             client.start();
             Thread server = new Thread(() -> new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port).run());
@@ -85,7 +88,10 @@ public class Main {
                         Thread.sleep(100);
                     }
                 }
-                Thread client = new Thread(() -> Controller.getController().start(true));
+                Thread client = new Thread(() -> {
+                    Controller.getController().start(true);
+                    Controller.getController().doUI();
+                });
                 client.setName("ClientMain");
                 client.start();
                 Controller.getController().joinServer(new Network(new Connection("Test", "localhost", 1234)).ping());
@@ -112,6 +118,9 @@ public class Main {
 
     public static void runClient(boolean gui) {
         Controller.getController().start(gui);
+        if (gui) {
+            Controller.getController().doUI();
+        }
     }
 
     public static void runServer() {

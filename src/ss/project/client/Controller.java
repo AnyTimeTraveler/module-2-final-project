@@ -144,6 +144,9 @@ public class Controller extends Observable {
     public void restartFrame() {
         frame.dispose();
         start(doGui);
+        if (doGui) {
+            doUI();
+        }
     }
 
     /**
