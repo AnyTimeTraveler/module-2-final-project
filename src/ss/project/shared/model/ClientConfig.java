@@ -104,6 +104,11 @@ public class ClientConfig {
      * The smartness of the playerType if it's an AI.
      */
     public int playerSmartness;
+    /**
+     * If true a hint is shown after X seconds when playing as a human.
+     * If false no hint is shown at all.
+     */
+    public boolean showHint;
 
     /**
      * Set all default values of the fields.
@@ -134,6 +139,7 @@ public class ClientConfig {
         MaxChatMessages = 50;
         playerType = "Human";
         playerSmartness = 6;
+        showHint = true;
     }
 
     /**

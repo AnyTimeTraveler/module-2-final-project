@@ -8,6 +8,7 @@ import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.Vector3;
+import ss.project.shared.model.ClientConfig;
 
 import javax.swing.*;
 
@@ -36,19 +37,21 @@ public class HumanPlayer extends Player {
 
     @Override
     public void doTurn(Engine engine) {
-        hintTimer = new Timer(5000, e -> doHint(engine));
-        hintTimer.start();
+        if (ClientConfig.getInstance().showHint) {
+            hintTimer = new Timer(5000, e -> doHint(engine));
+            hintTimer.start();
+        }
 
         engine.getUI().startTurn(waiter, this);
 
-        hintTimer.start();
+        //hintTimer.start();
         try {
             synchronized (waiter) {
                 waiter.wait();
             }
 
             //We placed something!
-            if (hintPos != null) {
+            if (hintPos != null && ClientConfig.getInstance().showHint) {
                 synchronized (hintSync) {
                     engine.getUI().removeHint(hintPos.getX(), hintPos.getY(), hintPos.getZ());
                 }
@@ -58,7 +61,9 @@ public class HumanPlayer extends Player {
                 //we failed...
                 doTurn(engine);
             } else {
-                hintTimer.stop();
+                if (ClientConfig.getInstance().showHint) {
+                    hintTimer.stop();
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
