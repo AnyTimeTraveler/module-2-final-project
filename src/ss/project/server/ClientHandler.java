@@ -214,6 +214,9 @@ public class ClientHandler extends Thread {
     }
 
     public void sendMessage(String msg) {
+        if (!player.isChatSupport() && Protocol.Server.NOTIFYMESSAGE.equals(msg.split(" ")[0])) {
+            return;
+        }
         System.out.println(Thread.currentThread().getName() + "\nSent message: " + msg);
         try {
             out.write(msg);
