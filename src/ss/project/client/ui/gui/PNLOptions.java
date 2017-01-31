@@ -16,6 +16,7 @@ public class PNLOptions extends GUIPanel {
     private JTextField playerTextField;
     private JCheckBox autoRefreshCheckbox;
     private JSpinner maxChatMessages;
+    private JCheckBox showHint;
 
     public PNLOptions(Controller controller) {
         super();
@@ -48,6 +49,10 @@ public class PNLOptions extends GUIPanel {
         chatMessagePanel.setPreferredSize(new Dimension(1000, 50));
         chatMessagePanel.setMaximumSize(new Dimension(1000, 50));
         add(chatMessagePanel);
+
+        showHint = GUIUtils.createCheckBox("Show hints");
+        showHint.setSelected(ClientConfig.getInstance().showHint);
+        addComponent(showHint);
 
         fullScreenCheckbox = GUIUtils.createCheckBox("Fullscreen");
         fullScreenCheckbox.setSelected(ClientConfig.getInstance().Fullscreen);
@@ -95,6 +100,10 @@ public class PNLOptions extends GUIPanel {
 
         if (fullScreenCheckbox.isSelected() != ClientConfig.getInstance().Fullscreen) {
             swichFullscreen(fullScreenCheckbox.isSelected());
+        }
+
+        if (showHint.isSelected() != ClientConfig.getInstance().showHint) {
+            ClientConfig.getInstance().showHint = showHint.isSelected();
         }
 
         //Save to file.
