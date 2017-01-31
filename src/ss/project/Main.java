@@ -118,9 +118,7 @@ public class Main {
 
     public static void runClient(boolean gui) {
         Controller.getController().start(gui);
-        if (gui) {
-            Controller.getController().doUI();
-        }
+        Controller.getController().doUI();
     }
 
     public static void runServer() {
