@@ -42,6 +42,8 @@ public class Network extends Thread {
     public ServerInfo ping() {
         try {
             String line = in.readLine();
+            out.close();
+            in.close();
             socket.close();
             return ServerInfo.fromString(line, socket.getInetAddress(), socket.getPort());
         } catch (IOException e) {
@@ -132,6 +134,7 @@ public class Network extends Thread {
     }
 
     private void interpretLine(String line) {
+        System.out.println("Recieved: " + line);
         String[] parts = line.split(" ");
         if (Protocol.Server.ASSIGNID.equals(parts[0])) {
             getOwnedPlayer().setId(Integer.parseInt(parts[1]));

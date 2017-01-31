@@ -42,7 +42,11 @@ public class PNLMultiPlayerRoom extends GUIPanel {
 
     @Override
     public void onEnter() {
-        headline.setText("Room " + controller.getCurrentRoom().getId());
+        if (controller.getCurrentRoom() != null) {
+            headline.setText("Room " + controller.getCurrentRoom().getId());
+        } else {
+            headline.setText("Room");
+        }
         timer.start();
     }
 

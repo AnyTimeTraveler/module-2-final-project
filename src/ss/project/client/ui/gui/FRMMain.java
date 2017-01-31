@@ -62,7 +62,6 @@ public class FRMMain extends JFrame implements UIFrame {
             chatPanel.onEnter();
         } else {
             chatPanel.onLeave();
-            switchTo(Controller.Panel.SERVER_BROWSER.getPanel());
         }
         splitPane.revalidate();
         splitPane.resetToPreferredSizes();

@@ -184,10 +184,10 @@ public class Controller extends Observable {
         List<Room> fakeRooms = new ArrayList<>();
         ServerInfo info = getCurrentServer();
         fakeRooms.add(new Room(0, info.getMaxPlayers(),
-                                      info.getMaxDimensionX(),
-                                      info.getMaxDimensionY(),
-                                      info.getMaxDimensionZ(),
-                                      info.getMaxWinLength()));
+                info.getMaxDimensionX(),
+                info.getMaxDimensionY(),
+                info.getMaxDimensionZ(),
+                info.getMaxWinLength()));
         return fakeRooms;
     }
 
@@ -343,6 +343,7 @@ public class Controller extends Observable {
                 frame.setConnected(getCurrentServer().isChatSupport());
             } else {
                 frame.setConnected(false);
+                switchTo(Controller.Panel.SERVER_BROWSER);
             }
         }
     }
