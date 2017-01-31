@@ -7,7 +7,6 @@ import ss.project.shared.exceptions.NotInRoomException;
 import ss.project.shared.exceptions.ProtocolException;
 import ss.project.shared.exceptions.RoomFullException;
 import ss.project.shared.model.ChatMessage;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.net.Socket;
@@ -210,8 +209,7 @@ public class ClientHandler extends Thread {
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
                 server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
             } else {
-                System.out.println(line);
-                throw new NotImplementedException();
+                System.err.println("Not implemented: " + line);
             }
         }
     }
