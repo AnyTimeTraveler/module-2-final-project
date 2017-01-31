@@ -1,6 +1,7 @@
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ss.project.client.Controller;
 import ss.project.client.HumanPlayer;
 import ss.project.client.ui.GameDisplay;
 import ss.project.shared.Protocol;
@@ -17,12 +18,13 @@ import java.util.Arrays;
  * Created by fw on 27/01/2017.
  */
 public class EngineTest {
-    Engine engine;
-    Player linear;
-    Player random;
+    private Engine engine;
+    private Player linear;
+    private Player random;
 
     @Before
     public void setUp() throws Exception {
+        Controller.getController().start(false);
         linear = new LinearComputerPlayer("linear");
         linear.setId(4);
         random = new RandomComputerPlayer("random");
@@ -54,6 +56,8 @@ public class EngineTest {
 
             }
         });
+        Controller.getController().setEngine(engine);
+        Controller.getController().switchTo(Controller.Panel.GAME);
     }
 
     @Test

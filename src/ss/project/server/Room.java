@@ -250,6 +250,11 @@ public class Room implements Serializable {
         player.setCurrentRoom(null);
         broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
         player.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
+        synchronized (playersLock) {
+            if (players.size() == 0) {
+
+            }
+        }
     }
 
     /**

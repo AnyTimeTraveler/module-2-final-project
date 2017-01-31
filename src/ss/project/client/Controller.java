@@ -123,12 +123,14 @@ public class Controller extends Observable {
             Panel.OPTIONS.setPanel(new TUIOptions());
             Panel.LEADERBOARD.setPanel(new TUILeaderboard());
             Panel.GAMEEND.setPanel(new TUIGameEnd());
+            frame = new TUI();
         }
+    }
+
+    public void doUI() {
         EventQueue.invokeLater(() -> {
-            if (gui) {
+            if (doGui) {
                 frame = new FRMMain();
-            } else {
-                frame = new TUI();
             }
             frame.init();
             switchTo(Panel.MAIN_MENU);
@@ -185,10 +187,10 @@ public class Controller extends Observable {
         List<Room> fakeRooms = new ArrayList<>();
         ServerInfo info = getCurrentServer();
         fakeRooms.add(new Room(0, info.getMaxPlayers(),
-                info.getMaxDimensionX(),
-                info.getMaxDimensionY(),
-                info.getMaxDimensionZ(),
-                info.getMaxWinLength()));
+                                      info.getMaxDimensionX(),
+                                      info.getMaxDimensionY(),
+                                      info.getMaxDimensionZ(),
+                                      info.getMaxWinLength()));
         return fakeRooms;
     }
 
@@ -345,11 +347,13 @@ public class Controller extends Observable {
     public void setConnected(boolean connected) {
         if (this.connected != connected) {
             this.connected = connected;
-            if (connected) {
-                frame.setConnected(getCurrentServer().isChatSupport());
-            } else {
-                frame.setConnected(false);
-                switchTo(Controller.Panel.SERVER_BROWSER);
+            if (frame != null) {
+                if (connected) {
+                    frame.setConnected(getCurrentServer().isChatSupport());
+                } else {
+                    frame.setConnected(false);
+                    switchTo(Controller.Panel.SERVER_BROWSER);
+                }
             }
         }
     }
