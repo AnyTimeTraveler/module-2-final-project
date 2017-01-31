@@ -61,6 +61,18 @@ public class LeaderboardEntry implements Serializable {
         }
     }
 
+    public void addWin() {
+        setWins(getWins() + 1);
+    }
+
+    public void addLose() {
+        setLosses(getLosses() + 1);
+    }
+
+    public void addDraw() {
+        setDraws(getDraws() + 1);
+    }
+
     /**
      * Create a string representing a leaderboard entry in the protocol.
      *

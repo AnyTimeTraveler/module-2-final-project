@@ -122,6 +122,35 @@ public class ServerConfig {
         }
     }
 
+    /**
+     * @param name
+     * @param type 0==draw, 1==win, 2==lose.
+     */
+    public void addScoreToBoard(String name, int type) {
+        LeaderboardEntry newLeaderBoardEntry = null;
+        for (int i = 0; i < Leaderboard.size(); i++) {
+            if (Leaderboard.get(i).getPlayerName().equals(name)) {
+                newLeaderBoardEntry = Leaderboard.get(i);
+                break;
+            }
+        }
+        if (newLeaderBoardEntry == null) {
+            newLeaderBoardEntry = new LeaderboardEntry(name, 0, 0, 0);
+            Leaderboard.add(newLeaderBoardEntry);
+        }
+        switch (type) {
+            case 0:
+                newLeaderBoardEntry.addDraw();
+                break;
+            case 1:
+                newLeaderBoardEntry.addWin();
+                break;
+            case 2:
+                newLeaderBoardEntry.addLose();
+                break;
+        }
+    }
+
     public void toFile() {
         toFile(new File(CONFIGFILE));
     }

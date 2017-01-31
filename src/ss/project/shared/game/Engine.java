@@ -5,8 +5,10 @@ import lombok.Setter;
 import ss.project.client.Controller;
 import ss.project.client.ui.GameDisplay;
 import ss.project.server.Room;
+import ss.project.shared.NetworkPlayer;
 import ss.project.shared.Protocol;
 import ss.project.shared.model.GameParameters;
+import ss.project.shared.model.ServerConfig;
 
 import java.util.*;
 
@@ -246,7 +248,24 @@ public class Engine {
         if (getUI() != null) {
             Controller.getController().switchTo(Controller.Panel.GAMEEND);
         } else {
+            //Notify anyone in the room.
             room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYEND, reason.getId(), playerid));
+            //Add data to the leaderboard.
+            switch (reason) {
+                case BOARDISFULL:
+                    for (NetworkPlayer networkPlayer : room.getPlayers()) {
+                        ServerConfig.getInstance().addScoreToBoard(networkPlayer.getName(), 0);
+                    }
+                    break;
+                case WINLENGTHACHIEVED:
+                    for (NetworkPlayer networkPlayer : room.getPlayers()) {
+                        if (networkPlayer.getId() != playerid) {
+                            ServerConfig.getInstance().addScoreToBoard(networkPlayer.getName(), 2);
+                        }
+                    }
+                    ServerConfig.getInstance().addScoreToBoard(getPlayer(playerid).getName(), 1);
+                    break;
+            }
         }
     }
 }
