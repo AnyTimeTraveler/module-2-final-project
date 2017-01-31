@@ -294,6 +294,11 @@ public class Controller extends Observable {
         ClientConfig.getInstance().toFile();
     }
 
+    public void removeServer(ServerInfo serverInfo) {
+        ClientConfig.getInstance().KnownServers.remove(serverInfo.getConnection());
+        ClientConfig.getInstance().toFile();
+    }
+
     /**
      * Stop the client.
      */
@@ -364,6 +369,7 @@ public class Controller extends Observable {
     public void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
         this.leaderBoard = leaderBoard;
     }
+
 
     public enum Panel {
         MAIN_MENU,

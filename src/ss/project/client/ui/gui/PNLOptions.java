@@ -97,6 +97,9 @@ public class PNLOptions extends GUIPanel {
             swichFullscreen(fullScreenCheckbox.isSelected());
         }
 
+        //Save to file.
+        ClientConfig.getInstance().toFile();
+
         controller.switchTo(Controller.Panel.MAIN_MENU);
     }
 

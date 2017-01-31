@@ -43,8 +43,7 @@ public class PNLServerBrowser extends GUIPanel {
         buttonPanel.add(addButton);
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(e -> {
-            onLeave();
-            onEnter();
+            refreshServerList();
         });
         buttonPanel.add(refreshButton);
         this.add(buttonPanel, BorderLayout.SOUTH);
@@ -53,6 +52,11 @@ public class PNLServerBrowser extends GUIPanel {
     @Override
     public void onEnter() {
         addServerPanels(controller.pingServers());
+    }
+
+    private void refreshServerList() {
+        onLeave();
+        onEnter();
     }
 
     @Override
@@ -91,8 +95,16 @@ public class PNLServerBrowser extends GUIPanel {
             this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             this.setMaximumSize(new Dimension(10000, roomPanelHeight));
 
+            JPanel westPanel = new JPanel(new GridBagLayout());
+            JButton deleteButton = new JButton("X");
+            deleteButton.addActionListener(e -> {
+                Controller.getController().removeServer(serverInfo);
+                refreshServerList();
+            });
+            westPanel.add(deleteButton);
             JLabel serverStatus = new JLabel(serverInfo.getStatus().toString());
-            this.add(serverStatus, BorderLayout.WEST);
+            westPanel.add(serverStatus);
+            add(westPanel, BorderLayout.WEST);
 
             JPanel jPanel = new JPanel(new GridBagLayout());
             GridBagConstraints constraints = new GridBagConstraints();
@@ -119,6 +131,8 @@ public class PNLServerBrowser extends GUIPanel {
                 joinButton.setEnabled(false);
             }
             this.add(joinButton, BorderLayout.EAST);
+
+            this.setToolTipText(serverInfo.getConnection().getAddress() + ":" + serverInfo.getConnection().getPort());
         }
     }
 }
