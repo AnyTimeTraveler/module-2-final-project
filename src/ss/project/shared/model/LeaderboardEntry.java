@@ -67,6 +67,6 @@ public class LeaderboardEntry implements Serializable {
      * @return
      */
     public String serialize() {
-        return String.join(Protocol.PIPE_SYMBOL, String.valueOf(playerName), String.valueOf(wins), String.valueOf(draws), String.valueOf(losses));
+        return String.join("|", String.valueOf(playerName), String.valueOf(wins), String.valueOf(draws), String.valueOf(losses));
     }
 }

@@ -3,6 +3,7 @@ package ss.project.server;
 import lombok.Getter;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.Vector3;
+import ss.project.shared.model.LeaderboardEntry;
 import ss.project.shared.model.ServerConfig;
 
 import java.io.IOException;
@@ -215,7 +216,12 @@ public class Server {
      * @return
      */
     public String getLeaderboardMessage() {
-        return Protocol.createMessage(Protocol.Server.SENDLEADERBOARD, ServerConfig.getInstance().Leaderboard);
+        Object[] entries = new Object[ServerConfig.getInstance().Leaderboard.size()];
+        List<LeaderboardEntry> leaderboard = ServerConfig.getInstance().Leaderboard;
+        for (int i = 0; i < leaderboard.size(); i++) {
+            entries[i] = leaderboard.get(i);
+        }
+        return Protocol.createMessage(Protocol.Server.SENDLEADERBOARD, entries);
     }
 
     /**
