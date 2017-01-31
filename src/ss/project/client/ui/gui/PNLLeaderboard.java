@@ -5,11 +5,13 @@ import ss.project.shared.model.LeaderboardEntry;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by fw on 26/01/2017.
  */
-public class PNLLeaderboard extends GUIPanel {
+public class PNLLeaderboard extends GUIPanel implements Observer {
     private JPanel leaderBoardList;
     private GridBagConstraints gridBagConstraints;
 
@@ -31,27 +33,34 @@ public class PNLLeaderboard extends GUIPanel {
 
     @Override
     public void onEnter() {
-        //TODO: get the leaderboard entries from the server.
-        LeaderboardEntry[] entries = new LeaderboardEntry[3];
-        for (int i = 0; i < entries.length; i++) {
-            entries[i] = new LeaderboardEntry("player " + i, i + 1, i - 1, i);
-        }
-        showLeaderBoardEntries(entries);
+        Controller.getController().addObserver(this);
+        Controller.getController().requestLeaderBoard();
+        showLeaderBoardEntries(Controller.getController().getLeaderBoard());
     }
 
-    private void showLeaderBoardEntries(LeaderboardEntry[] entries) {
+    private void showLeaderBoardEntries(java.util.List<LeaderboardEntry> entries) {
         leaderBoardList.removeAll();
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-        for (int i = 0; i < entries.length; i++) {
-            gridBagConstraints.gridy = i;
-            leaderBoardList.add(new ScoreBoardItem(entries[i]), gridBagConstraints);
-
+        if (entries != null) {
+            for (int i = 0; i < entries.size(); i++) {
+                gridBagConstraints.gridy = i;
+                leaderBoardList.add(new ScoreBoardItem(entries.get(i)), gridBagConstraints);
+            }
         }
     }
 
     @Override
     public void onLeave() {
+        Controller.getController().deleteObserver(this);
+    }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof Controller) {
+            if (arg.equals("UpdateLeaderBoard")) {
+                showLeaderBoardEntries(Controller.getController().getLeaderBoard());
+            }
+        }
     }
 
     class ScoreBoardItem extends JPanel {

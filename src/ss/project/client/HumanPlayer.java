@@ -43,8 +43,6 @@ public class HumanPlayer extends Player {
         }
 
         engine.getUI().startTurn(waiter, this);
-
-        //hintTimer.start();
         try {
             synchronized (waiter) {
                 waiter.wait();

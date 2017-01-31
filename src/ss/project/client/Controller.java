@@ -54,6 +54,7 @@ public class Controller extends Observable {
      */
     @Getter
     private boolean connected;
+    @Getter
     private List<LeaderboardEntry> leaderBoard;
 
     /**
@@ -368,8 +369,13 @@ public class Controller extends Observable {
 
     public void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
         this.leaderBoard = leaderBoard;
+        setChanged();
+        notifyObservers("UpdateLeaderBoard");
     }
 
+    public void requestLeaderBoard() {
+        network.sendMessage(Protocol.createMessage(Protocol.Client.REQUESTLEADERBOARD));
+    }
 
     public enum Panel {
         MAIN_MENU,

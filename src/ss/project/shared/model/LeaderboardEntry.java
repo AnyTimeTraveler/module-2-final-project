@@ -48,8 +48,8 @@ public class LeaderboardEntry implements Serializable {
         // split room by it's parameters
         String[] params = line.split(Protocol.PIPE_SYMBOL);
         // check if the amount of parameters matches
-        if (params.length != Protocol.ROOM_PARAMETERS) {
-            throw new ParameterLengthsMismatchException(Protocol.ROOM_PARAMETERS, params.length);
+        if (params.length != Protocol.LEADERBOARD_PARAMETERS) {
+            throw new ParameterLengthsMismatchException(Protocol.LEADERBOARD_PARAMETERS, params.length);
         }
         try {
             // create an instance with the given parameters
