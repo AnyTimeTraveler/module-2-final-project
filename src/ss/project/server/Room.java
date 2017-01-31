@@ -53,6 +53,7 @@ public class Room implements Serializable {
     /**
      * Current joined players.
      */
+    @Getter
     private List<NetworkPlayer> players;
     /**
      * The GameParameters of this room.
