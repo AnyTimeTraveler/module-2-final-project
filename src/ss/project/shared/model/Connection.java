@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import lombok.Data;
 
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 
 /**
@@ -50,7 +49,7 @@ public class Connection {
      */
     public static boolean validIP(String ip) {
         try {
-            InetAddress address = Inet4Address.getByName(ip);
+            InetAddress address = InetAddress.getByName(ip);
             return address.isReachable(1000);
         } catch (IOException e) {
             return false;
