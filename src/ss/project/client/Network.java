@@ -37,7 +37,6 @@ public class Network extends Thread {
         closed = false;
         ready = false;
         this.setName("ServerInputReader");
-        ownedPlayer = new HumanPlayer();
     }
 
     public ServerInfo ping() {
@@ -49,6 +48,26 @@ public class Network extends Thread {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Player getOwnedPlayer() {
+        if (ownedPlayer == null) {
+            ownedPlayer = createPlayer();
+        }
+        return ownedPlayer;
+    }
+
+    private Player createPlayer() {
+        Class playerType = ClientConfig.getInstance().PlayerTypes.get(ClientConfig.getInstance().playerType);
+        if (playerType != null) {
+            try {
+                return (Player) playerType.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                return new HumanPlayer();
+            }
+        } else {
+            return new HumanPlayer();
+        }
     }
 
     public void run() {
@@ -115,8 +134,8 @@ public class Network extends Thread {
     private void interpretLine(String line) {
         String[] parts = line.split(" ");
         if (Protocol.Server.ASSIGNID.equals(parts[0])) {
-            ownedPlayer.setId(Integer.parseInt(parts[1]));
-            ownedPlayer.setName(ClientConfig.getInstance().PlayerName);
+            getOwnedPlayer().setId(Integer.parseInt(parts[1]));
+            getOwnedPlayer().setName(ClientConfig.getInstance().PlayerName);
             controller.switchTo(Controller.Panel.MULTI_PLAYER_ROOM);
         } else if (Protocol.Server.NOTIFYMESSAGE.equals(parts[0])) {
             controller.addMessage(ChatMessage.fromString(line));
@@ -124,13 +143,13 @@ public class Network extends Thread {
             List<Player> players = new ArrayList<>();
             for (int i = 2; i < parts.length; i++) {
                 NetworkPlayer np = NetworkPlayer.fromString(parts[i]);
-                if (np.getId() == ownedPlayer.getId()) {
-                    players.add(ownedPlayer);
+                if (np.getId() == getOwnedPlayer().getId()) {
+                    players.add(getOwnedPlayer());
                 } else {
                     players.add(np);
                 }
             }
-            engine = new ClientEngine(GameParameters.fromString(parts[1]), players, this, ownedPlayer.getId());
+            engine = new ClientEngine(GameParameters.fromString(parts[1]), players, this, getOwnedPlayer().getId());
             controller.setEngine(engine);
             controller.startGame();
             controller.switchTo(Controller.Panel.GAME);

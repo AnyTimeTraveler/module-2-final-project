@@ -12,12 +12,18 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * A test unit that is used to improve the AI and make sure every AI places when calling doTurn.
  * Created by fw on 27/01/2017.
  */
 public class AITest {
     Engine engine;
     List<Player> players;
 
+    /**
+     * Create the list of AI (ignore the HumanPlayer).
+     *
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         players = new ArrayList<>();
@@ -34,6 +40,11 @@ public class AITest {
         }
     }
 
+    /**
+     * Let all AI play against each other.
+     *
+     * @throws Exception
+     */
     // @Test
     public void testAllAI() throws Exception {
         for (int i = 0; i < players.size(); i++) {
@@ -43,6 +54,10 @@ public class AITest {
         }
     }
 
+    /**
+     * Make two minmax play against each other to see which one wins.
+     * Used to improve the AI.
+     */
     // @Test
     public void minMaxChecker() {
         MinMaxComputerPlayer minMaxComputerPlayer = new MinMaxComputerPlayer("min max", 6);
@@ -53,6 +68,13 @@ public class AITest {
         System.out.println(winner.getName());
     }
 
+    /**
+     * Let two AI play against each other on a default 4x4x4 world and return the winner.
+     *
+     * @param player1 The first AI.
+     * @param player2 The second AI.
+     * @return The player that won the game.
+     */
     private Player testAI(Player player1, Player player2) {
         engine = new Engine(new Vector3(4, 4, 4), 4, Arrays.asList(player1, player2));
         engine.startGame();

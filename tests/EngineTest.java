@@ -1,6 +1,8 @@
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ss.project.client.HumanPlayer;
+import ss.project.client.ui.GameDisplay;
 import ss.project.shared.Protocol;
 import ss.project.shared.computerplayer.LinearComputerPlayer;
 import ss.project.shared.computerplayer.RandomComputerPlayer;
@@ -26,6 +28,32 @@ public class EngineTest {
         random = new RandomComputerPlayer("random");
         random.setId(7);
         engine = new Engine(new Vector3(4, 4, 4), 4, Arrays.asList(linear, random));
+        engine.setUI(new GameDisplay() {
+            @Override
+            public void startTurn(Object waiter, HumanPlayer humanPlayer) {
+
+            }
+
+            @Override
+            public void update() {
+
+            }
+
+            @Override
+            public void showHint(int x, int y, int z) {
+
+            }
+
+            @Override
+            public void removeHint(int x, int y, int z) {
+
+            }
+
+            @Override
+            public void setCurrentPlayer(Player player) {
+
+            }
+        });
     }
 
     @Test
