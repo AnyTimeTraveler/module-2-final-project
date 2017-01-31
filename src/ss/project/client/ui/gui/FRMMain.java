@@ -16,7 +16,6 @@ public class FRMMain extends JFrame implements UIFrame {
     private JPanel mainPanel;
     @Getter
     private PNLChat chatPanel;
-    private GUIPanel currentPanel;
 
     private JSplitPane splitPane;
 
@@ -80,7 +79,6 @@ public class FRMMain extends JFrame implements UIFrame {
         }
         mainPanel.add((GUIPanel) panel, BorderLayout.CENTER);
         ((GUIPanel) panel).onEnter();
-        currentPanel = (GUIPanel) panel;
         mainPanel.revalidate();
         mainPanel.repaint();
     }

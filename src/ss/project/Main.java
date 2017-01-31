@@ -7,6 +7,7 @@ import ss.project.shared.model.Connection;
 import ss.project.shared.model.ServerConfig;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Scanner;
 
 /**
@@ -26,24 +27,46 @@ public class Main {
     public static void main(String[] args) {
         if (args.length == 0) {
             Scanner sc = new Scanner(System.in);
-            System.out.print("Type: [server|client|both|debug]");
             String type;
+            boolean isValid;
             do {
+                System.out.print("Type: [server|client|both|debug]");
                 type = sc.nextLine();
-                switch (type.toLowerCase()) {
-                    case "server":
-                    case "client":
-                    case "both":
-                    case "debug":
-                        break;
+            }
+            while (!type.matches("(client)|(server)|(both)|(debug)"));
+
+            String address;
+            isValid = false;
+            do {
+                System.out.print("Address: ");
+                address = sc.nextLine();
+                try {
+                    if (type.equalsIgnoreCase("server") || type.equalsIgnoreCase("both")) {
+                        isValid = InetAddress.getByName(address).isAnyLocalAddress();
+                    } else if (type.equalsIgnoreCase("client")) {
+                        isValid = InetAddress.getByName(address).isReachable(1000);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    isValid = false;
                 }
-            } while (true);
-        }
-        if (args[0].equalsIgnoreCase("server")) {
-            Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
-            server.run();
+            } while (!isValid);
+
+            int port = 1234;
+            do {
+                try {
+                    System.out.print("Port: ");
+                    port = Integer.parseInt(sc.nextLine());
+                    isValid = port > 1024 && port < 65535;
+                } catch (NumberFormatException e) {
+                    isValid = false;
+                }
+            } while (!isValid);
+            run(type, address, port);
+        } else if (args[0].equalsIgnoreCase("server")) {
+            runServer();
         } else if (args[0].equalsIgnoreCase("client")) {
-            Controller.getController().start(args.length < 2 || !args[1].equals("tui"));
+            runClient(args.length < 2 || !args[1].equals("tui"));
         } else if (args[0].equalsIgnoreCase("both")) {
             Thread client = new Thread(() -> Controller.getController().start(true));
             client.setName("ClientMain");
@@ -74,6 +97,26 @@ public class Main {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void run(String type, String address, int port) {
+        switch (type.toLowerCase()) {
+            case "server":
+                runServer();
+            case "client":
+            case "both":
+            case "debug":
+                break;
+        }
+    }
+
+    public static void runClient(boolean gui) {
+        Controller.getController().start(gui);
+    }
+
+    public static void runServer() {
+        Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
+        server.run();
     }
 
     /**
