@@ -10,7 +10,6 @@ import ss.project.client.ui.tui.*;
 import ss.project.server.Room;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.Engine;
-import ss.project.shared.game.Player;
 import ss.project.shared.model.*;
 
 import javax.swing.*;
@@ -241,17 +240,13 @@ public class Controller extends Observable {
      * @param serverInfo
      */
     public void joinServer(ServerInfo serverInfo) {
-        joinServer(serverInfo, new HumanPlayer());
-    }
-
-    public void joinServer(ServerInfo serverInfo, Player ownedPlayer) {
         addMessage(new ChatMessage("Game", "Connecting..."));
         updateChatMessages();
         try {
             if (network != null) {
                 network.shutdown();
             }
-            network = new Network(serverInfo.getConnection(), ownedPlayer);
+            network = new Network(serverInfo.getConnection());
             network.start();
             // Exchanging data with server
             while (!network.isReady()) {

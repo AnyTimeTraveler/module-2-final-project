@@ -40,11 +40,6 @@ public class Network extends Thread {
         ownedPlayer = new HumanPlayer();
     }
 
-    public Network(Connection connection, Player player) throws IOException {
-        this(connection);
-        ownedPlayer = player;
-    }
-
     public ServerInfo ping() {
         try {
             String line = in.readLine();
