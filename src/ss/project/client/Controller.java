@@ -433,8 +433,7 @@ public class Controller extends Observable {
      */
     void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
         this.leaderBoard = leaderBoard;
-        setChanged();
-        notifyObservers("UpdateLeaderBoard");
+        controller.switchTo(Controller.Panel.LEADERBOARD);
     }
 
     /**

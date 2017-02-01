@@ -59,7 +59,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
         jPanel.add(backButton);
 
         JButton leaderBoardButton = new JButton("leaderboard");
-        leaderBoardButton.addActionListener(e -> controller.switchTo(Controller.Panel.LEADERBOARD));
+        leaderBoardButton.addActionListener(e -> Controller.getController().requestLeaderBoard());
         jPanel.add(leaderBoardButton);
 
         JButton createButton = new JButton("Create");
@@ -204,7 +204,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
             winLength.setText("Win length: " + room.getWinLength());
             playerAmount.setText("Players: " + room.getMaxPlayers());
             worldSize.setText("World:" + room.getWorldSize().getX() + "," +
-                    room.getWorldSize().getY() + "," + room.getWorldSize().getZ());
+                                      room.getWorldSize().getY() + "," + room.getWorldSize().getZ());
         }
 
         /**
