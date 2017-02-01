@@ -11,6 +11,7 @@ import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.model.Color;
+import ss.project.shared.model.GameParameters;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -232,5 +233,9 @@ public class NetworkPlayer extends Player implements Serializable {
     @Override
     public String serialize() {
         return String.join("|", String.valueOf(getId()), getName(), getColor().serialize());
+    }
+
+    public GameParameters getParameters() {
+        return new GameParameters(maxDimensionX, maxDimensionY, maxDimensionZ, maxWinLength);
     }
 }
