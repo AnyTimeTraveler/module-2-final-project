@@ -13,6 +13,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
+ * Smartest AI we have.
+ * Min Max algorithm with alpha beta pruning.
+ * Uses the same threading system as the Min Max.
+ * <p>
  * Created by fw on 16/01/2017.
  */
 public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {

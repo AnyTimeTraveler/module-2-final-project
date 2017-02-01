@@ -11,6 +11,10 @@ import ss.project.shared.model.ChatMessage;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * Every client that connects will get a clientHandler.
+ * This will run on its own thread and respond to messages from sends messages to the clients.
+ */
 public class ClientHandler extends Thread {
     /**
      * The network player associated with this clienthandler.
@@ -49,8 +53,8 @@ public class ClientHandler extends Thread {
         closed = false;
         player = new NetworkPlayer(this);
         this.setName("ClientHandler: Unknown Player\n" +
-                             "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
-                             "\nRemote: " + socket.getRemoteSocketAddress());
+                "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
+                "\nRemote: " + socket.getRemoteSocketAddress());
     }
 
     /**
@@ -104,8 +108,6 @@ public class ClientHandler extends Thread {
             sendMessage(Protocol.createMessage(
                     Protocol.Server.NOTIFYMESSAGE, new ChatMessage(
                             "Server", "There are currently " + server.getClientHandlers().size() + " People online.")));
-//            sendMessage(Protocol.createMessage(
-//                    Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "For help type \"/help\".")));
         } catch (IOException e) {
             e.printStackTrace();
             shutdown();
@@ -232,10 +234,21 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Send an error from this (server) to this particular client.
+     *
+     * @param errorcode The code that represents the error.
+     */
     private void sendError(int errorcode) {
         sendMessage(Protocol.createMessage(Protocol.Server.ERROR, errorcode));
     }
 
+    /**
+     * Send a message to this client.
+     * If it's a chatMessage and the player does not support chat, it won't be sent.
+     *
+     * @param msg The protocol message that should be sent.
+     */
     public void sendMessage(String msg) {
         if (!player.isChatSupport() && Protocol.Server.NOTIFYMESSAGE.equals(msg.split(" ")[0])) {
             return;
@@ -251,10 +264,20 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Get the player of this clientHandler.
+     *
+     * @return
+     */
     public NetworkPlayer getPlayer() {
         return player;
     }
 
+    /**
+     * Shutdown this clientHandler.
+     * If this player is inside a room, it will notify the room this player has lost connection.
+     * It will remove this clientHandler from the server and close it.
+     */
     private void shutdown() {
         if (player.getCurrentRoom() != null) {
             player.getCurrentRoom().lostConnection(player);
