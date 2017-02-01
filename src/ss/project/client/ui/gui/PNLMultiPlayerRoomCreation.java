@@ -97,19 +97,19 @@ public class PNLMultiPlayerRoomCreation extends GUIPanel {
             return;
         }
         SpinnerNumberModel spinnerNumberModel = (SpinnerNumberModel) amountOfPlayers.getModel();
-        spinnerNumberModel.setMaximum(server.getMaxPlayers());
+        spinnerNumberModel.setMaximum(server.getMaxPlayers() == 0 ? Integer.MAX_VALUE : server.getMaxPlayers());
 
         SpinnerNumberModel spinnerNumberModel1 = (SpinnerNumberModel) worldX.getModel();
-        spinnerNumberModel1.setMaximum(server.getMaxDimensionX());
+        spinnerNumberModel1.setMaximum(server.getMaxDimensionX() == 0 ? Integer.MAX_VALUE : server.getMaxDimensionX());
 
         SpinnerNumberModel spinnerNumberModel2 = (SpinnerNumberModel) worldY.getModel();
-        spinnerNumberModel2.setMaximum(server.getMaxDimensionY());
+        spinnerNumberModel2.setMaximum(server.getMaxDimensionY() == 0 ? Integer.MAX_VALUE : server.getMaxDimensionY());
 
         SpinnerNumberModel spinnerNumberModel3 = (SpinnerNumberModel) worldZ.getModel();
-        spinnerNumberModel3.setMaximum(server.getMaxDimensionZ());
+        spinnerNumberModel3.setMaximum(server.getMaxDimensionZ() == 0 ? Integer.MAX_VALUE : server.getMaxDimensionZ());
 
         SpinnerNumberModel spinnerNumberModel4 = (SpinnerNumberModel) winLength.getModel();
-        spinnerNumberModel4.setMaximum(server.getMaxWinLength());
+        spinnerNumberModel4.setMaximum(server.getMaxWinLength() == 0 ? Integer.MAX_VALUE : server.getMaxWinLength());
     }
 
     @Override
