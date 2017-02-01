@@ -59,9 +59,9 @@ public class GameParameters implements Serializable {
     }
 
     public boolean isCompatibleTo(GameParameters other) {
-        return sizeX <= other.sizeX &&
-                       sizeY <= other.sizeY &&
-                       sizeZ <= other.sizeZ &&
-                       winLength <= other.winLength;
+        return sizeX >= other.sizeX &&
+                       sizeY >= other.sizeY &&
+                       sizeZ >= other.sizeZ &&
+                       winLength >= other.winLength;
     }
 }

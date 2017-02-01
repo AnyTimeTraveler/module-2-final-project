@@ -1,6 +1,7 @@
 package ss.project.server;
 
 import lombok.Getter;
+import ss.project.shared.NetworkPlayer;
 import ss.project.shared.Protocol;
 import ss.project.shared.game.Vector3;
 import ss.project.shared.model.LeaderboardEntry;
@@ -74,7 +75,7 @@ public class Server {
      */
     private void createDefaultRoom() {
         defaultRoom = new Room(2, new Vector3(4, 4, 4), 4);
-        rooms.add(defaultRoom);
+        addRoom(defaultRoom);
     }
 
     /**
@@ -218,7 +219,14 @@ public class Server {
      * @return the default room instance.
      * @see Server#defaultRoom
      */
-    Room getDefaultRoom() {
+    Room getDefaultRoom(NetworkPlayer player) {
+        synchronized (rooms) {
+            for (Room room : rooms) {
+                if (!room.isFull() && room.getParameters().isCompatibleTo(player.getParameters())) {
+                    return room;
+                }
+            }
+        }
         if (defaultRoom == null || defaultRoom.isFull()) {
             createDefaultRoom();
         }

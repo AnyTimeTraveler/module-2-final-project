@@ -58,6 +58,7 @@ public class Room implements Serializable {
     /**
      * The GameParameters of this room.
      */
+    @Getter
     private GameParameters parameters;
 
     /**

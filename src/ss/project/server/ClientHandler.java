@@ -86,7 +86,7 @@ public class ClientHandler extends Thread {
                 sendMessage(server.getRoomListString());
             } else {
                 try {
-                    Room room = server.getDefaultRoom();
+                    Room room = server.getDefaultRoom(player);
                     room.join(player);
                     // reply with id-assignment
                     sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, player.getId()));
