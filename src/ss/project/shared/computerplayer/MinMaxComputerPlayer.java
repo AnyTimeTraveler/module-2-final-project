@@ -43,6 +43,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     }
 
     private void initialize(Engine engine) {
+        // Prevent errors when initialize is accidentally called multiple times (shouldn't happen)
         if (worldCopy == null) {
             worldCopy = new World(engine.getWorld().getSize(), engine.getWorld().getWinLength());
         }
