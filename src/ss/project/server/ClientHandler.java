@@ -104,8 +104,8 @@ public class ClientHandler extends Thread {
             sendMessage(Protocol.createMessage(
                     Protocol.Server.NOTIFYMESSAGE, new ChatMessage(
                             "Server", "There are currently " + server.getClientHandlers().size() + " People online.")));
-            sendMessage(Protocol.createMessage(
-                    Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "For help type \"/help\".")));
+//            sendMessage(Protocol.createMessage(
+//                    Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "For help type \"/help\".")));
         } catch (IOException e) {
             e.printStackTrace();
             shutdown();
