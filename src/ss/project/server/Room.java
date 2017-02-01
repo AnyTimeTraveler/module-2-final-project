@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
 
 /**
  * A room object with players.
+ * Will be created when a player calls CreateRoom from the protocol,
+ * or if a player connects who does not support rooms and there
+ * are no empty rooms left.
  * <p>
  * Created by fw on 21/01/2017.
  */

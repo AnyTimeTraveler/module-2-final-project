@@ -12,6 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
+ * An AI based on MinMax algorithm.
+ * Uses smart multithreading to make it faster.
+ * <p>
  * Created by fw on 16/01/2017.
  */
 public class MinMaxComputerPlayer extends ComputerPlayer {

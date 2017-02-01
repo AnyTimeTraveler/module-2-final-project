@@ -4,6 +4,9 @@ import ss.project.shared.game.Engine;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.World;
 
+/**
+ * Simple AI that will start from 0,0 and places at the first place possible.
+ */
 public class LinearComputerPlayer extends ComputerPlayer {
 
     /**

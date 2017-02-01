@@ -1,6 +1,11 @@
 package ss.project.shared.computerplayer;
 
 /**
+ * Another MinMax AI. Used to test various calculations for the HeuristicValue.
+ * This AI played against the MinMaxComputerPlayer to see who won.
+ *
+ * @see MinMaxComputerPlayer
+ * <p>
  * Created by fw on 16/01/2017.
  */
 public class MinMaxComputerPlayer2 extends MinMaxComputerPlayer {

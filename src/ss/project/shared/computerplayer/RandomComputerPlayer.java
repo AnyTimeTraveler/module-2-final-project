@@ -6,6 +6,10 @@ import ss.project.shared.game.World;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * An AI that tries to place somewhere random.
+ * If it fails it tries again.
+ */
 public class RandomComputerPlayer extends ComputerPlayer {
 
     /**
