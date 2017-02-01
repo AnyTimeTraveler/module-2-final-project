@@ -107,6 +107,18 @@ public class Server {
     }
 
     /**
+     * Send a message to all clients (even those not in rooms).
+     *
+     * @param msg the string that's to be sent to all clients
+     */
+    void broadcast(String msg) {
+        System.out.println("Message to all clients: " + msg);
+        for (ClientHandler clientHandler : threads) {
+            clientHandler.sendMessage(msg);
+        }
+    }
+
+    /**
      * Add a new handler to the server (when first connected).
      */
     private void addHandler(ClientHandler handler) {

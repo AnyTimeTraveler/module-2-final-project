@@ -49,8 +49,8 @@ public class ClientHandler extends Thread {
         closed = false;
         player = new NetworkPlayer(this);
         this.setName("ClientHandler: Unknown Player\n" +
-                "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
-                "\nRemote: " + socket.getRemoteSocketAddress());
+                             "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
+                             "\nRemote: " + socket.getRemoteSocketAddress());
     }
 
     /**
@@ -211,6 +211,14 @@ public class ClientHandler extends Thread {
             } else if (Protocol.Client.REQUESTLEADERBOARD.equals(parts[0])) {
                 // send leaderboard
                 sendMessage(server.getLeaderboardMessage());
+            } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
+                int splitOne = line.indexOf(' ') + 1;
+                int splitTwo = line.indexOf(' ', splitOne) + 1;
+                String name = line.substring(splitOne, splitTwo - 1);
+                String message = line.substring(splitTwo);
+
+                server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE,
+                        new ChatMessage(name, message)));
             } else {
                 System.err.println("Not implemented: " + line);
             }
