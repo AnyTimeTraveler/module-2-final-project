@@ -24,6 +24,9 @@ import java.util.Observable;
  */
 public class Controller extends Observable {
     private static final Object CHAT_LOCK = new Object();
+    /**
+     * A singleton reference to the controller.
+     */
     @Getter
     private static Controller controller;
 
@@ -63,7 +66,8 @@ public class Controller extends Observable {
     private Controller() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
         chatMessages = new ArrayList<>();
@@ -88,7 +92,8 @@ public class Controller extends Observable {
      */
     @Synchronized("CHAT_LOCK")
     public List<ChatMessage> getRecentChatMessages(int amount) {
-        return chatMessages.subList(amount < chatMessages.size() ? chatMessages.size() - amount : 0, chatMessages.size());
+        return chatMessages.subList(
+                amount < chatMessages.size() ? chatMessages.size() - amount : 0, chatMessages.size());
     }
 
     /**
@@ -126,6 +131,9 @@ public class Controller extends Observable {
         }
     }
 
+    /**
+     * Start the client UI, will create a FRMMain if it's a GUI.
+     */
     public void doUI() {
         EventQueue.invokeLater(() -> {
             if (doGui) {
@@ -136,6 +144,9 @@ public class Controller extends Observable {
         });
     }
 
+    /**
+     * Start the server UI.
+     */
     public void doServerUI() {
         EventQueue.invokeLater(() -> {
             if (doGui) {
@@ -267,7 +278,8 @@ public class Controller extends Observable {
                 controller.switchTo(Panel.MULTI_PLAYER_ROOM);
             }
         } catch (IOException | InterruptedException e) {
-            showError("Could not connect to server: " + serverInfo.getConnection().getAddress() + ":" + serverInfo.getConnection().getPort(), e.getStackTrace());
+            showError("Could not connect to server: " + serverInfo.getConnection().getAddress() +
+                    ":" + serverInfo.getConnection().getPort(), e.getStackTrace());
         }
     }
 
@@ -297,6 +309,11 @@ public class Controller extends Observable {
         ClientConfig.getInstance().toFile();
     }
 
+    /**
+     * Remove a server from the config and save.
+     *
+     * @param serverInfo
+     */
     public void removeServer(ServerInfo serverInfo) {
         ClientConfig.getInstance().knownServers.remove(serverInfo.getConnection());
         ClientConfig.getInstance().toFile();
@@ -346,21 +363,37 @@ public class Controller extends Observable {
         frame.showError(message);
     }
 
+    /**
+     * Send a chat message if we are connected and the server supports chat.
+     *
+     * @param message The message that needs to be send.
+     */
     public void sendChatMessage(String message) {
         if (isConnected() && getCurrentServer().isChatSupport()) {
-            network.sendMessage(Protocol.createMessage(Protocol.Client.SENDMESSAGE, ClientConfig.getInstance().playerName, message));
+            network.sendMessage(Protocol.createMessage(
+                    Protocol.Client.SENDMESSAGE, ClientConfig.getInstance().playerName, message));
         } else {
-            addMessage(new ChatMessage("Game", "That didn't go anywhere, since you aren't connected to any server at the moment."));
+            addMessage(new ChatMessage("Game",
+                    "That didn't go anywhere, since you aren't connected to any server at the moment."));
             updateChatMessages();
         }
     }
 
+    /**
+     * Update the chat messages at the current frame.
+     */
     private void updateChatMessages() {
         if (doGui) {
             ((FRMMain) frame).getChatPanel().update();
         }
     }
 
+    /**
+     * Set whether we are connected.
+     * Will update the frame if we have one and switch to the server browser if we disconnect.
+     *
+     * @param connected
+     */
     void setConnected(boolean connected) {
         if (this.connected != connected) {
             this.connected = connected;
@@ -375,6 +408,11 @@ public class Controller extends Observable {
         }
     }
 
+    /***
+     * Ping all servers from the list of server and receive their ServerInfo.
+     * @return A new list containing information about all servers.
+     * (whether it's reachable and specifications).
+     */
     public List<ServerInfo> pingServers() {
         List<Connection> connections = ClientConfig.getInstance().knownServers;
         List<ServerInfo> serverInfos = new ArrayList<>();
@@ -388,30 +426,76 @@ public class Controller extends Observable {
         return serverInfos;
     }
 
+    /**
+     * Set the leaderboard data and notify all observers.
+     *
+     * @param leaderBoard
+     */
     void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
         this.leaderBoard = leaderBoard;
         setChanged();
         notifyObservers("UpdateLeaderBoard");
     }
 
+    /**
+     * Request a leaderboard update from the server.
+     */
     public void requestLeaderBoard() {
         network.sendMessage(Protocol.createMessage(Protocol.Client.REQUESTLEADERBOARD));
     }
 
+    /**
+     * Close the current frame.
+     */
     public void closeFrame() {
         frame.dispose();
     }
 
+    /**
+     * The several screens possible in the UI.
+     *
+     * @see Controller#switchTo(Panel)
+     */
     public enum Panel {
+        /**
+         * The start of the program, select different menus from here.
+         */
         MAIN_MENU,
+        /**
+         * The creation screen of a singleplayer game.
+         */
         SINGLE_PLAYER_SETTINGS,
+        /**
+         * The server browser. Will ping all servers and show them in the menu.
+         */
         SERVER_BROWSER,
+        /**
+         * Change various properties of both the game as the menu.
+         */
         OPTIONS,
+        /**
+         * Show the rooms of the server if the server supports rooms.
+         */
         MULTI_PLAYER_LOBBY,
+        /**
+         * Waiting for a room to start.
+         */
         MULTI_PLAYER_ROOM,
+        /**
+         * Create a new room at the server if it supports rooms.
+         */
         MULTI_PLAYER_ROOM_CREATION,
+        /**
+         * The panel of the game, will allow you to give input if you're a humanplayer.
+         */
         GAME,
+        /**
+         * If supported by the server, gets and hows all leaderboard entries.
+         */
         LEADERBOARD,
+        /**
+         * The screen at the end of the game. Shows why it ended and allows you to go back to the lobby.
+         */
         GAMEEND;
 
         @Getter

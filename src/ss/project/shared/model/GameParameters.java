@@ -42,11 +42,14 @@ public class GameParameters implements Serializable {
     public static GameParameters fromString(String line) {
         String[] params = line.split(Protocol.PIPE_SYMBOL);
 
-        return new GameParameters(Integer.parseInt(params[0]), Integer.parseInt(params[1]), Integer.parseInt(params[2]), Integer.parseInt(params[3]));
+        return new GameParameters(Integer.parseInt(params[0]),
+                Integer.parseInt(params[1]), Integer.parseInt(params[2]),
+                Integer.parseInt(params[3]));
     }
 
     public String serialize() {
-        return String.join("|", String.valueOf(sizeX), String.valueOf(sizeY), String.valueOf(sizeZ), String.valueOf(winLength));
+        return String.join("|", String.valueOf(sizeX),
+                String.valueOf(sizeY), String.valueOf(sizeZ), String.valueOf(winLength));
     }
 
     /**
@@ -60,8 +63,8 @@ public class GameParameters implements Serializable {
 
     public boolean isCompatibleTo(GameParameters other) {
         return sizeX >= other.sizeX &&
-                       sizeY >= other.sizeY &&
-                       sizeZ >= other.sizeZ &&
-                       winLength >= other.winLength;
+                sizeY >= other.sizeY &&
+                sizeZ >= other.sizeZ &&
+                winLength >= other.winLength;
     }
 }

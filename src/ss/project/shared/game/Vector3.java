@@ -63,7 +63,7 @@ public class Vector3 {
     }
 
     /**
-     * Add a vector2 to a vector3 (vector3 = vector2 = vector2)
+     * Add a vector2 to a vector3 (vector3 = vector2 = vector2).
      *
      * @return
      */

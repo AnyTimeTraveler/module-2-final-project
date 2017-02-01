@@ -94,7 +94,8 @@ public class TUISinglePlayerSettings implements TUIPanel {
                         //NAME COMPUTERTYPE SMARTNESS
                         try {
                             int playerType = Integer.parseInt(parts[1]);
-                            Player player = ClientConfig.getInstance().playerTypes.get(playerTypes[playerType]).newInstance();
+                            Player player = ClientConfig.getInstance()
+                                    .playerTypes.get(playerTypes[playerType]).newInstance();
                             player.setName(parts[0]);
                             player.setId(players.size());
                             if (player instanceof ComputerPlayer && parts.length > 2) {
@@ -103,7 +104,8 @@ public class TUISinglePlayerSettings implements TUIPanel {
                             }
                             players.add(player);
                         } catch (NumberFormatException e) {
-                            System.out.println("First type the name, followed by a space, followed by a number representing the playertype and optionally the smartness.");
+                            System.out.println("First type the name, followed by a space, " +
+                                    "followed by a number representing the playertype and optionally the smartness.");
                             return;
                         } catch (IllegalAccessException | InstantiationException e) {
                             e.printStackTrace();

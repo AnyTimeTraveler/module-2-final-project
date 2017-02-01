@@ -135,22 +135,22 @@ public class Room implements Serializable {
             // check if the amount of parameters matches
             if (roomParams.length != Protocol.ROOM_PARAMETERS) {
                 throw new ParameterLengthsMismatchException(Protocol.ROOM_PARAMETERS,
-                                                                   roomParams.length);
+                        roomParams.length);
             }
             try {
                 // convert all strings to integers
                 int[] integers = Arrays.stream(roomParams).mapToInt(Integer::parseInt).toArray();
                 // create a room with the given parameters
                 return new Room(integers[0],
-                                       integers[1],
-                                       integers[2],
-                                       integers[3],
-                                       integers[4],
-                                       integers[5]);
+                        integers[1],
+                        integers[2],
+                        integers[3],
+                        integers[4],
+                        integers[5]);
             } catch (NumberFormatException e) {
-                IllegalParameterException illegalParameterException = new IllegalParameterException(
-                                                                                                           "Could not convert arguments to numbers: " + Arrays.stream(
-                                                                                                                   roomParams).collect(Collectors.joining(", ")));
+                IllegalParameterException illegalParameterException =
+                        new IllegalParameterException("Could not convert arguments to numbers: " +
+                                Arrays.stream(roomParams).collect(Collectors.joining(", ")));
                 illegalParameterException.setStackTrace(e.getStackTrace());
                 throw illegalParameterException;
             }
@@ -158,20 +158,19 @@ public class Room implements Serializable {
             String[] roomParams = line.split(splitRegex);
             if (roomParams.length != Protocol.ROOM_PARAMETERS) {
                 throw new ParameterLengthsMismatchException(Protocol.ROOM_PARAMETERS,
-                                                                   roomParams.length);
+                        roomParams.length);
             }
             try {
                 // create a room with the given parameters
                 return new Room(Integer.parseInt(roomParams[1]),
-                                       Integer.parseInt(roomParams[2]),
-                                       Integer.parseInt(roomParams[3]),
-                                       Integer.parseInt(roomParams[4]),
-                                       Integer.parseInt(roomParams[5]));
+                        Integer.parseInt(roomParams[2]),
+                        Integer.parseInt(roomParams[3]),
+                        Integer.parseInt(roomParams[4]),
+                        Integer.parseInt(roomParams[5]));
             } catch (NumberFormatException e) {
-                IllegalParameterException illegalParameterException = new IllegalParameterException(
-                                                                                                           "Could not convert arguments to numbers: " + Arrays.stream(
-                                                                                                                   roomParams).collect(
-                                                                                                                   Collectors.joining(", ")));
+                IllegalParameterException illegalParameterException =
+                        new IllegalParameterException("Could not convert arguments to numbers: " +
+                                Arrays.stream(roomParams).collect(Collectors.joining(", ")));
                 illegalParameterException.setStackTrace(e.getStackTrace());
                 throw illegalParameterException;
             }
@@ -229,7 +228,7 @@ public class Room implements Serializable {
         player.setCurrentRoom(this);
         broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE,
                 new ChatMessage("Server",
-                                       player.getName() + " joined the room.")));
+                        player.getName() + " joined the room.")));
     }
 
     /**
@@ -277,8 +276,10 @@ public class Room implements Serializable {
         }
         players.remove(player);
         player.setCurrentRoom(null);
-        broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
-        player.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
+        broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE,
+                new ChatMessage("Server", player.getName() + " left the room.")));
+        player.getClientHandler().sendMessage(Protocol.createMessage(
+                Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
         synchronized (PLAYERS_LOCK) {
             if (players.size() == 0) {
                 Server.getInstance().removeRoom(this);

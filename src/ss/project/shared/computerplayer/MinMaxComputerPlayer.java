@@ -43,12 +43,16 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     }
 
     private void initialize(Engine engine) {
-        if (worldCopy == null)
+        if (worldCopy == null) {
             worldCopy = new World(engine.getWorld().getSize(), engine.getWorld().getWinLength());
-        if (opponent == null)
+        }
+        if (opponent == null) {
             opponent = engine.getOtherPlayer(this);
-        if (workers == null)
+        }
+        if (workers == null) {
+            //If this warning is fixed, that resolves in a compiler error. We therefore couldn't fix it.
             workers = new Future[engine.getWorld().getSize().getX()][engine.getWorld().getSize().getY()];
+        }
         if (executor == null) {
             executor = Executors.newWorkStealingPool();
         }

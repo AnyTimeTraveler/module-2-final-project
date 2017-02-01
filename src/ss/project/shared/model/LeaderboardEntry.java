@@ -53,9 +53,12 @@ public class LeaderboardEntry implements Serializable {
         }
         try {
             // create an instance with the given parameters
-            return new LeaderboardEntry(params[0], Integer.parseInt(params[1]), Integer.parseInt(params[2]), Integer.parseInt(params[3]));
+            return new LeaderboardEntry(params[0], Integer.parseInt(params[1]),
+                    Integer.parseInt(params[2]), Integer.parseInt(params[3]));
         } catch (NumberFormatException e) {
-            IllegalParameterException illegalParameterException = new IllegalParameterException("Could not convert arguments to numbers: " + Arrays.stream(params).collect(Collectors.joining(", ")));
+            IllegalParameterException illegalParameterException = new IllegalParameterException(
+                    "Could not convert arguments to numbers: " +
+                            Arrays.stream(params).collect(Collectors.joining(", ")));
             illegalParameterException.setStackTrace(e.getStackTrace());
             throw illegalParameterException;
         }
@@ -79,6 +82,7 @@ public class LeaderboardEntry implements Serializable {
      * @return
      */
     public String serialize() {
-        return String.join("|", String.valueOf(playerName), String.valueOf(wins), String.valueOf(draws), String.valueOf(losses));
+        return String.join("|", String.valueOf(playerName),
+                String.valueOf(wins), String.valueOf(draws), String.valueOf(losses));
     }
 }

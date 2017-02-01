@@ -84,7 +84,8 @@ public class TUIGame implements TUIPanel, GameDisplay {
         if (humanPlayer != null && waiter != null) {
             if (coords.length > 1) {
                 try {
-                    humanPlayer.setSelectedCoordinates(new Vector2(Integer.parseInt(coords[0]), Integer.parseInt(coords[1])));
+                    humanPlayer.setSelectedCoordinates(
+                            new Vector2(Integer.parseInt(coords[0]), Integer.parseInt(coords[1])));
                     synchronized (waiter) {
                         waiter.notify();
                     }

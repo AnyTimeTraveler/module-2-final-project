@@ -38,7 +38,9 @@ public class ServerInfo {
      * @param maxWinLength  The length needed to win in a game.
      * @param chatSupport   If true, this server supports global chat.
      */
-    public ServerInfo(Status status, Connection connection, int maxPlayers, boolean roomSupport, int maxDimensionX, int maxDimensionY, int maxDimensionZ, int maxWinLength, boolean chatSupport) {
+    public ServerInfo(Status status, Connection connection, int maxPlayers,
+                      boolean roomSupport, int maxDimensionX, int maxDimensionY,
+                      int maxDimensionZ, int maxWinLength, boolean chatSupport) {
         this.status = status;
         this.connection = connection;
         this.maxPlayers = maxPlayers;

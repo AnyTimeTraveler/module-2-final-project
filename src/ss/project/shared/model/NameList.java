@@ -1,15 +1,15 @@
 package ss.project.shared.model;
 
 /**
- * A very simple model class that contains a list of names.
+ * A very simple model class that contains a list of NAMES.
  * Used to automatically give the players a name in singleplayer.
  * Created by simon on 28.01.17.
  */
 public class NameList {
     /**
-     * A list of random names.
+     * A list of random NAMES.
      */
-    public static final String[] names = {
+    public static final String[] NAMES = {
             "Irene Scoggins",
             "Claude Roubidoux",
             "Mollie Buchanan",
