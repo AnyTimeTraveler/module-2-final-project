@@ -150,6 +150,7 @@ public class ServerConfig {
                 newLeaderBoardEntry.addLose();
                 break;
         }
+        toFile();
     }
 
     public void toFile() {
