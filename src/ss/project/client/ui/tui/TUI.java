@@ -47,12 +47,12 @@ public class TUI implements UIFrame {
 
     }
 
-    public void run() {
-        Scanner scanner = new Scanner(System.in);
+    private void run() {
+        Scanner sc = new Scanner(System.in);
         while (isRunning) {
             current.printScreen();
-            current.handleInput(scanner.nextLine());
+            current.handleInput(sc.nextLine());
         }
+        sc.close();
     }
-
 }

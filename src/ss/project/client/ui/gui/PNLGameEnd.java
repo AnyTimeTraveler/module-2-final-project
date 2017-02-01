@@ -9,7 +9,7 @@ import java.awt.*;
  * Created by fw on 26/01/2017.
  */
 public class PNLGameEnd extends GUIPanel {
-    JLabel informationLabel;
+    private JLabel informationLabel;
 
     public PNLGameEnd(Controller controller) {
         this.setLayout(new BorderLayout());
@@ -22,10 +22,10 @@ public class PNLGameEnd extends GUIPanel {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e ->
         {
-            if (Controller.getController().isConnected()) {
-                Controller.getController().switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
+            if (controller.isConnected()) {
+                controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
             } else {
-                Controller.getController().switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS);
+                controller.switchTo(Controller.Panel.SINGLE_PLAYER_SETTINGS);
             }
         });
         bottomPanel.add(backButton);

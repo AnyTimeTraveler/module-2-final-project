@@ -196,7 +196,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         /**
          * Get the name of the namefield.
          *
-         * @return
+         * @return Name of the player
          */
         public String getName() {
             return playerNameField.getText();
@@ -205,25 +205,25 @@ public class PNLSinglePlayerSettings extends GUIPanel {
         /**
          * Get the player type of this player. (Human, MinMax etc.)
          *
-         * @return
+         * @return a String representing the chosen playerType
          */
-        public String getPlayerType() {
+        String getPlayerType() {
             return (String) playerType.getSelectedItem();
         }
 
         /**
          * @return True if the player is of type computerplayer. And thus has a smartness to set.
          */
-        public boolean isComputerPlayer() {
+        boolean isComputerPlayer() {
             return computerSmartness.isVisible();
         }
 
         /**
          * Get the smartness of the computerplayer.
          *
-         * @return
+         * @return the smartness-value of the computerplayer.
          */
-        public int getComputerSmartness() {
+        int getComputerSmartness() {
             return (int) computerSmartness.getValue();
         }
     }

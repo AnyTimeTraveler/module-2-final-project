@@ -50,7 +50,6 @@ public class Controller extends Observable {
     private List<ChatMessage> chatMessages;
     /**
      * True if we are online and connected. False if not.
-     * TODO: update this value correctly.
      */
     @Getter
     private boolean connected;
@@ -224,8 +223,6 @@ public class Controller extends Observable {
 
     /**
      * Create a new room on the server.
-     *
-     * @param room
      */
     public void createRoom(Room room) {
         network.sendMessage(Protocol.createMessage(Protocol.Client.CREATEROOM, room.serializeCreation()));
@@ -233,8 +230,6 @@ public class Controller extends Observable {
 
     /**
      * Get the server we are currently connected to.
-     *
-     * @return
      */
     public ServerInfo getCurrentServer() {
         return network.getServerInfo();
@@ -242,8 +237,6 @@ public class Controller extends Observable {
 
     /**
      * Join the specified server.
-     *
-     * @param serverInfo
      */
     public void joinServer(ServerInfo serverInfo) {
         addMessage(new ChatMessage("Game", "Connecting..."));
@@ -271,8 +264,6 @@ public class Controller extends Observable {
 
     /**
      * Add a server to the list of servers in the config.
-     *
-     * @param serverName
      */
     public void addServer(String serverName) {
         if (serverName != null && serverName.contains(":")) {
@@ -291,9 +282,6 @@ public class Controller extends Observable {
 
     /**
      * Add a server to the list of servers.
-     *
-     * @param ip
-     * @param port
      */
     public void addServer(String ip, int port) {
         ClientConfig.getInstance().KnownServers.add(new Connection("Added server", ip, port));
@@ -325,7 +313,7 @@ public class Controller extends Observable {
         frame.setSize(width, height);
     }
 
-    public void showError(String message, StackTraceElement[] stackTrace) {
+    void showError(String message, StackTraceElement[] stackTrace) {
         System.err.println(message);
         for (StackTraceElement stackTraceElement : stackTrace) {
             System.err.println("    " + stackTraceElement);
@@ -347,7 +335,7 @@ public class Controller extends Observable {
         }
     }
 
-    public void setConnected(boolean connected) {
+    void setConnected(boolean connected) {
         if (this.connected != connected) {
             this.connected = connected;
             if (frame != null) {
@@ -374,7 +362,7 @@ public class Controller extends Observable {
         return serverInfos;
     }
 
-    public void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
+    void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
         this.leaderBoard = leaderBoard;
         setChanged();
         notifyObservers("UpdateLeaderBoard");

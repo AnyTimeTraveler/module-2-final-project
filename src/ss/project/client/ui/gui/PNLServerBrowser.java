@@ -16,9 +16,6 @@ public class PNLServerBrowser extends GUIPanel {
     private Controller controller;
     private JPanel serversListPanel;
 
-    private int roomPanelHeight = 75;
-    private int spaceBetweenText = 10;
-
     public PNLServerBrowser(Controller controller) {
         super(true);
         this.controller = controller;
@@ -42,9 +39,7 @@ public class PNLServerBrowser extends GUIPanel {
         });
         buttonPanel.add(addButton);
         JButton refreshButton = new JButton("Refresh");
-        refreshButton.addActionListener(e -> {
-            refreshServerList();
-        });
+        refreshButton.addActionListener(e -> refreshServerList());
         buttonPanel.add(refreshButton);
         this.add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -93,6 +88,7 @@ public class PNLServerBrowser extends GUIPanel {
 
             this.setLayout(new BorderLayout());
             this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            int roomPanelHeight = 75;
             this.setMaximumSize(new Dimension(10000, roomPanelHeight));
 
             JPanel westPanel = new JPanel(new GridBagLayout());
@@ -108,6 +104,7 @@ public class PNLServerBrowser extends GUIPanel {
 
             JPanel jPanel = new JPanel(new GridBagLayout());
             GridBagConstraints constraints = new GridBagConstraints();
+            int spaceBetweenText = 10;
             constraints.insets = new Insets(0, 0, 0, spaceBetweenText);
             JLabel winLength = new JLabel("Win length: " + serverInfo.getMaxWinLength(), SwingConstants.CENTER);
             jPanel.add(winLength, constraints);

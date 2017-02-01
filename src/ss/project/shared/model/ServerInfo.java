@@ -73,6 +73,7 @@ public class ServerInfo {
             serverInfo.maxDimensionZ = Integer.parseInt(sc.next());
             serverInfo.maxWinLength = Integer.parseInt(sc.next());
             serverInfo.chatSupport = sc.next().equals("1");
+            sc.close();
             return serverInfo;
         } catch (NumberFormatException | NoSuchElementException e) {
             e.printStackTrace();

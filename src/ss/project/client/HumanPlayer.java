@@ -22,11 +22,6 @@ public class HumanPlayer extends Player {
     private Vector3 hintPos;
     private Timer hintTimer;
 
-    public HumanPlayer(String name, int id) {
-        super(name);
-        setId(id);
-    }
-
     public HumanPlayer(String name) {
         super(name);
     }

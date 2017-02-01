@@ -77,12 +77,10 @@ public class TUIServerBrowser implements TUIPanel {
                 System.out.println("Joined server");
             } else {
                 System.out.println("This server can not be used!");
-                return;
             }
 
         } catch (NumberFormatException e) {
             System.out.println("Please type a number.");
-            return;
         }
     }
 

@@ -79,10 +79,8 @@ public class Server {
 
     /**
      * Remove a room from the list of rooms of this server.
-     *
-     * @param room
      */
-    public void removeRoom(Room room) {
+    void removeRoom(Room room) {
         synchronized (rooms) {
             rooms.remove(room);
             if (defaultRoom == room) {
@@ -116,9 +114,9 @@ public class Server {
     /**
      * Send a message to all clients (even those not in rooms).
      *
-     * @param msg
+     * @param msg the string that's to be sent to all clients
      */
-    public void broadcast(String msg) {
+    void broadcast(String msg) {
         System.out.println("Message to all clients: " + msg);
         for (ClientHandler clientHandler : threads) {
             clientHandler.sendMessage(msg);
@@ -127,10 +125,8 @@ public class Server {
 
     /**
      * Add a new handler to the server (when first connected).
-     *
-     * @param handler
      */
-    public void addHandler(ClientHandler handler) {
+    private void addHandler(ClientHandler handler) {
         threads.add(handler);
         handler.start();
         System.out.println("Started ClientHandler!");
@@ -138,18 +134,14 @@ public class Server {
 
     /**
      * remove a clienthandler from the server (for disconnection).
-     *
-     * @param handler
      */
-    public void removeHandler(ClientHandler handler) {
+    void removeHandler(ClientHandler handler) {
         threads.remove(handler);
         System.out.println("Removed ClientHandler!");
     }
 
     /**
      * Get the list of clienthandlers from this server.
-     *
-     * @return
      */
     public List<ClientHandler> getClientHandlers() {
         return threads;
@@ -157,10 +149,8 @@ public class Server {
 
     /**
      * Get the capabilities message string from the server.
-     *
-     * @return
      */
-    public String getCapabilitiesMessage() {
+    String getCapabilitiesMessage() {
         ServerConfig sc = ServerConfig.getInstance();
         return Protocol.createMessage(Protocol.Server.SERVERCAPABILITIES,
                 sc.MaxPlayers,
@@ -173,7 +163,9 @@ public class Server {
     }
 
     /**
-     * @return
+     * True if server is ready to be used,
+     * False if it's busy
+     *
      * @see Server#ready
      */
     public boolean isReady() {
@@ -182,10 +174,8 @@ public class Server {
 
     /**
      * Get the string that shows all rooms of this server.
-     *
-     * @return
      */
-    public String getRoomListString() {
+    String getRoomListString() {
         synchronized (rooms) {
             Room[] roomCopy = new Room[rooms.size()];
             rooms.toArray(roomCopy);
@@ -197,9 +187,8 @@ public class Server {
      * Get a room instance by its id.
      *
      * @param roomId The id of the room.
-     * @return
      */
-    public Room getRoomByID(int roomId) {
+    Room getRoomByID(int roomId) {
         synchronized (rooms) {
             for (Room room : rooms) {
                 if (room.getId() == roomId) {
@@ -212,10 +201,8 @@ public class Server {
 
     /**
      * Create the leaderboard message that contains data about ranking.
-     *
-     * @return
      */
-    public String getLeaderboardMessage() {
+    String getLeaderboardMessage() {
         Object[] entries = new Object[ServerConfig.getInstance().Leaderboard.size()];
         List<LeaderboardEntry> leaderboard = ServerConfig.getInstance().Leaderboard;
         for (int i = 0; i < leaderboard.size(); i++) {
@@ -231,7 +218,7 @@ public class Server {
      * @return the default room instance.
      * @see Server#defaultRoom
      */
-    public Room getDefaultRoom() {
+    Room getDefaultRoom() {
         if (defaultRoom == null || defaultRoom.isFull()) {
             createDefaultRoom();
         }
@@ -246,7 +233,7 @@ public class Server {
      * @see ss.project.shared.NetworkPlayer#autoRefresh
      * @see Server#getRoomListString()
      */
-    public void addRoom(Room room) {
+    void addRoom(Room room) {
         rooms.add(room);
         for (ClientHandler client : threads) {
             if (client.getPlayer().getCurrentRoom() == null && client.getPlayer().isAutoRefresh()) {

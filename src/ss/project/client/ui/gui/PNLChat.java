@@ -16,7 +16,7 @@ public class PNLChat extends GUIPanel {
     private HintTextField inputField;
     private Controller controller;
 
-    public PNLChat(Controller controller) {
+    PNLChat(Controller controller) {
         this.controller = controller;
         this.setLayout(new BorderLayout());
         this.add(GUIUtils.createLabel("Chat", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);

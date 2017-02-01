@@ -1,5 +1,6 @@
 package ss.project.client.ui.gui;
 
+import lombok.Getter;
 import ss.project.client.Controller;
 import ss.project.server.Room;
 import ss.project.shared.computerplayer.ComputerPlayer;
@@ -22,8 +23,6 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
     private Controller controller;
     private JPanel roomsPanelOwner;
     private List<RoomPanel> roomPanels;
-    private int roomPanelHeight = 75;
-    private int spaceBetweenText = 10;
 
     public PNLMultiPlayerLobby(Controller controller) {
         super(true);
@@ -89,7 +88,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
      * Add the room panels to the screen and update all values.
      * Has ot be synchronized, because new roomvalues in the Controller triggers an update.
      *
-     * @param rooms
+     * @param rooms rooms to add to the screen
      */
     private synchronized void addRoomPanels(List<Room> rooms) {
         roomsPanelOwner.removeAll();
@@ -136,9 +135,9 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
     /**
      * Get the player type of this player. (Human, MinMax etc.)
      *
-     * @return
+     * @return a string representing the users choice of playerType
      */
-    public String getPlayerType() {
+    private String getPlayerType() {
         return (String) playerType.getSelectedItem();
     }
 
@@ -154,6 +153,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
      * A panel showing information about a lobby.
      */
     private class RoomPanel extends JPanel {
+        @Getter
         private Room room;
         private JLabel roomID;
         private JLabel winLength;
@@ -171,12 +171,14 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
 
             this.setLayout(new BorderLayout());
             this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            int roomPanelHeight = 75;
             this.setMaximumSize(new Dimension(10000, roomPanelHeight));
             roomID = new JLabel();
             this.add(roomID, BorderLayout.WEST);
 
             JPanel jPanel = new JPanel(new GridBagLayout());
             GridBagConstraints constraints = new GridBagConstraints();
+            int spaceBetweenText = 10;
             constraints.insets = new Insets(0, 0, 0, spaceBetweenText);
             winLength = new JLabel("", SwingConstants.CENTER);
             jPanel.add(winLength, constraints);
@@ -196,7 +198,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
         /**
          * Refresh all values shown on the screen from this room.
          */
-        public void refreshValues(Room room) {
+        void refreshValues(Room room) {
             this.room = room;
             roomID.setText("|" + room.getId() + "|");
             winLength.setText("Win length: " + room.getWinLength());
@@ -205,18 +207,9 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
         }
 
         /**
-         * Get the room corresponding to this RoomPanel.
-         *
-         * @return
-         */
-        public Room getRoom() {
-            return room;
-        }
-
-        /**
          * Join this room.
          */
-        public void joinRoom() {
+        void joinRoom() {
             savePlayerType();
             controller.joinRoom(getRoom());
         }

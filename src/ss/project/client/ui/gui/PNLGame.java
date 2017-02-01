@@ -16,8 +16,8 @@ import java.util.Random;
  * Created by simon on 16.01.17.
  */
 public class PNLGame extends GUIPanel implements GameDisplay {
-    Map<Player, Color> playerColorMap = new HashMap<>();
-    Random random = new Random();
+    private Map<Player, Color> playerColorMap = new HashMap<>();
+    private Random random = new Random();
     /**
      * 2D rendering canvas.
      */
@@ -88,7 +88,7 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         leaveButton.setVisible(!Controller.getController().isConnected());
     }
 
-    public HumanPlayer getCurrentPlayer() {
+    HumanPlayer getCurrentPlayer() {
         return this.currentPlayer;
     }
 
@@ -105,25 +105,25 @@ public class PNLGame extends GUIPanel implements GameDisplay {
     }
 
     private void doCanvasAnimations() {
-        for (int i = 0; i < canvas2D.length; i++) {
-            canvas2D[i].increaseAnimationState();
+        for (GameCanvas2D aCanvas2D : canvas2D) {
+            aCanvas2D.increaseAnimationState();
         }
     }
 
     @Override
     public void update() {
-        for (int z = 0; z < canvas2D.length; z++) {
-            canvas2D[z].repaint();
+        for (GameCanvas2D aCanvas2D : canvas2D) {
+            aCanvas2D.repaint();
         }
     }
 
     /**
      * Get the color of the player.
      *
-     * @param player
-     * @return
+     * @param player owner of that color
+     * @return color of that player
      */
-    public Color getPlayerColor(Player player) {
+    Color getPlayerColor(Player player) {
         if (!playerColorMap.containsKey(player)) {
             float r = random.nextFloat() / 2 + 0.5f;
             float g = random.nextFloat() / 2 + 0.5f;
@@ -140,13 +140,14 @@ public class PNLGame extends GUIPanel implements GameDisplay {
         this.currentPlayer = humanPlayer;
     }
 
+    /**
+     * Remove all canvasses we've made.
+     */
     @Override
     public void onLeave() {
-        /**
-         * Remove all canvasses we've made.
-         */
-        for (int i = 0; i < canvas2D.length; i++) {
-            this.remove(canvas2D[i]);
+
+        for (GameCanvas2D aCanvas2D : canvas2D) {
+            this.remove(aCanvas2D);
         }
 
         animationTimer.stop();

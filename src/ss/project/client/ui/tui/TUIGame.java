@@ -35,15 +35,12 @@ public class TUIGame implements TUIPanel, GameDisplay {
 
     /**
      * Print the world to string.
-     *
-     * @param world
-     * @return
      */
-    String printWorld(World world) {
+    private String printWorld(World world) {
         String result = "";
 
         String lineDash = "";
-        String lineMark = "";
+        String lineMark;
         for (int y = 0; y < world.getSize().getY(); y++) {
             lineDash = "";
             lineMark = "";
@@ -70,11 +67,8 @@ public class TUIGame implements TUIPanel, GameDisplay {
 
     /**
      * Get a character of a player.
-     *
-     * @param player
-     * @return
      */
-    Character getPlayerCharacter(Player player) {
+    private Character getPlayerCharacter(Player player) {
         if (player == null) {
             return 'x';
         }

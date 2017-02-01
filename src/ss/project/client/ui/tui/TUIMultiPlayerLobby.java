@@ -11,7 +11,7 @@ import java.util.Observer;
  * Created by simon on 16.01.17.
  */
 public class TUIMultiPlayerLobby implements TUIPanel, Observer {
-    List<Room> rooms;
+    private List<Room> rooms;
     private int disconnectID;
 
     public TUIMultiPlayerLobby() {
@@ -61,7 +61,6 @@ public class TUIMultiPlayerLobby implements TUIPanel, Observer {
             Controller.getController().joinRoom(rooms.get(choice));
         } catch (NumberFormatException e) {
             System.out.println("Please type a number...");
-            return;
         }
     }
 

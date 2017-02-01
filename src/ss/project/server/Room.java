@@ -119,9 +119,8 @@ public class Room implements Serializable {
     }
 
     /**
-     * Create a room from a string from the protocol.
+     * Create a room from a string according to the protocol.
      *
-     * @param line
      * @return A new room.
      * @throws ProtocolException If the input is not in the correct format.
      */
@@ -164,15 +163,13 @@ public class Room implements Serializable {
      *
      * @return A unique id.
      */
-    @Synchronized
-    private static int getNextId() {
+    private synchronized static int getNextId() {
         return nextId++;
     }
 
     /**
      * Create a list of rooms from a string in protocol format.
      *
-     * @param line
      * @return A new list of rooms.
      * @throws ProtocolException The line is not in the correct format.
      */
@@ -186,6 +183,7 @@ public class Room implements Serializable {
         while (sc.hasNext()) {
             rooms.add(Room.fromString(sc.next(), Protocol.PIPE_SYMBOL));
         }
+        sc.close();
         return rooms;
     }
 
@@ -253,17 +251,15 @@ public class Room implements Serializable {
         player.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", player.getName() + " left the room.")));
         synchronized (playersLock) {
             if (players.size() == 0) {
-
+                Server.getInstance().removeRoom(this);
             }
         }
     }
 
     /**
      * Notify the room that this player has lost connection and stop the game.
-     *
-     * @param networkPlayer
      */
-    public void lostConnection(NetworkPlayer networkPlayer) {
+    void lostConnection(NetworkPlayer networkPlayer) {
         if (networkPlayer.isInGame()) {
             try {
                 leave(networkPlayer);
@@ -286,8 +282,6 @@ public class Room implements Serializable {
 
     /**
      * Get the winlength needed for this room.
-     *
-     * @return
      */
     public int getWinLength() {
         return parameters.getWinLength();
@@ -295,8 +289,6 @@ public class Room implements Serializable {
 
     /**
      * Get the max amount of players that are possible in this room.
-     *
-     * @return
      */
     public int getMaxPlayers() {
         return maxPlayers;
@@ -333,7 +325,7 @@ public class Room implements Serializable {
     /**
      * Get the current amount of players in this room.
      *
-     * @return
+     * @return amount of players in this room
      */
     public int getCurrentPlayers() {
         return players.size();
@@ -358,15 +350,12 @@ public class Room implements Serializable {
      *
      * @return True if the room is full, False otherwise.
      */
-    public boolean isFull() {
+    boolean isFull() {
         return players.size() >= maxPlayers;
     }
 
     /**
      * End the game with the specified reason. Will reset all players to the lobby.
-     *
-     * @param reason
-     * @param id
      */
     public void endGame(Protocol.WinReason reason, int id) {
         //We remove this room from the server.
@@ -376,9 +365,9 @@ public class Room implements Serializable {
         engineThread.interrupt();
         synchronized (playersLock) {
             //Reset every player to the lobby.
-            for (int i = 0; i < players.size(); i++) {
-                players.get(i).setCurrentRoom(null);
-                players.get(i).setInGame(false);
+            for (NetworkPlayer player : players) {
+                player.setCurrentRoom(null);
+                player.setInGame(false);
             }
             players.clear();
         }

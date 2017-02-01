@@ -218,6 +218,7 @@ public class NetworkPlayer extends Player implements Serializable {
         maxWinLength = Integer.parseInt(sc.next());
         chatSupport = sc.next().equals("1");
         autoRefresh = sc.next().equals("1");
+        sc.close();
     }
 
     public void setMove(int x, int y) {

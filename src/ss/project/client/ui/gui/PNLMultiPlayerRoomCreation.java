@@ -38,7 +38,7 @@ public class PNLMultiPlayerRoomCreation extends GUIPanel {
         this.add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    void populateCenterPanel(JPanel centerPanel, GridBagConstraints gridBagConstraints) {
+    private void populateCenterPanel(JPanel centerPanel, GridBagConstraints gridBagConstraints) {
         nextColumn(gridBagConstraints);
         centerPanel.add(GUIUtils.createLabel("World X:"), gridBagConstraints);
         nextColumn(gridBagConstraints);
@@ -72,7 +72,7 @@ public class PNLMultiPlayerRoomCreation extends GUIPanel {
         nextRow(gridBagConstraints);
     }
 
-    void createRoom() {
+    private void createRoom() {
         int playerCount = (int) amountOfPlayers.getValue();
         int worldSizeX = (int) worldX.getValue();
         int worldSizeY = (int) worldY.getValue();
@@ -81,11 +81,11 @@ public class PNLMultiPlayerRoomCreation extends GUIPanel {
         Controller.getController().createRoom(new Room(playerCount, worldSizeX, worldSizeY, worldSizeZ, winLen));
     }
 
-    void nextColumn(GridBagConstraints gridBagConstraints) {
+    private void nextColumn(GridBagConstraints gridBagConstraints) {
         gridBagConstraints.gridx++;
     }
 
-    void nextRow(GridBagConstraints gridBagConstraints) {
+    private void nextRow(GridBagConstraints gridBagConstraints) {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy++;
     }

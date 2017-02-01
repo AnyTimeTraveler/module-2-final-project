@@ -18,7 +18,6 @@ public class TUISinglePlayerSettings implements TUIPanel {
     private Progress progress = Progress.ENTERX;
 
     private int x, y, z;
-    private int winlength;
 
     private String[] playerTypes;
     private List<Player> players = new ArrayList<>();
@@ -95,7 +94,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
                         //NAME COMPUTERTYPE SMARTNESS
                         try {
                             int playerType = Integer.parseInt(parts[1]);
-                            Player player = (Player) ClientConfig.getInstance().PlayerTypes.get(playerTypes[playerType]).newInstance();
+                            Player player = ClientConfig.getInstance().PlayerTypes.get(playerTypes[playerType]).newInstance();
                             player.setName(parts[0]);
                             player.setId(players.size());
                             if (player instanceof ComputerPlayer && parts.length > 2) {
@@ -119,6 +118,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
                 break;
             }
             case SETWINLENGTH: {
+                int winlength;
                 try {
                     winlength = Integer.parseInt(input);
                 } catch (NumberFormatException e) {

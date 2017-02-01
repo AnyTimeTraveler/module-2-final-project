@@ -12,6 +12,10 @@ import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler extends Thread {
+    /**
+     * The network player associated with this clienthandler.
+     * Will be used in the commands from the protocol.
+     */
     private Socket socket;
     private Server server;
     /**
@@ -26,18 +30,14 @@ public class ClientHandler extends Thread {
      * If true this clientHandler does not read input anymore.
      */
     private boolean closed;
-    /**
-     * The network player associated with this clienthandler.
-     * Will be used in the commands from the protocol.
-     */
     private NetworkPlayer player;
 
     /**
      * Create a new ClientHandler and initialize it.
      *
-     * @param server
-     * @param socket
-     * @throws IOException
+     * @param server the server that the clientHandler is bound to
+     * @param socket the socket representing the new connection
+     * @throws IOException if IOStreams are already bound or closed
      */
     //@ requires server != null && socket != null;
     //@ ensures getPlayer() != null;
@@ -49,8 +49,8 @@ public class ClientHandler extends Thread {
         closed = false;
         player = new NetworkPlayer(this);
         this.setName("ClientHandler: Unknown Player\n" +
-                "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
-                "\nRemote: " + socket.getRemoteSocketAddress());
+                             "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
+                             "\nRemote: " + socket.getRemoteSocketAddress());
     }
 
     /**
@@ -127,8 +127,6 @@ public class ClientHandler extends Thread {
 
     /**
      * Read an incoming line with the format of the protocol.
-     *
-     * @param line
      */
     private void interpretLine(String line) {
         if (line == null) {
@@ -145,7 +143,8 @@ public class ClientHandler extends Thread {
                     sendError(4);
                 }
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
-                player.getCurrentRoom().broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
+                player.getCurrentRoom().broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE,
+                        new ChatMessage(player.getName(), line.substring(line.indexOf(' ', line.indexOf(' ') + 1) + 1))));
             } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
                 // Can't leave if the game has started
                 sendError(6);
@@ -235,12 +234,10 @@ public class ClientHandler extends Thread {
     }
 
     public NetworkPlayer getPlayer() {
-        synchronized (player) {
-            return player;
-        }
+        return player;
     }
 
-    public void shutdown() {
+    private void shutdown() {
         if (player.getCurrentRoom() != null) {
             player.getCurrentRoom().lostConnection(player);
         }

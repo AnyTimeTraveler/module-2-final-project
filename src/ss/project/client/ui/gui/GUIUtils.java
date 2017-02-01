@@ -12,10 +12,10 @@ public class GUIUtils {
     /**
      * Create a button and set the maximum and preferred size.
      *
-     * @param text
-     * @return
+     * @param text label of the button
+     * @return created button
      */
-    public static JButton createButton(String text) {
+    static JButton createButton(String text) {
         JButton result = new JButton(text);
 
         result.setPreferredSize(new Dimension(100, 50));
@@ -27,8 +27,8 @@ public class GUIUtils {
     /**
      * Create a DEFAULT label.
      *
-     * @param text
-     * @return
+     * @param text text of the label
+     * @return created label
      * @see GUIUtils#createLabel(String, LabelType)
      */
     public static JLabel createLabel(String text) {
@@ -69,7 +69,7 @@ public class GUIUtils {
      * @param text Default text that needs to be shown in the textfield.
      * @return A new JTextField with default settings.
      */
-    public static JTextField createTextField(String text) {
+    static JTextField createTextField(String text) {
         JTextField result = new JTextField(text);
         result.setAlignmentX(Component.CENTER_ALIGNMENT);
         result.setPreferredSize(new Dimension(100, 50));
@@ -81,9 +81,9 @@ public class GUIUtils {
      * Create a new JCheckBox with preferred and maximum size set.
      *
      * @param text That needs ot be shown in front of the checkbox.
-     * @return
+     * @return created checkbox
      */
-    public static JCheckBox createCheckBox(String text) {
+    static JCheckBox createCheckBox(String text) {
         JCheckBox result = new JCheckBox(text);
 
         result.setPreferredSize(new Dimension(100, 50));
@@ -98,9 +98,9 @@ public class GUIUtils {
      * @param value The start value.
      * @param min   Minimum value.
      * @param max   Maximum value.
-     * @return
+     * @return created jspinner
      */
-    public static JSpinner createSpinner(int value, int min, int max) {
+    static JSpinner createSpinner(int value, int min, int max) {
         return new JSpinner(new SpinnerNumberModel(value, min, max, 1));
     }
 
