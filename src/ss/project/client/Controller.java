@@ -24,6 +24,9 @@ import java.util.Observable;
  */
 public class Controller extends Observable {
     private static final Object CHAT_LOCK = new Object();
+    /**
+     * A singleton reference to the controller.
+     */
     @Getter
     private static Controller controller;
 
@@ -128,6 +131,9 @@ public class Controller extends Observable {
         }
     }
 
+    /**
+     * Start the client UI, will create a FRMMain if it's a GUI.
+     */
     public void doUI() {
         EventQueue.invokeLater(() -> {
             if (doGui) {
@@ -138,6 +144,9 @@ public class Controller extends Observable {
         });
     }
 
+    /**
+     * Start the server UI.
+     */
     public void doServerUI() {
         EventQueue.invokeLater(() -> {
             if (doGui) {
@@ -300,6 +309,11 @@ public class Controller extends Observable {
         ClientConfig.getInstance().toFile();
     }
 
+    /**
+     * Remove a server from the config and save.
+     *
+     * @param serverInfo
+     */
     public void removeServer(ServerInfo serverInfo) {
         ClientConfig.getInstance().knownServers.remove(serverInfo.getConnection());
         ClientConfig.getInstance().toFile();
@@ -349,6 +363,11 @@ public class Controller extends Observable {
         frame.showError(message);
     }
 
+    /**
+     * Send a chat message if we are connected and the server supports chat.
+     *
+     * @param message The message that needs to be send.
+     */
     public void sendChatMessage(String message) {
         if (isConnected() && getCurrentServer().isChatSupport()) {
             network.sendMessage(Protocol.createMessage(
@@ -360,12 +379,21 @@ public class Controller extends Observable {
         }
     }
 
+    /**
+     * Update the chat messages at the current frame.
+     */
     private void updateChatMessages() {
         if (doGui) {
             ((FRMMain) frame).getChatPanel().update();
         }
     }
 
+    /**
+     * Set whether we are connected.
+     * Will update the frame if we have one and switch to the server browser if we disconnect.
+     *
+     * @param connected
+     */
     void setConnected(boolean connected) {
         if (this.connected != connected) {
             this.connected = connected;
@@ -380,6 +408,11 @@ public class Controller extends Observable {
         }
     }
 
+    /***
+     * Ping all servers from the list of server and receive their ServerInfo.
+     * @return A new list containing information about all servers.
+     * (whether it's reachable and specifications).
+     */
     public List<ServerInfo> pingServers() {
         List<Connection> connections = ClientConfig.getInstance().knownServers;
         List<ServerInfo> serverInfos = new ArrayList<>();
@@ -393,16 +426,27 @@ public class Controller extends Observable {
         return serverInfos;
     }
 
+    /**
+     * Set the leaderboard data and notify all observers.
+     *
+     * @param leaderBoard
+     */
     void setLeaderBoard(List<LeaderboardEntry> leaderBoard) {
         this.leaderBoard = leaderBoard;
         setChanged();
         notifyObservers("UpdateLeaderBoard");
     }
 
+    /**
+     * Request a leaderboard update from the server.
+     */
     public void requestLeaderBoard() {
         network.sendMessage(Protocol.createMessage(Protocol.Client.REQUESTLEADERBOARD));
     }
 
+    /**
+     * Close the current frame.
+     */
     public void closeFrame() {
         frame.dispose();
     }
