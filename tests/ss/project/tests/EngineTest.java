@@ -13,6 +13,7 @@ import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
 import ss.project.shared.game.Vector3;
+import ss.project.shared.model.GameParameters;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ public class EngineTest {
         linear.setId(4);
         random = new RandomComputerPlayer("random");
         random.setId(7);
-        engine = new Engine(new Vector3(4, 4, 4), 4, Arrays.asList(linear, random));
+        engine = new Engine(new GameParameters(4, 4, 4, 4), Arrays.asList(linear, random), false);
         engine.setUI(new GameDisplay() {
             @Override
             public void startTurn(Object waiter, HumanPlayer humanPlayer) {

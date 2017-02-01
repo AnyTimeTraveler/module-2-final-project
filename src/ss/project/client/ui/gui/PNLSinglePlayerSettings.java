@@ -5,8 +5,8 @@ import ss.project.client.Controller;
 import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
-import ss.project.shared.game.Vector3;
 import ss.project.shared.model.ClientConfig;
+import ss.project.shared.model.GameParameters;
 import ss.project.shared.model.NameList;
 
 import javax.swing.*;
@@ -171,7 +171,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
             this.add(playerNameField);
             this.add(new JLabel("Type:"));
             playerType = new JComboBox<>();
-            for (String key : ClientConfig.getInstance().PlayerTypes.keySet()) {
+            for (String key : ClientConfig.getInstance().playerTypes.keySet()) {
                 playerType.addItem(key);
             }
             playerType.addActionListener(e -> updateSmartness());
@@ -185,7 +185,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
          * The playertype has changed, check if this is a computer. If so, show the smartness spinner.
          */
         private void updateSmartness() {
-            Class smthing = ClientConfig.getInstance().PlayerTypes.get(getPlayerType());
+            Class smthing = ClientConfig.getInstance().playerTypes.get(getPlayerType());
             if (ComputerPlayer.class.isAssignableFrom(smthing)) {
                 computerSmartness.setVisible(true);
             } else {
@@ -241,10 +241,10 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
                 List<Player> players = new ArrayList<>();
                 for (int i = 0; i < playerCount; i++) {
-                    Class<? extends Player> playerType = ClientConfig.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType());
+                    Class<? extends Player> playerType = ClientConfig.getInstance().playerTypes.get(playerPanels.get(i).getPlayerType());
                     Player player = playerType.newInstance();
                     player.setName(playerPanels.get(i).getName());
-                    player = ClientConfig.getInstance().PlayerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
+                    player = ClientConfig.getInstance().playerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
                     player.setName(playerPanels.get(i).getName());
                     player.setId(i);
                     if (playerPanels.get(i).isComputerPlayer()) {
@@ -252,9 +252,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
                     }
                     players.add(player);
                 }
-
-                Vector3 worldSize = new Vector3(worldSizeX, worldSizeY, worldSizeZ);
-                Engine engine = new Engine(worldSize, winLen, players);
+                Engine engine = new Engine(new GameParameters(worldSizeX, worldSizeY, worldSizeZ, winLen), players, false);
 
                 controller.setEngine(engine);
                 controller.switchTo(Controller.Panel.GAME);

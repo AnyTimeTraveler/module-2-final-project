@@ -38,7 +38,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
         topPanel.add(GUIUtils.createLabel("Lobby", GUIUtils.LabelType.TITLE), BorderLayout.CENTER);
         JPanel topRightPanel = new JPanel();
         playerType = new JComboBox<>();
-        for (String key : ClientConfig.getInstance().PlayerTypes.keySet()) {
+        for (String key : ClientConfig.getInstance().playerTypes.keySet()) {
             playerType.addItem(key);
         }
         playerType.addActionListener(e -> updateSmartness());
@@ -124,7 +124,7 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
      * The playertype has changed, check if this is a computer. If so, show the smartness spinner.
      */
     private void updateSmartness() {
-        Class smthing = ClientConfig.getInstance().PlayerTypes.get(getPlayerType());
+        Class smthing = ClientConfig.getInstance().playerTypes.get(getPlayerType());
         if (ComputerPlayer.class.isAssignableFrom(smthing)) {
             computerSmartness.setVisible(true);
         } else {

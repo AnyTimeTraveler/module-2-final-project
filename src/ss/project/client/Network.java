@@ -60,7 +60,7 @@ public class Network extends Thread {
     }
 
     private Player createPlayer() {
-        Class playerType = ClientConfig.getInstance().PlayerTypes.get(ClientConfig.getInstance().playerType);
+        Class playerType = ClientConfig.getInstance().playerTypes.get(ClientConfig.getInstance().playerType);
         if (playerType != null) {
             try {
                 Player player = (Player) playerType.newInstance();
@@ -95,15 +95,15 @@ public class Network extends Thread {
                 // send your own capabilities
                 ClientConfig config = ClientConfig.getInstance();
                 sendMessage(getCapabilityString(
-                        config.MaxPlayers,
-                        config.PlayerName,
-                        config.RoomSupport,
-                        config.MaxDimensionX,
-                        config.MaxDimensionY,
-                        config.MaxDimensionZ,
-                        config.MaxWinLength,
+                        config.maxPlayers,
+                        config.playerName,
+                        config.roomSupport,
+                        config.maxDimensionX,
+                        config.maxDimensionY,
+                        config.maxDimensionZ,
+                        config.maxWinLength,
                         Controller.getController().isDoGui(),
-                        config.AutoRefresh));
+                        config.autoRefresh));
 
                 // await list of rooms
                 if (serverInfo.isRoomSupport()) {
@@ -147,7 +147,7 @@ public class Network extends Thread {
         String[] parts = line.split(" ");
         if (Protocol.Server.ASSIGNID.equals(parts[0])) {
             getOwnedPlayer().setId(Integer.parseInt(parts[1]));
-            getOwnedPlayer().setName(ClientConfig.getInstance().PlayerName);
+            getOwnedPlayer().setName(ClientConfig.getInstance().playerName);
             controller.switchTo(Controller.Panel.MULTI_PLAYER_ROOM);
         } else if (Protocol.Server.NOTIFYMESSAGE.equals(parts[0])) {
             controller.addMessage(ChatMessage.fromString(line));

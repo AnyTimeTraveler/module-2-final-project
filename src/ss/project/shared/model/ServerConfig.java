@@ -22,6 +22,7 @@ public class ServerConfig {
     // Configfile name
     private static final String CONFIGFILE = "server-config.json";
     private static ServerConfig instance;
+    public boolean Spectate;
 
     //Variables
     /**
@@ -85,6 +86,7 @@ public class ServerConfig {
         ChatSupport = true;
         Leaderboard = new ArrayList<>();
         TimeoutInSeconds = 20;
+        Spectate = true;
     }
 
     public synchronized static ServerConfig getInstance() {

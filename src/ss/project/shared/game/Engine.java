@@ -18,6 +18,7 @@ import java.util.*;
  * @see Engine#startGame()
  */
 public class Engine {
+    private final boolean isServer;
     /**
      * The reason the game has finished.
      *
@@ -54,30 +55,19 @@ public class Engine {
     private Room room;
 
     /**
-     * Create a new world and assign players.
+     * Creates an engine with parameters from the protocol.
      *
-     * @param worldSize The size of the world.
-     * @param winLength The length required to win in this game.
-     * @param players   The players of this game.
+     * @param parameters Parameters for this game
+     * @param players    A collection of players that will be assigned to this engine.
      */
     //@ ensures this.world != null;
     //@ ensures this.players.size() == players.length;
-    public Engine(Vector3 worldSize, int winLength, Collection<? extends Player> players) {
-        this.world = new World(worldSize, winLength);
+    public Engine(GameParameters parameters, Collection<? extends Player> players, boolean isServer) {
+        this.world = new World(parameters.getWorldSize(), parameters.getWinLength());
         for (Player player : players) {
             this.players.put(player.getId(), player);
         }
-    }
-
-    /**
-     * Creates an engine with parameters from the protocol.
-     *
-     * @param parameters
-     * @param players    A collection of players that will be assigned to this engine.
-     * @see Engine#Engine(Vector3, int, Collection)
-     */
-    public Engine(GameParameters parameters, Collection<? extends Player> players) {
-        this(parameters.getWorldSize(), parameters.getWinLength(), players);
+        this.isServer = isServer;
     }
 
     /**
@@ -195,7 +185,6 @@ public class Engine {
     //@ requires getPlayerCount() <= 0;
     //@ ensures gameRunning;
     public void startGame() {
-        boolean isServer = (getUI() == null);
         gameRunning = true;
 
         //Don't start the gameDisplay if there are no players.
@@ -247,7 +236,8 @@ public class Engine {
 
         if (getUI() != null) {
             Controller.getController().switchTo(Controller.Panel.GAMEEND);
-        } else {
+        }
+        if (isServer) {
             //Notify anyone in the room.
             room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYEND, reason.getId(), playerid));
             //Add data to the leaderboard.

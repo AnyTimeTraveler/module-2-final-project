@@ -143,8 +143,14 @@ public class ClientHandler extends Thread {
                     sendError(4);
                 }
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
+                int splitOne = line.indexOf(' ') + 1;
+                int splitTwo = line.indexOf(' ', splitOne) + 1;
+                String name = line.substring(splitOne, splitTwo - 1);
+                String message = line.substring(splitTwo);
+
                 player.getCurrentRoom().broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE,
-                        new ChatMessage(player.getName(), line.substring(line.indexOf(' ', line.indexOf(' ') + 1) + 1))));
+                        new ChatMessage(name, message)));
+
             } else if (Protocol.Client.LEAVEROOM.equals(parts[0])) {
                 // Can't leave if the game has started
                 sendError(6);
@@ -205,9 +211,6 @@ public class ClientHandler extends Thread {
             } else if (Protocol.Client.REQUESTLEADERBOARD.equals(parts[0])) {
                 // send Leaderboard
                 sendMessage(server.getLeaderboardMessage());
-            } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
-                String args = line.substring(line.indexOf(' ') + 1);
-                server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), args.substring(args.indexOf(' ') + 1))));
             } else {
                 System.err.println("Not implemented: " + line);
             }

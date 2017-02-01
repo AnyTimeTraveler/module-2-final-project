@@ -50,7 +50,7 @@ public class PNLChat extends GUIPanel {
     }
 
     public void update() {
-        List<ChatMessage> messages = controller.getRecentChatMessages(ClientConfig.getInstance().MaxChatMessages);
+        List<ChatMessage> messages = controller.getRecentChatMessages(ClientConfig.getInstance().maxChatMessages);
         StringBuilder sb = new StringBuilder();
         for (ChatMessage message : messages) {
             sb.append(formatMessage(message));

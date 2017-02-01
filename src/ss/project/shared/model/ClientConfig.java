@@ -36,68 +36,68 @@ public class ClientConfig {
      * The title of the frame.
      */
     @Expose
-    public String WindowTitle;
+    public String windowTitle;
     /**
      * A map that contains all possible playerTypes the player can use.
      */
-    public HashMap<String, Class<? extends Player>> PlayerTypes;
+    public HashMap<String, Class<? extends Player>> playerTypes;
     /**
      * If true, the frame will be shown in full screen.
      * If false in windowed mode.
      */
     @Expose
-    public boolean Fullscreen;
+    public boolean fullscreen;
     /**
      * A list of servers that are added and need to be shown in the serverbrowser.
      */
     @Expose
-    public List<Connection> KnownServers;
+    public List<Connection> knownServers;
     /**
      * The playername used in multiplayer.
      */
     @Expose
-    public String PlayerName;
+    public String playerName;
     /**
      * The max amount of players this client can handle.
      */
-    public int MaxPlayers;
+    public int maxPlayers;
     /**
      * If true this client can handle rooms.
      */
-    public boolean RoomSupport;
+    public boolean roomSupport;
     /**
      * The maximum X size of the world this client can handle.
      */
-    public int MaxDimensionX;
+    public int maxDimensionX;
     /**
      * The maximum Y size of the world this client can handle.
      */
-    public int MaxDimensionY;
+    public int maxDimensionY;
     /**
      * The maximum Z size of the world this client can handle.
      */
-    public int MaxDimensionZ;
+    public int maxDimensionZ;
     /**
      * The maximum length that is needed to win this client can handle.
      */
-    public int MaxWinLength;
+    public int maxWinLength;
     /**
      * If true this client can send and recieve chat messages.
      */
-    public boolean ChatSupport;
+    public boolean chatSupport;
     /**
      * If true the client wants to be notified if the server get changes in the rooms.
      * If false the client needs to ask for an update by itself.
      */
-    public boolean AutoRefresh;
+    public boolean autoRefresh;
     /**
      * The max amount of chat message shown on the UI.
      */
-    public int MaxChatMessages;
+    public int maxChatMessages;
     /**
-     * The playertype the user wants to use in multiplayer
+     * The playertype the user wants to use in multiplayer.
      *
-     * @see ClientConfig#PlayerTypes
+     * @see ClientConfig#playerTypes
      */
     public String playerType;
     /**
@@ -115,28 +115,28 @@ public class ClientConfig {
      * If a value is saved of a field that value will be loaded.
      */
     private ClientConfig() {
-        WindowTitle = "Connect Four 3D";
-        Fullscreen = false;
-        PlayerTypes = new HashMap<>();
-        PlayerTypes.put("Human", HumanPlayer.class);
-        PlayerTypes.put("Linear AI", LinearComputerPlayer.class);
-        PlayerTypes.put("Minmax AI", MinMaxComputerPlayer.class);
-        PlayerTypes.put("Minmax AI 2", MinMaxComputerPlayer2.class);
-        PlayerTypes.put("Minmax alpha beta", MinMaxAlphaBetaComputerPlayer.class);
-        PlayerTypes.put("Random AI", RandomComputerPlayer.class);
-        KnownServers = new ArrayList<>();
-        KnownServers.add(new Connection("Localhost", "127.0.0.1", 1234));
-        PlayerName = "Simon";
-        MaxPlayers = Integer.MAX_VALUE;
-        RoomSupport = true;
-        MaxDimensionX = Integer.MAX_VALUE;
-        MaxDimensionY = Integer.MAX_VALUE;
-        MaxDimensionZ = Integer.MAX_VALUE;
-        MaxWinLength = Integer.MAX_VALUE;
-        ChatSupport = true;
-        AutoRefresh = true;
-        MaxPlayers = 50;
-        MaxChatMessages = 50;
+        windowTitle = "Connect Four 3D";
+        fullscreen = false;
+        playerTypes = new HashMap<>();
+        playerTypes.put("Human", HumanPlayer.class);
+        playerTypes.put("Linear AI", LinearComputerPlayer.class);
+        playerTypes.put("Minmax AI", MinMaxComputerPlayer.class);
+        playerTypes.put("Minmax AI 2", MinMaxComputerPlayer2.class);
+        playerTypes.put("Minmax alpha beta", MinMaxAlphaBetaComputerPlayer.class);
+        playerTypes.put("Random AI", RandomComputerPlayer.class);
+        knownServers = new ArrayList<>();
+        knownServers.add(new Connection("Localhost", "127.0.0.1", 1234));
+        playerName = "Simon";
+        maxPlayers = Integer.MAX_VALUE;
+        roomSupport = true;
+        maxDimensionX = Integer.MAX_VALUE;
+        maxDimensionY = Integer.MAX_VALUE;
+        maxDimensionZ = Integer.MAX_VALUE;
+        maxWinLength = Integer.MAX_VALUE;
+        chatSupport = true;
+        autoRefresh = true;
+        maxPlayers = 50;
+        maxChatMessages = 50;
         playerType = "Human";
         playerSmartness = 6;
         showHint = true;
@@ -155,11 +155,9 @@ public class ClientConfig {
 
     /**
      * Load the fields from a file. If no file is found default values are used.
-     *
-     * @param file
      */
-    public static void load(File file) {
-        instance = fromFile(file);
+    public static void load() {
+        instance = fromFile(new File(CONFIGFILE));
         // no config file found
         if (instance == null) {
             instance = fromDefaults();
@@ -168,18 +166,7 @@ public class ClientConfig {
     }
 
     /**
-     * Load fields from the default file location.
-     *
-     * @see ClientConfig#load(File)
-     */
-    private static void load() {
-        load(new File(CONFIGFILE));
-    }
-
-    /**
      * Create an instance with default values.
-     *
-     * @return
      */
     private static ClientConfig fromDefaults() {
         return new ClientConfig();
@@ -187,14 +174,12 @@ public class ClientConfig {
 
     /**
      * Create an instance from  a file.
-     *
-     * @param configFile
-     * @return
      */
     private static ClientConfig fromFile(File configFile) {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(configFile));
+            BufferedReader reader = new BufferedReader(isr);
             return gson.fromJson(reader, ClientConfig.class);
         } catch (FileNotFoundException e) {
             System.out.println("ClientConfig file not found!");
@@ -203,27 +188,15 @@ public class ClientConfig {
     }
 
     /**
-     * Save to the default config file.
+     * Save the fields.
      */
     public void toFile() {
-        toFile(new File(CONFIGFILE));
-    }
-
-    public void toFile(String file) {
-        toFile(new File(file));
-    }
-
-    /**
-     * Save the fields.
-     *
-     * @param file The file that needs to be used to write to.
-     */
-    public void toFile(File file) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+        GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
+        Gson gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
         String jsonConfig = gson.toJson(this);
         FileWriter writer;
         try {
-            writer = new FileWriter(file);
+            writer = new FileWriter(new File(CONFIGFILE));
             writer.write(jsonConfig);
             writer.flush();
             writer.close();

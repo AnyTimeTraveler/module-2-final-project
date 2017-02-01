@@ -29,7 +29,7 @@ public class FRMMain extends JFrame implements UIFrame {
      */
     public void init() {
         this.setName("Main Frame");
-        if (ClientConfig.getInstance().Fullscreen) {
+        if (ClientConfig.getInstance().fullscreen) {
             this.setLocation(0, 0);
             this.setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
             this.setUndecorated(true);
@@ -39,7 +39,7 @@ public class FRMMain extends JFrame implements UIFrame {
             this.setSize(new Dimension(1200, 800));
         }
         this.requestFocus();
-        this.setTitle(ClientConfig.getInstance().WindowTitle);
+        this.setTitle(ClientConfig.getInstance().windowTitle);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
 

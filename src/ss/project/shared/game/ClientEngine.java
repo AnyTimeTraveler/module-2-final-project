@@ -28,7 +28,7 @@ public class ClientEngine extends Engine {
      * @param network
      */
     public ClientEngine(GameParameters gameParameters, Collection<Player> players, Network network, int playerID) {
-        super(gameParameters, players);
+        super(gameParameters, players, false);
         this.network = network;
         this.playerID = playerID;
     }

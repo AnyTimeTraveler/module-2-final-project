@@ -58,12 +58,12 @@ public class NetworkTest {
         while (np.getMaxPlayers() == 0) {
             Thread.sleep(10);
         }
-        Assert.assertEquals(ClientConfig.getInstance().RoomSupport, np.isRoomSupport());
-        Assert.assertEquals(ClientConfig.getInstance().MaxDimensionX, np.getMaxDimensionX());
-        Assert.assertEquals(ClientConfig.getInstance().MaxDimensionY, np.getMaxDimensionY());
-        Assert.assertEquals(ClientConfig.getInstance().MaxDimensionZ, np.getMaxDimensionZ());
-        Assert.assertEquals(ClientConfig.getInstance().MaxWinLength, np.getMaxWinLength());
+        Assert.assertEquals(ClientConfig.getInstance().roomSupport, np.isRoomSupport());
+        Assert.assertEquals(ClientConfig.getInstance().maxDimensionX, np.getMaxDimensionX());
+        Assert.assertEquals(ClientConfig.getInstance().maxDimensionY, np.getMaxDimensionY());
+        Assert.assertEquals(ClientConfig.getInstance().maxDimensionZ, np.getMaxDimensionZ());
+        Assert.assertEquals(ClientConfig.getInstance().maxWinLength, np.getMaxWinLength());
         Assert.assertEquals(Controller.getController().isDoGui(), np.isChatSupport());
-        Assert.assertEquals(ClientConfig.getInstance().AutoRefresh, np.isAutoRefresh());
+        Assert.assertEquals(ClientConfig.getInstance().autoRefresh, np.isAutoRefresh());
     }
 }

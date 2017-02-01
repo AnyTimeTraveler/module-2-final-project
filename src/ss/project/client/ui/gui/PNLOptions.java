@@ -27,14 +27,14 @@ public class PNLOptions extends GUIPanel {
 
         JPanel playerTextPanel = new JPanel();
         playerTextPanel.add(GUIUtils.createLabel("Player name: "));
-        playerTextField = GUIUtils.createTextField(ClientConfig.getInstance().PlayerName);
+        playerTextField = GUIUtils.createTextField(ClientConfig.getInstance().playerName);
         playerTextPanel.add(playerTextField);
         playerTextPanel.setPreferredSize(new Dimension(1000, 50));
         playerTextPanel.setMaximumSize(new Dimension(1000, 50));
         add(playerTextPanel);
 
         autoRefreshCheckbox = GUIUtils.createCheckBox("Auto refresh");
-        autoRefreshCheckbox.setSelected(ClientConfig.getInstance().AutoRefresh);
+        autoRefreshCheckbox.setSelected(ClientConfig.getInstance().autoRefresh);
         addComponent(autoRefreshCheckbox);
 
         JPanel chatMessagePanel = new JPanel();
@@ -42,7 +42,7 @@ public class PNLOptions extends GUIPanel {
         label.setPreferredSize(new Dimension(200, 50));
         label.setMaximumSize(new Dimension(200, 50));
         chatMessagePanel.add(label);
-        maxChatMessages = GUIUtils.createSpinner(ClientConfig.getInstance().MaxChatMessages, 1, 200);
+        maxChatMessages = GUIUtils.createSpinner(ClientConfig.getInstance().maxChatMessages, 1, 200);
         maxChatMessages.setPreferredSize(new Dimension(200, 50));
         maxChatMessages.setMaximumSize(new Dimension(200, 50));
         chatMessagePanel.add(maxChatMessages);
@@ -54,8 +54,8 @@ public class PNLOptions extends GUIPanel {
         showHint.setSelected(ClientConfig.getInstance().showHint);
         addComponent(showHint);
 
-        fullScreenCheckbox = GUIUtils.createCheckBox("Fullscreen");
-        fullScreenCheckbox.setSelected(ClientConfig.getInstance().Fullscreen);
+        fullScreenCheckbox = GUIUtils.createCheckBox("fullscreen");
+        fullScreenCheckbox.setSelected(ClientConfig.getInstance().fullscreen);
         addComponent(fullScreenCheckbox);
 
         JPanel bottomPanel = new JPanel();
@@ -78,7 +78,7 @@ public class PNLOptions extends GUIPanel {
     }
 
     private void swichFullscreen(boolean isFullscreen) {
-        ClientConfig.getInstance().Fullscreen = isFullscreen;
+        ClientConfig.getInstance().fullscreen = isFullscreen;
         controller.restartFrame();
     }
 
@@ -86,19 +86,19 @@ public class PNLOptions extends GUIPanel {
      * Apply the changed settings.
      */
     private void apply() {
-        if (!playerTextField.getText().equals(ClientConfig.getInstance().PlayerName)) {
-            ClientConfig.getInstance().PlayerName = playerTextField.getText();
+        if (!playerTextField.getText().equals(ClientConfig.getInstance().playerName)) {
+            ClientConfig.getInstance().playerName = playerTextField.getText();
         }
 
-        if (autoRefreshCheckbox.isSelected() != ClientConfig.getInstance().AutoRefresh) {
-            ClientConfig.getInstance().AutoRefresh = autoRefreshCheckbox.isSelected();
+        if (autoRefreshCheckbox.isSelected() != ClientConfig.getInstance().autoRefresh) {
+            ClientConfig.getInstance().autoRefresh = autoRefreshCheckbox.isSelected();
         }
 
-        if ((int) maxChatMessages.getValue() != ClientConfig.getInstance().MaxChatMessages) {
-            ClientConfig.getInstance().MaxChatMessages = (int) maxChatMessages.getValue();
+        if ((int) maxChatMessages.getValue() != ClientConfig.getInstance().maxChatMessages) {
+            ClientConfig.getInstance().maxChatMessages = (int) maxChatMessages.getValue();
         }
 
-        if (fullScreenCheckbox.isSelected() != ClientConfig.getInstance().Fullscreen) {
+        if (fullScreenCheckbox.isSelected() != ClientConfig.getInstance().fullscreen) {
             swichFullscreen(fullScreenCheckbox.isSelected());
         }
 
@@ -117,15 +117,15 @@ public class PNLOptions extends GUIPanel {
      * Discard all changes the user has made.
      */
     private void reInit() {
-        fullScreenCheckbox.setSelected(ClientConfig.getInstance().Fullscreen);
-        playerTextField.setText(ClientConfig.getInstance().PlayerName);
-        autoRefreshCheckbox.setSelected(ClientConfig.getInstance().AutoRefresh);
-        maxChatMessages.setValue(ClientConfig.getInstance().MaxChatMessages);
+        fullScreenCheckbox.setSelected(ClientConfig.getInstance().fullscreen);
+        playerTextField.setText(ClientConfig.getInstance().playerName);
+        autoRefreshCheckbox.setSelected(ClientConfig.getInstance().autoRefresh);
+        maxChatMessages.setValue(ClientConfig.getInstance().maxChatMessages);
     }
 
     @Override
     public void onEnter() {
-        fullScreenCheckbox.setSelected(ClientConfig.getInstance().Fullscreen);
+        fullScreenCheckbox.setSelected(ClientConfig.getInstance().fullscreen);
     }
 
     @Override

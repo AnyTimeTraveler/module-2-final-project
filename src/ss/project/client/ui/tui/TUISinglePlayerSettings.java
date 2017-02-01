@@ -5,8 +5,8 @@ import ss.project.client.HumanPlayer;
 import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
-import ss.project.shared.game.Vector3;
 import ss.project.shared.model.ClientConfig;
+import ss.project.shared.model.GameParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +39,8 @@ public class TUISinglePlayerSettings implements TUIPanel {
             System.out.println(ASCIIArt.getChoiceText(currentPlayerText, 120));
 
             int i = 0;
-            playerTypes = new String[ClientConfig.getInstance().PlayerTypes.size()];
-            for (String key : ClientConfig.getInstance().PlayerTypes.keySet()) {
+            playerTypes = new String[ClientConfig.getInstance().playerTypes.size()];
+            for (String key : ClientConfig.getInstance().playerTypes.keySet()) {
                 System.out.println(ASCIIArt.getChoiceItem(i, key, 120));
                 playerTypes[i] = key;
                 i++;
@@ -94,7 +94,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
                         //NAME COMPUTERTYPE SMARTNESS
                         try {
                             int playerType = Integer.parseInt(parts[1]);
-                            Player player = ClientConfig.getInstance().PlayerTypes.get(playerTypes[playerType]).newInstance();
+                            Player player = ClientConfig.getInstance().playerTypes.get(playerTypes[playerType]).newInstance();
                             player.setName(parts[0]);
                             player.setId(players.size());
                             if (player instanceof ComputerPlayer && parts.length > 2) {
@@ -126,7 +126,7 @@ public class TUISinglePlayerSettings implements TUIPanel {
                     return;
                 }
                 //We're done in this screen, start the game.
-                Engine engine = new Engine(new Vector3(x, y, z), winlength, players);
+                Engine engine = new Engine(new GameParameters(x, y, z, winlength), players, false);
                 Controller.getController().setEngine(engine);
                 Controller.getController().switchTo(Controller.Panel.GAME);
                 Controller.getController().startGame();

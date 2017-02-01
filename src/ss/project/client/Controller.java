@@ -136,6 +136,16 @@ public class Controller extends Observable {
         });
     }
 
+    public void doServerUI() {
+        EventQueue.invokeLater(() -> {
+            if (doGui) {
+                frame = new FRMMain();
+            }
+            frame.init();
+            switchTo(Panel.GAME);
+        });
+    }
+
     /**
      * Restart the complete frame and go back to the default panel.
      * Used when changing fullscreen mode.
@@ -284,12 +294,12 @@ public class Controller extends Observable {
      * Add a server to the list of servers.
      */
     public void addServer(String ip, int port) {
-        ClientConfig.getInstance().KnownServers.add(new Connection("Added server", ip, port));
+        ClientConfig.getInstance().knownServers.add(new Connection("Added server", ip, port));
         ClientConfig.getInstance().toFile();
     }
 
     public void removeServer(ServerInfo serverInfo) {
-        ClientConfig.getInstance().KnownServers.remove(serverInfo.getConnection());
+        ClientConfig.getInstance().knownServers.remove(serverInfo.getConnection());
         ClientConfig.getInstance().toFile();
     }
 
@@ -322,7 +332,7 @@ public class Controller extends Observable {
 
     public void sendChatMessage(String message) {
         if (isConnected() && getCurrentServer().isChatSupport()) {
-            network.sendMessage(Protocol.createMessage(Protocol.Client.SENDMESSAGE, ClientConfig.getInstance().PlayerName, message));
+            network.sendMessage(Protocol.createMessage(Protocol.Client.SENDMESSAGE, ClientConfig.getInstance().playerName, message));
         } else {
             addMessage(new ChatMessage("Game", "That didn't go anywhere, since you aren't connected to any server at the moment."));
             updateChatMessages();
@@ -350,7 +360,7 @@ public class Controller extends Observable {
     }
 
     public List<ServerInfo> pingServers() {
-        List<Connection> connections = ClientConfig.getInstance().KnownServers;
+        List<Connection> connections = ClientConfig.getInstance().knownServers;
         List<ServerInfo> serverInfos = new ArrayList<>();
         for (Connection connection : connections) {
             try {
@@ -370,6 +380,10 @@ public class Controller extends Observable {
 
     public void requestLeaderBoard() {
         network.sendMessage(Protocol.createMessage(Protocol.Client.REQUESTLEADERBOARD));
+    }
+
+    public void closeFrame() {
+        frame.dispose();
     }
 
     public enum Panel {

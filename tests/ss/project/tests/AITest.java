@@ -6,8 +6,8 @@ import ss.project.shared.computerplayer.MinMaxComputerPlayer;
 import ss.project.shared.computerplayer.MinMaxComputerPlayer2;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
-import ss.project.shared.game.Vector3;
 import ss.project.shared.model.ClientConfig;
+import ss.project.shared.model.GameParameters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class AITest {
     public void setUp() throws Exception {
         players = new ArrayList<>();
         int i = 0;
-        for (Class value : ClientConfig.getInstance().PlayerTypes.values()) {
+        for (Class value : ClientConfig.getInstance().playerTypes.values()) {
             if (!ComputerPlayer.class.isAssignableFrom(value)) {
                 continue;
             }
@@ -78,7 +78,7 @@ public class AITest {
      * @return The player that won the game.
      */
     private Player testAI(Player player1, Player player2) {
-        engine = new Engine(new Vector3(4, 4, 4), 4, Arrays.asList(player1, player2));
+        engine = new Engine(new GameParameters(4, 4, 4, 4), Arrays.asList(player1, player2), false);
         engine.startGame();
 
         return engine.getPlayer(engine.getWinner());

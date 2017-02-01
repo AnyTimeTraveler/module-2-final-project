@@ -3,6 +3,7 @@ package ss.project.server;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Synchronized;
+import ss.project.client.Controller;
 import ss.project.shared.NetworkPlayer;
 import ss.project.shared.Protocol;
 import ss.project.shared.Serializable;
@@ -11,7 +12,9 @@ import ss.project.shared.game.Engine;
 import ss.project.shared.game.Vector3;
 import ss.project.shared.model.ChatMessage;
 import ss.project.shared.model.GameParameters;
+import ss.project.shared.model.ServerConfig;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -228,12 +231,20 @@ public class Room implements Serializable {
                 np.setInGame(true);
                 np.getClientHandler().sendMessage(Protocol.createMessage(Protocol.Server.STARTGAME, args));
             }
-            engine = new Engine(parameters, players);
+            engine = new Engine(parameters, players, true);
         }
         engine.setRoom(this);
         engineThread = new Thread(() -> engine.startGame());
         engineThread.setDaemon(true);
         engineThread.start();
+        if (ServerConfig.getInstance().Spectate) {
+            EventQueue.invokeLater(() -> {
+                Controller c = Controller.getController();
+                c.start(true);
+                c.setEngine(engine);
+                c.doServerUI();
+            });
+        }
     }
 
     /**
@@ -361,6 +372,9 @@ public class Room implements Serializable {
     public void endGame(Protocol.WinReason reason, int id) {
         //We remove this room from the server.
         Server.getInstance().removeRoom(this);
+        if (ServerConfig.getInstance().Spectate) {
+            Controller.getController().closeFrame();
+        }
 
         engine.finishGame(reason, id);
         engineThread.interrupt();
