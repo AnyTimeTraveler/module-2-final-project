@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.Synchronized;
 import ss.project.server.ClientHandler;
 import ss.project.server.Room;
-import ss.project.shared.exceptions.InvalidInputException;
 import ss.project.shared.game.Engine;
 import ss.project.shared.game.Player;
 import ss.project.shared.game.Vector2;
@@ -89,10 +88,9 @@ public class NetworkPlayer extends Player implements Serializable {
     private Color color;
 
     /**
-     * Create a networkplayer from a clienthandler.
+     * Create a networkplayer attatched to a clienthandler.
      *
-     * @param clientHandler
-     * @throws IOException
+     * @throws IOException if Connection is broken.
      */
     public NetworkPlayer(ClientHandler clientHandler) throws IOException {
         super();
@@ -105,11 +103,11 @@ public class NetworkPlayer extends Player implements Serializable {
     /**
      * Create a new networkplayer with a specified ID, name and color.
      *
-     * @param id
-     * @param name
-     * @param color
+     * @param id    id of that player.
+     * @param name  name of the player.
+     * @param color color of that player.
      */
-    public NetworkPlayer(int id, String name, Color color) {
+    private NetworkPlayer(int id, String name, Color color) {
         setId(id);
         setName(name);
         this.color = color;
@@ -117,8 +115,6 @@ public class NetworkPlayer extends Player implements Serializable {
 
     /**
      * Get the next ID that is unique.
-     *
-     * @return
      */
     @Synchronized
     private static int getNextId() {
@@ -127,21 +123,17 @@ public class NetworkPlayer extends Player implements Serializable {
 
     /**
      * Create a networkPlayer from a string line followed from protocol.
-     *
-     * @param line
-     * @return
      */
     public static NetworkPlayer fromString(String line) {
         String[] params = line.split(Protocol.PIPE_SYMBOL);
-        return new NetworkPlayer(Integer.parseInt(params[0]), params[1], Color.fromString(params[2]));
+        return new NetworkPlayer(Integer.parseInt(params[0]), params[1],
+                                        Color.fromString(params[2]));
     }
 
     /**
      * Called everytime this player should set a gameitem.
      * In this case the networkplayer waits from input from a client, verifies it and
      * sends it to all clients.
-     *
-     * @param engine
      */
     @Override
     public void doTurn(Engine engine) {
@@ -158,7 +150,8 @@ public class NetworkPlayer extends Player implements Serializable {
             }
         }
         if (engine.getWorld().addGameItem(move, this)) {
-            currentRoom.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMOVE, getId(), move.getX(), move.getY()));
+            currentRoom.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMOVE,
+                    getId(), move.getX(), move.getY()));
             if (engine.getWorld().hasWon(new Vector2(move.getX(), move.getY()), this)) {
                 currentRoom.endGame(Protocol.WinReason.WINLENGTHACHIEVED, getId());
             } else {
@@ -178,32 +171,9 @@ public class NetworkPlayer extends Player implements Serializable {
     }
 
     /**
-     * Input will be “makeMove 2 3”
-     *
-     * @param rawInput
-     * @return
-     */
-    private Vector2 getMoveCoordinates(String rawInput) throws InvalidInputException {
-        String[] parts = rawInput.split(" ");
-        if (parts.length < 3) {
-            throw new InvalidInputException(rawInput);
-        }
-
-        try {
-            int x = Integer.parseInt(parts[1]);
-            int y = Integer.parseInt(parts[2]);
-
-            return new Vector2(x, y);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputException(rawInput);
-        }
-    }
-
-    /**
      * Set the capabilities of this networkplayer from a string from the protocol.
      *
-     * @param message
-     * @throws NumberFormatException If an integer is expected, but found something inconvertable to numbers.
+     * @throws NumberFormatException If message is malformated.
      */
     public void setCapabilitiesFromString(String message) throws NumberFormatException {
         Scanner sc = new Scanner(message);

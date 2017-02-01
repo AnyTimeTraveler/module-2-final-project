@@ -20,7 +20,7 @@ public class LeaderBoardTest {
     @Test
     public void emptyAndFull() throws Exception {
         Controller.getController().start(false);
-        Server server = new Server("localhost", 4657);
+        Server server = new Server(4657);
         Thread serverThread = new Thread(server::run);
         serverThread.setDaemon(true);
         serverThread.start();
@@ -32,13 +32,13 @@ public class LeaderBoardTest {
         while (!client.isReady()) {
             Thread.sleep(100);
         }
-        ServerConfig.getInstance().Leaderboard = new ArrayList<>();
+        ServerConfig.getInstance().leaderboard = new ArrayList<>();
         client.sendMessage(Protocol.createMessage(Protocol.Client.REQUESTLEADERBOARD));
         Thread.sleep(100);
         Assert.assertEquals(0, Controller.getController().getLeaderBoard().size());
 
-        ServerConfig.getInstance().Leaderboard = new ArrayList<>();
-        ServerConfig.getInstance().Leaderboard.add(new LeaderboardEntry("Simon", 0, 0, 1));
+        ServerConfig.getInstance().leaderboard = new ArrayList<>();
+        ServerConfig.getInstance().leaderboard.add(new LeaderboardEntry("Simon", 0, 0, 1));
         client.sendMessage(Protocol.createMessage(Protocol.Client.REQUESTLEADERBOARD));
         Thread.sleep(100);
         Assert.assertEquals(1, Controller.getController().getLeaderBoard().size());

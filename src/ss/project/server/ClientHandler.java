@@ -209,7 +209,7 @@ public class ClientHandler extends Thread {
                     sendError(6);
                 }
             } else if (Protocol.Client.REQUESTLEADERBOARD.equals(parts[0])) {
-                // send Leaderboard
+                // send leaderboard
                 sendMessage(server.getLeaderboardMessage());
             } else {
                 System.err.println("Not implemented: " + line);

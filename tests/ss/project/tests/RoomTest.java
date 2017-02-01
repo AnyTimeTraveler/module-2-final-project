@@ -21,20 +21,18 @@ import java.util.Random;
  * Created by simon on 24.01.17.
  */
 public class RoomTest {
-    private static Server server;
-    private static Socket socket;
     private static ClientHandler clientHandler;
 
     static {
         try {
-            server = new Server("127.0.0.1", 1024 + new Random().nextInt(6000));
+            Server server = new Server(1024 + new Random().nextInt(6000));
             Thread serverThread = new Thread(server::run);
             serverThread.setDaemon(true);
             serverThread.start();
             while (!server.isReady()) {
                 Thread.sleep(10);
             }
-            socket = new Socket("127.0.0.1", server.getPort());
+            Socket socket = new Socket("127.0.0.1", server.getPort());
             clientHandler = new ClientHandler(server, socket);
         } catch (Exception e) {
             e.printStackTrace();

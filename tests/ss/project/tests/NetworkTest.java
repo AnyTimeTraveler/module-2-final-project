@@ -19,12 +19,11 @@ import java.util.Random;
 public class NetworkTest {
 
     private static Server server;
-    private static Network client;
 
     static {
         try {
             Controller.getController().start(false);
-            server = new Server("127.0.0.1", 1024 + new Random().nextInt(6000));
+            server = new Server(1024 + new Random().nextInt(6000));
             Thread serverThread = new Thread(server::run);
             serverThread.start();
             while (!server.isReady()) {
@@ -33,7 +32,7 @@ public class NetworkTest {
 
             Controller.getController()
                     .joinServer(new Network(new Connection("Simon", "127.0.0.1", server.getPort())).ping());
-            client = Controller.getController().getNetwork();
+            Network client = Controller.getController().getNetwork();
             while (!client.isReady()) {
                 Thread.sleep(10);
             }

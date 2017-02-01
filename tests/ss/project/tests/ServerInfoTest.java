@@ -15,15 +15,12 @@ import java.util.Random;
  * Created by simon on 01.02.17.
  */
 public class ServerInfoTest {
-    private Server server;
-    private Network client;
     private ServerInfo info;
-    private ServerInfo info2;
     private Connection connection;
 
     @Before
     public void setUp() throws Exception {
-        server = new Server("127.0.0.1", 1024 + new Random().nextInt(6000));
+        Server server = new Server(1024 + new Random().nextInt(6000));
         Thread serverThread = new Thread(server::run);
         serverThread.start();
         while (!server.isReady()) {
@@ -40,24 +37,24 @@ public class ServerInfoTest {
     @Test
     public void test() {
         ServerConfig c = ServerConfig.getInstance();
-        Assert.assertEquals(c.MaxPlayers, info.getMaxPlayers());
-        Assert.assertEquals(c.MaxDimensionX, info.getMaxDimensionX());
-        Assert.assertEquals(c.MaxDimensionY, info.getMaxDimensionY());
-        Assert.assertEquals(c.MaxDimensionZ, info.getMaxDimensionZ());
-        Assert.assertEquals(c.MaxWinLength, info.getMaxWinLength());
-        Assert.assertEquals(c.RoomSupport, info.isRoomSupport());
-        Assert.assertEquals(c.ChatSupport, info.isChatSupport());
+        Assert.assertEquals(c.maxPlayers, info.getMaxPlayers());
+        Assert.assertEquals(c.maxDimensionX, info.getMaxDimensionX());
+        Assert.assertEquals(c.maxDimensionY, info.getMaxDimensionY());
+        Assert.assertEquals(c.maxDimensionZ, info.getMaxDimensionZ());
+        Assert.assertEquals(c.maxWinLength, info.getMaxWinLength());
+        Assert.assertEquals(c.roomSupport, info.isRoomSupport());
+        Assert.assertEquals(c.chatSupport, info.isChatSupport());
 
 
-        info2 = new ServerInfo(ServerInfo.Status.ONLINE,
-                                      connection,
-                                      2,
-                                      true,
-                                      4,
-                                      4,
-                                      4,
-                                      4,
-                                      true);
+        ServerInfo info2 = new ServerInfo(ServerInfo.Status.ONLINE,
+                                                 connection,
+                                                 2,
+                                                 true,
+                                                 4,
+                                                 4,
+                                                 4,
+                                                 4,
+                                                 true);
         Assert.assertEquals(connection, info2.getConnection());
         Assert.assertEquals(2, info2.getMaxPlayers());
         Assert.assertEquals(4, info2.getMaxDimensionX());

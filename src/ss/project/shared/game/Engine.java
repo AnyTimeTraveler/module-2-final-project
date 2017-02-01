@@ -207,7 +207,7 @@ public class Engine {
                         getUI().setCurrentPlayer(player);
                     }
 //                    if (isServer) {
-//                        timeoutTimer.schedule(timeoutTask, ServerConfig.getInstance().TimeoutInSeconds * 1000);
+//                        timeoutTimer.schedule(timeoutTask, ServerConfig.getInstance().timeoutInSeconds * 1000);
 //                    }
                     player.doTurn(this);
                     timeoutTimer.cancel();

@@ -8,7 +8,6 @@ import ss.project.shared.model.LeaderboardEntry;
 import ss.project.shared.model.ServerConfig;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -27,10 +26,7 @@ public class Server {
      * A list of rooms of this server.
      */
     private final List<Room> rooms;
-    /**
-     * The ip of this server.
-     */
-    private String ip;
+    private final ServerSocket serverSocket;
     /**
      * The port of this server.
      */
@@ -56,11 +52,9 @@ public class Server {
     /**
      * Create a new server with specified ip and port.
      *
-     * @param ip      The ip of this server.
      * @param portArg The port of this server.
      */
-    public Server(String ip, int portArg) {
-        this.ip = ip;
+    public Server(int portArg) throws IOException {
         port = portArg;
         closed = false;
         ready = false;
@@ -68,6 +62,7 @@ public class Server {
         rooms = new ArrayList<>();
         instance = this;
         createDefaultRoom();
+        serverSocket = new ServerSocket(port);
     }
 
     /**
@@ -99,8 +94,7 @@ public class Server {
     public void run() {
         Thread.currentThread().setName("Server");
         try {
-            ServerSocket serverSocket = new ServerSocket(port, 255, InetAddress.getByName(ip));
-            System.out.println("Now listening on: " + ip + ":" + port);
+            System.out.println("Now listening on: " + port);
             while (!closed) {
                 ready = true;
                 Socket client = serverSocket.accept();
@@ -109,18 +103,6 @@ public class Server {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * Send a message to all clients (even those not in rooms).
-     *
-     * @param msg the string that's to be sent to all clients
-     */
-    void broadcast(String msg) {
-        System.out.println("Message to all clients: " + msg);
-        for (ClientHandler clientHandler : threads) {
-            clientHandler.sendMessage(msg);
         }
     }
 
@@ -154,17 +136,17 @@ public class Server {
     String getCapabilitiesMessage() {
         ServerConfig sc = ServerConfig.getInstance();
         return Protocol.createMessage(Protocol.Server.SERVERCAPABILITIES,
-                sc.MaxPlayers,
-                sc.RoomSupport,
-                sc.MaxDimensionX,
-                sc.MaxDimensionY,
-                sc.MaxDimensionZ,
-                sc.MaxWinLength,
-                sc.ChatSupport);
+                sc.maxPlayers,
+                sc.roomSupport,
+                sc.maxDimensionX,
+                sc.maxDimensionY,
+                sc.maxDimensionZ,
+                sc.maxWinLength,
+                sc.chatSupport);
     }
 
     /**
-     * True if server is ready to be used,
+     * True if server is ready to be used.
      * False if it's busy
      *
      * @see Server#ready
@@ -204,8 +186,8 @@ public class Server {
      * Create the leaderboard message that contains data about ranking.
      */
     String getLeaderboardMessage() {
-        Object[] entries = new Object[ServerConfig.getInstance().Leaderboard.size()];
-        List<LeaderboardEntry> leaderboard = ServerConfig.getInstance().Leaderboard;
+        Object[] entries = new Object[ServerConfig.getInstance().leaderboard.size()];
+        List<LeaderboardEntry> leaderboard = ServerConfig.getInstance().leaderboard;
         for (int i = 0; i < leaderboard.size(); i++) {
             entries[i] = leaderboard.get(i);
         }

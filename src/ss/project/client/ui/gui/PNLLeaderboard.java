@@ -19,7 +19,7 @@ public class PNLLeaderboard extends GUIPanel implements Observer {
         super();
 
         this.setLayout(new BorderLayout());
-        this.add(GUIUtils.createLabel("Leaderboard", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
+        this.add(GUIUtils.createLabel("leaderboard", GUIUtils.LabelType.TITLE), BorderLayout.NORTH);
 
         leaderBoardList = new JPanel();
         leaderBoardList.setLayout(new GridBagLayout());

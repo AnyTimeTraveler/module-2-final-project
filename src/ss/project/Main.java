@@ -1,9 +1,7 @@
 package ss.project;
 
 import ss.project.client.Controller;
-import ss.project.client.Network;
 import ss.project.server.Server;
-import ss.project.shared.model.Connection;
 import ss.project.shared.model.ServerConfig;
 
 import java.io.IOException;
@@ -55,7 +53,7 @@ public class Main {
             int port = 1234;
             do {
                 try {
-                    System.out.print("Port: ");
+                    System.out.print("port: ");
                     port = Integer.parseInt(sc.nextLine());
                     isValid = port > 1024 && port < 65535;
                 } catch (NumberFormatException e) {
@@ -74,34 +72,18 @@ public class Main {
             });
             client.setName("ClientMain");
             client.start();
-            Thread server = new Thread(() -> new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port).run());
+            final Server instance;
+            try {
+                instance = new Server(ServerConfig.getInstance().port);
+            } catch (IOException e) {
+                System.out.println("Please chose a different port.");
+                return;
+            }
+            Thread server = new Thread(instance::run);
             server.setName("ServerMain");
             server.start();
-        } else if (args[0].equalsIgnoreCase("debug")) {
-            try {
-                Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
-                if (args.length > 1) {
-                    Thread serverThread = new Thread(server::run);
-                    serverThread.setName("ServerMain");
-                    serverThread.start();
-                    while (!server.isReady()) {
-                        Thread.sleep(100);
-                    }
-                }
-                Thread client = new Thread(() -> {
-                    Controller.getController().start(true);
-                    Controller.getController().doUI();
-                });
-                client.setName("ClientMain");
-                client.start();
-                Controller.getController().joinServer(new Network(new Connection("Test", "localhost", 1234)).ping());
-                while (!Controller.getController().isConnected()) {
-                    Thread.sleep(100);
-                }
-                Controller.getController().joinRoom(Controller.getController().getRooms().get(0));
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
+        } else {
+            printUsage();
         }
     }
 
@@ -109,20 +91,30 @@ public class Main {
         switch (type.toLowerCase()) {
             case "server":
                 runServer();
+                break;
             case "client":
+                runClient(true);
+                break;
             case "both":
-            case "debug":
+                runServer();
+                runClient(true);
                 break;
         }
     }
 
-    public static void runClient(boolean gui) {
+    private static void runClient(boolean gui) {
         Controller.getController().start(gui);
         Controller.getController().doUI();
     }
 
-    public static void runServer() {
-        Server server = new Server(ServerConfig.getInstance().Host, ServerConfig.getInstance().Port);
+    private static void runServer() {
+        Server server;
+        try {
+            server = new Server(ServerConfig.getInstance().port);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
         server.run();
     }
 
@@ -131,8 +123,6 @@ public class Main {
      */
     private static void printUsage() {
         System.out.println("Usage:");
-        System.out.print("java -jar ");
-        System.out.print(new java.io.File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName());
-        System.out.println(" [server|client] [gui|tui]");
+        System.out.println("java -jar connectFour.jar [server|client] [gui|tui]");
     }
 }
