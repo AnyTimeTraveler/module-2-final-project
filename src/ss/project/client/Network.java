@@ -4,6 +4,7 @@ import lombok.Getter;
 import ss.project.server.Room;
 import ss.project.shared.NetworkPlayer;
 import ss.project.shared.Protocol;
+import ss.project.shared.computerplayer.ComputerPlayer;
 import ss.project.shared.exceptions.ProtocolException;
 import ss.project.shared.game.ClientEngine;
 import ss.project.shared.game.Player;
@@ -63,6 +64,10 @@ public class Network extends Thread {
         if (playerType != null) {
             try {
                 Player player = (Player) playerType.newInstance();
+                if (player instanceof ComputerPlayer) {
+                    ComputerPlayer computerPlayer = (ComputerPlayer) player;
+                    computerPlayer.setSmartness(ClientConfig.getInstance().playerSmartness);
+                }
                 return player;
             } catch (InstantiationException | IllegalAccessException e) {
                 return new HumanPlayer();
