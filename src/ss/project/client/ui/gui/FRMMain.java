@@ -66,6 +66,14 @@ public class FRMMain extends JFrame implements UIFrame {
         splitPane.resetToPreferredSizes();
     }
 
+    @Override
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(this,
+                message,
+                "Error!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
     /**
      * Remove the current panel and show a specific panel.
      * Calls onLeave on the current panel and onEnter on the new panel.

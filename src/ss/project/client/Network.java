@@ -109,13 +109,10 @@ public class Network extends Thread {
                 if (serverInfo.isRoomSupport()) {
                     try {
                         line = in.readLine();
-                        //TODO: handle a server crash right now.
                         controller.setRooms(Room.parseRoomListString(line));
                     } catch (ProtocolException e) {
                         controller.showError("Expected Rooms", e.getStackTrace());
-                        // Unhandled, yet.
-                        e.printStackTrace();
-                        // Badly handled
+                        Controller.getController().showError("Error in getting roomlist.", e.getStackTrace());
                         sendError(4);
                         return;
                     }
@@ -132,7 +129,7 @@ public class Network extends Thread {
             } catch (IOException e) {
                 //This is only an error if the network is not closed.
                 if (!closed) {
-                    e.printStackTrace();
+                    Controller.getController().showError("Error in connection.", e.getStackTrace());
                     shutdown();
                 }
             }
@@ -143,7 +140,7 @@ public class Network extends Thread {
         if (line == null) {
             return;
         }
-        System.out.println("Recieved: " + line);
+        System.out.println("Received: " + line);
         String[] parts = line.split(" ");
         if (Protocol.Server.ASSIGNID.equals(parts[0])) {
             getOwnedPlayer().setId(Integer.parseInt(parts[1]));
@@ -179,8 +176,7 @@ public class Network extends Thread {
             try {
                 controller.setRooms(Room.parseRoomListString(line));
             } catch (ProtocolException e) {
-                e.printStackTrace();
-
+                Controller.getController().showError("Error in roomlist format: " + line, e.getStackTrace());
             }
         } else if (Protocol.Server.SENDLEADERBOARD.equals(parts[0])) {
             try {
@@ -190,13 +186,13 @@ public class Network extends Thread {
                 }
                 controller.setLeaderBoard(leaderboardEntries);
             } catch (ProtocolException e) {
-                e.printStackTrace();
+                Controller.getController().showError("Error in leaderboard format: " + line, e.getStackTrace());
             }
         } else if (Protocol.Server.ROOMCREATED.equals(parts[0])) {
             controller.refreshRoomList();
             controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
         } else {
-            System.err.println(line);
+            Controller.getController().showError(line);
         }
     }
 
@@ -210,7 +206,8 @@ public class Network extends Thread {
             out.newLine();
             out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            Controller.getController().showError("Tried to send message: " + msg
+                    + " but that didn't work...", e.getStackTrace());
             shutdown();
         }
     }
@@ -223,7 +220,7 @@ public class Network extends Thread {
         try {
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Controller.getController().showError("Failed to shutdown connection.", e.getStackTrace());
         }
         closed = true;
     }

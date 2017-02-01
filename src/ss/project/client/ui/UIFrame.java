@@ -13,4 +13,11 @@ public interface UIFrame {
     void setSize(int width, int height);
 
     void setConnected(boolean enabled);
+
+    /**
+     * Show an error on the screen.
+     *
+     * @param message
+     */
+    void showError(String message);
 }

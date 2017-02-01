@@ -267,8 +267,7 @@ public class Controller extends Observable {
                 controller.switchTo(Panel.MULTI_PLAYER_ROOM);
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            //TODO: Display ErrorDialog
+            showError("Could not connect to server: " + serverInfo.getConnection().getAddress() + ":" + serverInfo.getConnection().getPort(), e.getStackTrace());
         }
     }
 
@@ -284,8 +283,8 @@ public class Controller extends Observable {
                     addServer(data[0], port);
                 }
             } catch (NumberFormatException e) {
-                //Input was wrong.
-                //TODO: Display error message
+                showError("Adding server failed:" + serverName +
+                        " is in the wrong format or not a validIP.", e.getStackTrace());
             }
         }
     }
@@ -323,11 +322,28 @@ public class Controller extends Observable {
         frame.setSize(width, height);
     }
 
-    void showError(String message, StackTraceElement[] stackTrace) {
+    /**
+     * Show an error on the UI and print stackTrace.
+     *
+     * @param message
+     * @param stackTrace
+     */
+    public void showError(String message, StackTraceElement[] stackTrace) {
+        frame.showError(message);
+
         System.err.println(message);
         for (StackTraceElement stackTraceElement : stackTrace) {
             System.err.println("    " + stackTraceElement);
         }
+    }
+
+    /**
+     * Show an error on the UI.
+     *
+     * @param message message to be shown as information.
+     */
+    public void showError(String message) {
+        frame.showError(message);
     }
 
     public void sendChatMessage(String message) {
