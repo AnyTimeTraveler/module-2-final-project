@@ -22,7 +22,8 @@ public class Protocol {
         ERRORMAP = new HashMap<>();
         ERRORMAP.put("1", "Client has not yet sent capabilities message, Server cannot proceed");
         ERRORMAP.put("2", "Room sent in message joinRoom does not exist");
-        ERRORMAP.put("3", "The chosen room is no longer available, either it already filled up or was empty for too long");
+        ERRORMAP.put("3",
+                "The chosen room is no longer available, either it already filled up or was empty for too long");
         ERRORMAP.put("4", "The input given by the client isn't valid at this moment");
         ERRORMAP.put("5", "The given move is not possible on this board");
         ERRORMAP.put("6", "Client is not allowed to leave the room after the game has started");

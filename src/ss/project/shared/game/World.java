@@ -74,7 +74,7 @@ public class World {
     }
 
     /**
-     * Check if a player is the owner of the object at x,y,z
+     * Check if a player is the owner of the object at x,y,z.
      *
      * @param x
      * @param y

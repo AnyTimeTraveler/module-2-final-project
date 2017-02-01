@@ -228,7 +228,8 @@ public class Engine {
     //@ ensures (reason.equals(WINLENGTHACHIEVED) || reason.equals(PLAYERDISCONNECTED)) ==> getWinner() == playerid;
     //@ ensures getWinReason().equals(reason);
     public void finishGame(Protocol.WinReason reason, int playerid) {
-        if (reason.equals(Protocol.WinReason.WINLENGTHACHIEVED) || reason.equals(Protocol.WinReason.PLAYERDISCONNECTED)) {
+        if (reason.equals(Protocol.WinReason.WINLENGTHACHIEVED) ||
+                reason.equals(Protocol.WinReason.PLAYERDISCONNECTED)) {
             winner = playerid;
         }
         gameRunning = false;

@@ -92,15 +92,20 @@ public class ClientHandler extends Thread {
                     sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, player.getId()));
                     if (room.isFull()) {
                         room.startGame();
-                        room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "Room is full. Starting game...")));
+                        room.broadcast(Protocol.createMessage(
+                                Protocol.Server.NOTIFYMESSAGE, new ChatMessage(
+                                        "Server", "Room is full. Starting game...")));
                     }
                 } catch (AlreadyJoinedException | RoomFullException e) {
                     e.printStackTrace();
                 }
             }
             sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "Welcome!")));
-            sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "There are currently " + server.getClientHandlers().size() + " People online.")));
-            sendMessage(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "For help type \"/help\".")));
+            sendMessage(Protocol.createMessage(
+                    Protocol.Server.NOTIFYMESSAGE, new ChatMessage(
+                            "Server", "There are currently " + server.getClientHandlers().size() + " People online.")));
+            sendMessage(Protocol.createMessage(
+                    Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "For help type \"/help\".")));
         } catch (IOException e) {
             e.printStackTrace();
             shutdown();
@@ -185,7 +190,9 @@ public class ClientHandler extends Thread {
                         sendMessage(Protocol.createMessage(Protocol.Server.ASSIGNID, player.getId()));
                         if (room.isFull()) {
                             room.startGame();
-                            room.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage("Server", "Room is full. Starting game...")));
+                            room.broadcast(Protocol.createMessage(
+                                    Protocol.Server.NOTIFYMESSAGE, new ChatMessage(
+                                            "Server", "Room is full. Starting game...")));
                         }
                     } catch (AlreadyJoinedException | RoomFullException e) {
                         // Notify about joinerror

@@ -20,8 +20,7 @@ public class PNLGameEnd extends GUIPanel {
 
         JPanel bottomPanel = new JPanel();
         JButton backButton = new JButton("Back");
-        backButton.addActionListener(e ->
-        {
+        backButton.addActionListener(e -> {
             if (controller.isConnected()) {
                 controller.switchTo(Controller.Panel.MULTI_PLAYER_LOBBY);
             } else {
@@ -37,7 +36,8 @@ public class PNLGameEnd extends GUIPanel {
         int winner = Controller.getController().getEngine().getWinner();
         switch (Controller.getController().getEngine().getWinReason()) {
             case WINLENGTHACHIEVED: {
-                informationLabel.setText(Controller.getController().getEngine().getPlayer(winner).getName() + " won the game!");
+                informationLabel.setText(Controller.getController().getEngine()
+                        .getPlayer(winner).getName() + " won the game!");
                 break;
             }
             case BOARDISFULL: {
@@ -45,7 +45,8 @@ public class PNLGameEnd extends GUIPanel {
                 break;
             }
             case PLAYERDISCONNECTED: {
-                informationLabel.setText(Controller.getController().getEngine().getPlayer(winner).getName() + " disconnected... :(");
+                informationLabel.setText(Controller.getController().getEngine().
+                        getPlayer(winner).getName() + " disconnected... :(");
                 break;
             }
             case GAMETIMEOUT: {

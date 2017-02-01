@@ -110,7 +110,8 @@ public class PNLServerBrowser extends GUIPanel {
             jPanel.add(winLength, constraints);
             JLabel playerAmount = new JLabel("Players: " + serverInfo.getMaxPlayers());
             jPanel.add(playerAmount, constraints);
-            JLabel worldSize = new JLabel("World:" + serverInfo.getMaxDimensionX() + "," + serverInfo.getMaxDimensionY() + "," + serverInfo.getMaxDimensionZ());
+            JLabel worldSize = new JLabel("World:" + serverInfo.getMaxDimensionX() +
+                    "," + serverInfo.getMaxDimensionY() + "," + serverInfo.getMaxDimensionZ());
             jPanel.add(worldSize, constraints);
             JCheckBox chatSupport = new JCheckBox("Chat", serverInfo.isChatSupport());
             chatSupport.setEnabled(false);

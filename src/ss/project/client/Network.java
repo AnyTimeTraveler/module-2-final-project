@@ -225,8 +225,11 @@ public class Network extends Thread {
         closed = true;
     }
 
-    private String getCapabilityString(int maxPlayers, String name, boolean roomSupport, int maxX, int maxY, int maxZ, int winLength, boolean chat, boolean autoRefresh) {
-        return Protocol.createMessage(Protocol.Client.SENDCAPABILITIES, maxPlayers, name, roomSupport, maxX, maxY, maxZ, winLength, chat, autoRefresh);
+    private String getCapabilityString(int maxPlayers, String name,
+                                       boolean roomSupport, int maxX, int maxY, int maxZ, int winLength, boolean chat,
+                                       boolean autoRefresh) {
+        return Protocol.createMessage(Protocol.Client.SENDCAPABILITIES, maxPlayers, name,
+                roomSupport, maxX, maxY, maxZ, winLength, chat, autoRefresh);
     }
 
     private void sendError(int errorcode) {

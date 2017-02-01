@@ -46,12 +46,16 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
     }
 
     private void initialize(Engine engine) {
-        if (worldCopy == null)
+        if (worldCopy == null) {
             worldCopy = new World(engine.getWorld().getSize(), engine.getWorld().getWinLength());
-        if (opponent == null)
+        }
+        if (opponent == null) {
             opponent = engine.getOtherPlayer(this);
-        if (workers == null)
+        }
+        if (workers == null) {
+            //If this warning is fixed, that resolves in a compiler error. We therefore couldn't fix it.
             workers = new Future[engine.getWorld().getSize().getX()][engine.getWorld().getSize().getY()];
+        }
         if (executor == null) {
             executor = Executors.newWorkStealingPool();
         }
@@ -113,7 +117,8 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
             world.writeTo(copy);
             Vector2 coords = vector2Cache[i];
             copy.addGameItem(coords, this);
-            workers[coords.getX()][coords.getY()] = executor.submit(() -> -getBestPosition(copy, coords, depth, -9999, 9999, getOther(this)));
+            workers[coords.getX()][coords.getY()] = executor.submit(() ->
+                    -getBestPosition(copy, coords, depth, -9999, 9999, getOther(this)));
         }
         try {
             for (int i = 0; i < vector2Cache.length; i++) {
@@ -136,7 +141,8 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
      * @param depth       The amount of nodes we get into.
      * @return The amount of points.
      */
-    protected int getBestPosition(World world, Vector2 coordinates, int depth, int alpha, int beta, Player currentPlayer) {
+    protected int getBestPosition(World world, Vector2 coordinates,
+                                  int depth, int alpha, int beta, Player currentPlayer) {
         if (world.hasWon(coordinates, currentPlayer)) {
             return 9999;
         } else if (world.hasWon(coordinates, getOther(currentPlayer))) {
@@ -155,7 +161,8 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
                 continue;
             }
 
-            int value = -getBestPosition(world, vector2Cache[i], depth - 1, -localBeta, -localAlpha, getOther(currentPlayer));
+            int value = -getBestPosition(world, vector2Cache[i],
+                    depth - 1, -localBeta, -localAlpha, getOther(currentPlayer));
 
             world.removeGameItem(vector2Cache[i]);
 

@@ -62,15 +62,18 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
         add(createLabel("World X:"), gridBagConstraints);
         nextColumn();
-        add(worldX = createSpinner(4, 0, 100), gridBagConstraints);
+        worldX = createSpinner(4, 0, 100);
+        add(worldX, gridBagConstraints);
         nextColumn();
         add(createLabel("World Y:"), gridBagConstraints);
         nextColumn();
-        add(worldY = createSpinner(4, 0, 100), gridBagConstraints);
+        worldY = createSpinner(4, 0, 100);
+        add(worldY, gridBagConstraints);
         nextColumn();
         add(createLabel("World Z:"), gridBagConstraints);
         nextColumn();
-        add(worldZ = createSpinner(4, 0, 100), gridBagConstraints);
+        worldZ = createSpinner(4, 0, 100);
+        add(worldZ, gridBagConstraints);
 
         nextRow();
         nextRow();
@@ -80,13 +83,15 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
         add(createLabel("Player Amount:"), gridBagConstraints);
         playerAmount = createSpinner(2, 2, 10);
-        playerAmount.addChangeListener(e -> addPlayerPanes(((SpinnerNumberModel) playerAmount.getModel()).getNumber().intValue()));
+        playerAmount.addChangeListener(e ->
+                addPlayerPanes(((SpinnerNumberModel) playerAmount.getModel()).getNumber().intValue()));
         nextColumn();
         add(playerAmount, gridBagConstraints);
         nextColumn();
         add(createLabel("Win Length:"), gridBagConstraints);
         nextColumn();
-        add(winLength = createSpinner(4, 1, 100), gridBagConstraints);
+        winLength = createSpinner(4, 1, 100);
+        add(winLength, gridBagConstraints);
 
         nextRow();
         gridBagConstraints.gridheight = 1;
@@ -133,7 +138,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
                 pp = playerPanels.get(i);
             } else {
                 pp = new PlayerPanel();
-                pp.playerNameField.setText(NameList.names[new Random().nextInt(NameList.names.length)]);
+                pp.playerNameField.setText(NameList.NAMES[new Random().nextInt(NameList.NAMES.length)]);
             }
             pp.setAlignmentX(Component.CENTER_ALIGNMENT);
             if (!playerPanels.contains(pp)) {
@@ -241,10 +246,12 @@ public class PNLSinglePlayerSettings extends GUIPanel {
 
                 List<Player> players = new ArrayList<>();
                 for (int i = 0; i < playerCount; i++) {
-                    Class<? extends Player> playerType = ClientConfig.getInstance().playerTypes.get(playerPanels.get(i).getPlayerType());
+                    Class<? extends Player> playerType = ClientConfig.getInstance()
+                            .playerTypes.get(playerPanels.get(i).getPlayerType());
                     Player player = playerType.newInstance();
                     player.setName(playerPanels.get(i).getName());
-                    player = ClientConfig.getInstance().playerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
+                    player = ClientConfig.getInstance().
+                            playerTypes.get(playerPanels.get(i).getPlayerType()).newInstance();
                     player.setName(playerPanels.get(i).getName());
                     player.setId(i);
                     if (playerPanels.get(i).isComputerPlayer()) {
@@ -252,7 +259,8 @@ public class PNLSinglePlayerSettings extends GUIPanel {
                     }
                     players.add(player);
                 }
-                Engine engine = new Engine(new GameParameters(worldSizeX, worldSizeY, worldSizeZ, winLen), players, false);
+                Engine engine = new Engine(new GameParameters(
+                        worldSizeX, worldSizeY, worldSizeZ, winLen), players, false);
 
                 controller.setEngine(engine);
                 controller.switchTo(Controller.Panel.GAME);

@@ -203,7 +203,8 @@ public class PNLMultiPlayerLobby extends GUIPanel implements Observer {
             roomID.setText("|" + room.getId() + "|");
             winLength.setText("Win length: " + room.getWinLength());
             playerAmount.setText("Players: " + room.getMaxPlayers());
-            worldSize.setText("World:" + room.getWorldSize().getX() + "," + room.getWorldSize().getY() + "," + room.getWorldSize().getZ());
+            worldSize.setText("World:" + room.getWorldSize().getX() + "," +
+                    room.getWorldSize().getY() + "," + room.getWorldSize().getZ());
         }
 
         /**

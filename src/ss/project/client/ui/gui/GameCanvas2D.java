@@ -114,11 +114,14 @@ public class GameCanvas2D extends JPanel {
                 if (actualPlayer != null) {
                     gc.setColor(owner.getPlayerColor(actualPlayer));
                 } else if (specialDrawMap.containsKey(new Vector2(x, y))) {
-                    gc.setColor(multiplyColor(owner.getPlayerColor(specialDrawMap.get(new Vector2(x, y))), getAnimationState() / 100f));
+                    gc.setColor(multiplyColor(
+                            owner.getPlayerColor(specialDrawMap.get(new Vector2(x, y))), getAnimationState() / 100f));
                 } else {
                     gc.setColor(Color.black);
                 }
-                gc.fillRoundRect((int) (offset + x * partX + 0.5f * offset), (int) (offset + y * partY + 0.5f * offset), (int) blockWidth, (int) blockHeight, 5, 5);
+                gc.fillRoundRect((int) (offset + x * partX + 0.5f * offset),
+                        (int) (offset + y * partY + 0.5f * offset),
+                        (int) blockWidth, (int) blockHeight, 5, 5);
             }
         }
     }
@@ -170,7 +173,8 @@ public class GameCanvas2D extends JPanel {
             System.out.println(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
 
             if (owner.getWaiter() != null) {
-                owner.getCurrentPlayer().setSelectedCoordinates(getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
+                owner.getCurrentPlayer().setSelectedCoordinates(
+                        getActualCoordinates(e.getX(), e.getY(), engine.getWorld().getSize()));
                 synchronized (owner.getWaiter()) {
                     owner.getWaiter().notify();
                 }

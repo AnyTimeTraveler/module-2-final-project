@@ -63,7 +63,8 @@ public class Controller extends Observable {
     private Controller() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
         chatMessages = new ArrayList<>();
@@ -88,7 +89,8 @@ public class Controller extends Observable {
      */
     @Synchronized("CHAT_LOCK")
     public List<ChatMessage> getRecentChatMessages(int amount) {
-        return chatMessages.subList(amount < chatMessages.size() ? chatMessages.size() - amount : 0, chatMessages.size());
+        return chatMessages.subList(
+                amount < chatMessages.size() ? chatMessages.size() - amount : 0, chatMessages.size());
     }
 
     /**
@@ -267,7 +269,8 @@ public class Controller extends Observable {
                 controller.switchTo(Panel.MULTI_PLAYER_ROOM);
             }
         } catch (IOException | InterruptedException e) {
-            showError("Could not connect to server: " + serverInfo.getConnection().getAddress() + ":" + serverInfo.getConnection().getPort(), e.getStackTrace());
+            showError("Could not connect to server: " + serverInfo.getConnection().getAddress() +
+                    ":" + serverInfo.getConnection().getPort(), e.getStackTrace());
         }
     }
 
@@ -348,9 +351,11 @@ public class Controller extends Observable {
 
     public void sendChatMessage(String message) {
         if (isConnected() && getCurrentServer().isChatSupport()) {
-            network.sendMessage(Protocol.createMessage(Protocol.Client.SENDMESSAGE, ClientConfig.getInstance().playerName, message));
+            network.sendMessage(Protocol.createMessage(
+                    Protocol.Client.SENDMESSAGE, ClientConfig.getInstance().playerName, message));
         } else {
-            addMessage(new ChatMessage("Game", "That didn't go anywhere, since you aren't connected to any server at the moment."));
+            addMessage(new ChatMessage("Game",
+                    "That didn't go anywhere, since you aren't connected to any server at the moment."));
             updateChatMessages();
         }
     }
