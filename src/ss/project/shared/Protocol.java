@@ -102,7 +102,7 @@ public class Protocol {
         GETROOMLIST("getRoomList"),
         LEAVEROOM("leaveRoom"),
         MAKEMOVE("makeMove"),
-        SENDMESSAGE("broadcast"),
+        SENDMESSAGE("sendMessage"),
         REQUESTLEADERBOARD("requestLeaderboard"),
         SENDCAPABILITIES("sendCapabilities");
 

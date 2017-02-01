@@ -207,7 +207,8 @@ public class ClientHandler extends Thread {
                 // send Leaderboard
                 sendMessage(server.getLeaderboardMessage());
             } else if (Protocol.Client.SENDMESSAGE.equals(parts[0])) {
-                server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), line.substring(line.indexOf(' ') + 1))));
+                String args = line.substring(line.indexOf(' ') + 1);
+                server.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, new ChatMessage(player.getName(), args.substring(args.indexOf(' ') + 1))));
             } else {
                 System.err.println("Not implemented: " + line);
             }

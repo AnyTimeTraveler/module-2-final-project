@@ -35,6 +35,7 @@ public class PNLChat extends GUIPanel {
 
     private void onSend(String message) {
         controller.sendChatMessage(message);
+        inputField.setText("");
     }
 
     @Override
