@@ -407,16 +407,51 @@ public class Controller extends Observable {
         frame.dispose();
     }
 
+    /**
+     * The several screens possible in the UI.
+     *
+     * @see Controller#switchTo(Panel)
+     */
     public enum Panel {
+        /**
+         * The start of the program, select different menus from here.
+         */
         MAIN_MENU,
+        /**
+         * The creation screen of a singleplayer game.
+         */
         SINGLE_PLAYER_SETTINGS,
+        /**
+         * The server browser. Will ping all servers and show them in the menu.
+         */
         SERVER_BROWSER,
+        /**
+         * Change various properties of both the game as the menu.
+         */
         OPTIONS,
+        /**
+         * Show the rooms of the server if the server supports rooms.
+         */
         MULTI_PLAYER_LOBBY,
+        /**
+         * Waiting for a room to start.
+         */
         MULTI_PLAYER_ROOM,
+        /**
+         * Create a new room at the server if it supports rooms.
+         */
         MULTI_PLAYER_ROOM_CREATION,
+        /**
+         * The panel of the game, will allow you to give input if you're a humanplayer.
+         */
         GAME,
+        /**
+         * If supported by the server, gets and hows all leaderboard entries.
+         */
         LEADERBOARD,
+        /**
+         * The screen at the end of the game. Shows why it ended and allows you to go back to the lobby.
+         */
         GAMEEND;
 
         @Getter
