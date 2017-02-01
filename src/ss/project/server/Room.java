@@ -43,7 +43,7 @@ public class Room implements Serializable {
      * A reference to the engine responsible for the game.
      */
     @Getter
-    private Engine engine;
+    private /*@ spec_public @*/ Engine engine;
     /**
      * The thread the engine is running on.
      */
@@ -60,7 +60,7 @@ public class Room implements Serializable {
      * Current joined players.
      */
     @Getter
-    private List<NetworkPlayer> players;
+    private /*@ spec_public @*/ List<NetworkPlayer> players;
     /**
      * The GameParameters of this room.
      */
@@ -77,6 +77,12 @@ public class Room implements Serializable {
      * @param sizeZ      The z-dimension of the world of this room.
      * @param winLength  The length needed to win a game.
      */
+    //@ ensures getId() == id;
+    //@ ensures getMaxPlayers() == maxPlayers;
+    //@ ensures getWorldSize().getX() == sizeX;
+    //@ ensures getWorldSize().getY() == sizeY;
+    //@ ensures getWorldSize().getZ() == sizeY;
+    //@ ensures getWinLength() == winLength;
     public Room(int id, int maxPlayers, int sizeX, int sizeY, int sizeZ, int winLength) {
         this.id = id;
         this.maxPlayers = maxPlayers;
@@ -94,6 +100,12 @@ public class Room implements Serializable {
      * @param sizeZ      The z-dimension of the world of this room.
      * @param winLength  The length needed to win a game.
      */
+    //@ ensures getId() == id;
+    //@ ensures getMaxPlayers() == maxPlayers;
+    //@ ensures getWorldSize().getX() == sizeX;
+    //@ ensures getWorldSize().getY() == sizeY;
+    //@ ensures getWorldSize().getZ() == sizeY;
+    //@ ensures getWinLength() == winLength;
     public Room(int maxPlayers, int sizeX, int sizeY, int sizeZ, int winLength) {
         id = getNextId();
         this.maxPlayers = maxPlayers;
@@ -110,6 +122,12 @@ public class Room implements Serializable {
      * @param winLength  The length needed to win a game.
      * @see Room#Room(int, int, int, int, int, int)
      */
+    //@ ensures getId() == id;
+    //@ ensures getMaxPlayers() == maxPlayers;
+    //@ ensures getWorldSize().getX() == sizeX;
+    //@ ensures getWorldSize().getY() == sizeY;
+    //@ ensures getWorldSize().getZ() == sizeY;
+    //@ ensures getWinLength() == winLength;
     public Room(int id, int maxPlayers, Vector3 worldSize, int winLength) {
         this(id, maxPlayers, worldSize.getX(), worldSize.getY(), worldSize.getZ(), winLength);
     }
@@ -121,6 +139,12 @@ public class Room implements Serializable {
      * @param worldSize  The x-dimension of the world of this room.
      * @param winLength  The length needed to win a game.
      */
+    //@ ensures getId() == id;
+    //@ ensures getMaxPlayers() == maxPlayers;
+    //@ ensures getWorldSize().getX() == sizeX;
+    //@ ensures getWorldSize().getY() == sizeY;
+    //@ ensures getWorldSize().getZ() == sizeY;
+    //@ ensures getWinLength() == winLength;
     public Room(int maxPlayers, Vector3 worldSize, int winLength) {
         this(maxPlayers, worldSize.getX(), worldSize.getY(), worldSize.getZ(), winLength);
     }
@@ -131,6 +155,8 @@ public class Room implements Serializable {
      * @return A new room.
      * @throws ProtocolException If the input is not in the correct format.
      */
+    //@ requires line != null;
+    //@ requires splitRegex != null;
     public static Room fromString(String line, String splitRegex) throws ProtocolException {
         if (splitRegex.equals(Protocol.PIPE_SYMBOL)) {
             // split room by it's parameters
@@ -195,6 +221,8 @@ public class Room implements Serializable {
      * @return A new list of rooms.
      * @throws ProtocolException The line is not in the correct format.
      */
+    //@ requires line != null;
+    //@ ensures \result != null;
     public static List<Room> parseRoomListString(String line) throws ProtocolException {
         Scanner sc = new Scanner(line);
         // test for invalid message
@@ -217,6 +245,9 @@ public class Room implements Serializable {
      * @throws AlreadyJoinedException This player had already joined this room.
      * @throws RoomFullException      This room is full.
      */
+    //@ requires player != null;
+    //@ ensures (!\old(players.contains(player)) && \old(getCurrentPlayers())
+    // >= getMaxPlayers()) ==> players.contains(player);
     public void join(NetworkPlayer player) throws AlreadyJoinedException, RoomFullException {
         synchronized (PLAYERS_LOCK) {
             if (players.contains(player)) {
@@ -240,6 +271,8 @@ public class Room implements Serializable {
      * Will set all players' state to in-game.
      * Will notify all players the game has started.
      */
+    //@ ensures engine != null;
+    //@ ensures (\forall NetworkPlayer np; players.contains(np); np.isInGame());
     void startGame() {
         synchronized (PLAYERS_LOCK) {
             Object[] args = new Object[players.size() + 1];
@@ -273,6 +306,9 @@ public class Room implements Serializable {
      * @param player That wants to leave this room.
      * @throws NotInRoomException When player was not in this room at the time of leaving.
      */
+    //@ requires player != null;
+    //@ ensures !players.contains(player);
+    //@ ensures player.getCurrentRoom() == null;
     public void leave(NetworkPlayer player) throws NotInRoomException {
         if (!players.contains(player)) {
             throw new NotInRoomException(player);
@@ -293,6 +329,7 @@ public class Room implements Serializable {
     /**
      * Notify the room that this player has lost connection and stop the game.
      */
+    //@ requires networkPlayer != null;
     void lostConnection(NetworkPlayer networkPlayer) {
         if (networkPlayer.isInGame()) {
             try {
@@ -310,6 +347,7 @@ public class Room implements Serializable {
      *
      * @return an integer representing the id of this room.
      */
+    //@ pure;
     public int getId() {
         return id;
     }
@@ -317,6 +355,7 @@ public class Room implements Serializable {
     /**
      * Get the winlength needed for this room.
      */
+    //@ pure;
     public int getWinLength() {
         return parameters.getWinLength();
     }
@@ -324,6 +363,7 @@ public class Room implements Serializable {
     /**
      * Get the max amount of players that are possible in this room.
      */
+    //@ pure;
     public int getMaxPlayers() {
         return maxPlayers;
     }
@@ -333,10 +373,12 @@ public class Room implements Serializable {
      *
      * @return A new vector3.
      */
+    //@ pure;
     public Vector3 getWorldSize() {
         return parameters.getWorldSize();
     }
 
+    //@ ensures \result != null;
     public String serialize() {
         return String.join("|",
                 String.valueOf(id),
@@ -347,6 +389,7 @@ public class Room implements Serializable {
                 String.valueOf(parameters.getWinLength()));
     }
 
+    //@ ensures \result != null;
     public String serializeCreation() {
         return String.join(Protocol.SPACE_SYMBOL,
                 String.valueOf(maxPlayers),
@@ -361,6 +404,7 @@ public class Room implements Serializable {
      *
      * @return amount of players in this room
      */
+    //@ pure;
     public int getCurrentPlayers() {
         return players.size();
     }
@@ -384,6 +428,7 @@ public class Room implements Serializable {
      *
      * @return True if the room is full, False otherwise.
      */
+    //@ pure;
     boolean isFull() {
         return players.size() >= maxPlayers;
     }
@@ -391,6 +436,9 @@ public class Room implements Serializable {
     /**
      * End the game with the specified reason. Will reset all players to the lobby.
      */
+    //@ ensures players.size() <= 0;
+    //@ ensures (\forall NetworkPlayer player; players.contains(player);
+    // player.getCurrentRoom() == null && !player.isInGame());
     public void endGame(Protocol.WinReason reason, int id) {
         //We remove this room from the server.
         Server.getInstance().removeRoom(this);
