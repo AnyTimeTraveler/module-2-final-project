@@ -160,6 +160,10 @@ public class NetworkPlayer extends Player implements Serializable {
             currentRoom.broadcast(Protocol.createMessage(Protocol.Server.NOTIFYMOVE, getId(), move.getX(), move.getY()));
             if (engine.getWorld().hasWon(new Vector2(move.getX(), move.getY()), this)) {
                 currentRoom.endGame(Protocol.WinReason.WINLENGTHACHIEVED, getId());
+            } else {
+                if (engine.getWorld().isFull()) {
+                    currentRoom.endGame(Protocol.WinReason.BOARDISFULL, -1);
+                }
             }
         } else {
             clientHandler.sendMessage(Protocol.createMessage(Protocol.Server.ERROR, 5));

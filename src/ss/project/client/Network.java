@@ -62,7 +62,8 @@ public class Network extends Thread {
         Class playerType = ClientConfig.getInstance().PlayerTypes.get(ClientConfig.getInstance().playerType);
         if (playerType != null) {
             try {
-                return (Player) playerType.newInstance();
+                Player player = (Player) playerType.newInstance();
+                return player;
             } catch (InstantiationException | IllegalAccessException e) {
                 return new HumanPlayer();
             }
@@ -100,9 +101,10 @@ public class Network extends Thread {
                         config.AutoRefresh));
 
                 // await list of rooms
-                line = in.readLine();
                 if (serverInfo.isRoomSupport()) {
                     try {
+                        line = in.readLine();
+                        //TODO: handle a server crash right now.
                         controller.setRooms(Room.parseRoomListString(line));
                     } catch (ProtocolException e) {
                         controller.showError("Expected Rooms", e.getStackTrace());
@@ -133,6 +135,9 @@ public class Network extends Thread {
     }
 
     private void interpretLine(String line) {
+        if (line == null) {
+            return;
+        }
         System.out.println("Recieved: " + line);
         String[] parts = line.split(" ");
         if (Protocol.Server.ASSIGNID.equals(parts[0])) {

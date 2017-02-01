@@ -25,7 +25,8 @@ public class ChatmessageTest {
         String name = "Simon";
         String message = "Hello, this is a Test.";
         ChatMessage chatMessage = new ChatMessage(name, message);
-        ChatMessage chatMessage1 = ChatMessage.fromString(Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, chatMessage));
+        ChatMessage chatMessage1 = ChatMessage.fromString(
+                Protocol.createMessage(Protocol.Server.NOTIFYMESSAGE, chatMessage));
 
         Assert.assertEquals(chatMessage, chatMessage1);
     }

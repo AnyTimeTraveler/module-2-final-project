@@ -23,7 +23,7 @@ import java.util.List;
 public class ClientConfig {
 
     /**
-     * Configfile name
+     * Configfile name.
      */
     private static final String CONFIGFILE = "client-config.json";
     /**
