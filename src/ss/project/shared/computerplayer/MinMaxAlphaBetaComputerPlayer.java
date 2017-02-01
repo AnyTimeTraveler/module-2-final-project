@@ -90,6 +90,7 @@ public class MinMaxAlphaBetaComputerPlayer extends ComputerPlayer {
 
     @Override
     public void setSmartness(int value) {
+        System.out.println("Smartness" + value);
         this.depth = value;
     }
 
