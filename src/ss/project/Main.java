@@ -47,6 +47,7 @@ public class Main {
                 } while (!isValid);
             }
             run(type, port);
+            sc.close();
         } else if (args[0].equalsIgnoreCase("server")) {
             runServer();
         } else if (args[0].equalsIgnoreCase("client")) {
@@ -71,6 +72,7 @@ public class Main {
         } else {
             printUsage();
         }
+
     }
 
     public static void run(String type, int port) {

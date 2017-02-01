@@ -190,7 +190,7 @@ public class PNLSinglePlayerSettings extends GUIPanel {
          * The playertype has changed, check if this is a computer. If so, show the smartness spinner.
          */
         private void updateSmartness() {
-            Class smthing = ClientConfig.getInstance().playerTypes.get(getPlayerType());
+            Class<? extends Player> smthing = ClientConfig.getInstance().playerTypes.get(getPlayerType());
             if (ComputerPlayer.class.isAssignableFrom(smthing)) {
                 computerSmartness.setVisible(true);
             } else {

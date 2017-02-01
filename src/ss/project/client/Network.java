@@ -60,7 +60,7 @@ public class Network extends Thread {
     }
 
     private Player createPlayer() {
-        Class playerType = ClientConfig.getInstance().playerTypes.get(ClientConfig.getInstance().playerType);
+        Class<? extends Player> playerType = ClientConfig.getInstance().playerTypes.get(ClientConfig.getInstance().playerType);
         if (playerType != null) {
             try {
                 Player player = (Player) playerType.newInstance();

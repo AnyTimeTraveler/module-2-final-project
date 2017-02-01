@@ -227,6 +227,7 @@ public class Room implements Serializable {
         Scanner sc = new Scanner(line);
         // test for invalid message
         if (!sc.next().equalsIgnoreCase(Protocol.Server.SENDLISTROOMS.getMessage())) {
+            sc.close();
             throw new UnexpectedMessageException(Protocol.Server.SENDLISTROOMS.getMessage(), line);
         }
         List<Room> rooms = new ArrayList<>();
