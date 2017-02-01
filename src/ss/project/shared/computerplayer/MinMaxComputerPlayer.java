@@ -19,7 +19,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
     private int depth;
     private Player opponent;
     private World worldCopy;
-    private Future<Integer>[][] workers;
+    private Future[][] workers;
     private ExecutorService executor;
 
     /**
@@ -51,8 +51,8 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
             opponent = engine.getOtherPlayer(this);
         }
         if (workers == null) {
-            //If this warning is fixed, that resolves in a compiler error. We therefore couldn't fix it.
-            workers = new Future[engine.getWorld().getSize().getX()][engine.getWorld().getSize().getY()];
+            workers = new Future[engine.getWorld().getSize().getX()]
+                              [engine.getWorld().getSize().getY()];
         }
         if (executor == null) {
             executor = Executors.newWorkStealingPool();
@@ -111,7 +111,7 @@ public class MinMaxComputerPlayer extends ComputerPlayer {
         try {
             for (int x = 0; x < workers.length; x++) {
                 for (int y = 0; y < workers[x].length; y++) {
-                    int value = workers[x][y].get();
+                    int value = ((Future<Integer>) workers[x][y]).get();
                     if (value > bestValue) {
                         result = new Vector2(x, y);
                         bestValue = value;
