@@ -87,7 +87,7 @@ public class ServerConfig {
         TimeoutInSeconds = 20;
     }
 
-    public static ServerConfig getInstance() {
+    public synchronized static ServerConfig getInstance() {
         if (instance == null) {
             load();
         }

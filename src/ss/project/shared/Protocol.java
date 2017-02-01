@@ -54,15 +54,17 @@ public class Protocol {
     }
 
     /**
-     * @param message
-     * @param args
-     * @return
+     * Create a message that follows the protocol naming.
+     *
+     * @param message Type of message.
+     * @param args    Any arguments of this message.
+     * @return A string message.
      */
     public static String createMessage(Server message, Object... args) {
         return createMessage(message.getMessage(), args);
     }
 
-    private static String createMessage(String message, Object... args) {
+    private static String createMessage(String message, Object[] args) {
         StringBuilder sb = new StringBuilder();
         sb.append(message);
         for (Object arg : args) {
@@ -80,9 +82,6 @@ public class Protocol {
 
     /**
      * Get the winreason from an id.
-     *
-     * @param id
-     * @return
      */
     public static WinReason getWinReason(int id) {
         if (WINREASONMAP.containsKey(id)) {

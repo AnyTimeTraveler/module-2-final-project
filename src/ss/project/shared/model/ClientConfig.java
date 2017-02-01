@@ -143,12 +143,10 @@ public class ClientConfig {
     }
 
     /**
-     * A singleton reference to the ClientConfig.
-     * If no instance is made, a new one will be created.
-     *
-     * @return
+     * A singleton reference to the Config.
+     * If no instance is present, a new one will be created.
      */
-    public static ClientConfig getInstance() {
+    public synchronized static ClientConfig getInstance() {
         if (instance == null) {
             load();
         }

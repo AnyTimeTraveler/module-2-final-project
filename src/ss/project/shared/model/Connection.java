@@ -49,8 +49,8 @@ public class Connection {
      */
     public static boolean validIP(String ip) {
         try {
-            InetAddress address = InetAddress.getByName(ip);
-            return address.isReachable(1000);
+            System.out.println(InetAddress.getByName(ip));
+            return true;
         } catch (IOException e) {
             return false;
         }
