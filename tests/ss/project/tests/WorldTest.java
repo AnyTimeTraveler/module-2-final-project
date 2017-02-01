@@ -155,8 +155,6 @@ public class WorldTest {
         Assert.assertTrue(world.hasWon(new Vector2(3, 0), dummy));
     }
 
-    //TODO: add direction (1,1,1)
-    //TODO: add direction (1,-1,0) at z = 2
     @Test
     public void hasWon1() throws Exception {
         world.addGameItem(new Vector2(0, 0), dummy);

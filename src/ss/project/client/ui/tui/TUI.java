@@ -47,6 +47,11 @@ public class TUI implements UIFrame {
 
     }
 
+    @Override
+    public void showError(String message) {
+
+    }
+
     private void run() {
         Scanner sc = new Scanner(System.in);
         while (isRunning) {

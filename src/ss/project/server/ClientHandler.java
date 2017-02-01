@@ -49,8 +49,8 @@ public class ClientHandler extends Thread {
         closed = false;
         player = new NetworkPlayer(this);
         this.setName("ClientHandler: Unknown Player\n" +
-                             "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
-                             "\nRemote: " + socket.getRemoteSocketAddress());
+                "Local: " + socket.getLocalAddress() + ":" + socket.getLocalPort() +
+                "\nRemote: " + socket.getRemoteSocketAddress());
     }
 
     /**
